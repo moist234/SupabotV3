@@ -1,0 +1,411 @@
+"""
+Supabot V2 - Main Scanner
+Orchestrates all modules to find high-quality trading opportunities.
+"""
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import time
+from typing import List, Dict
+from datetime import datetime
+import pandas as pd
+
+from config import SCANNER_CONFIG, ENABLE_AI_ANALYSIS
+from data.market_data import get_stock_info, get_price_changes, get_float_analysis, get_short_interest
+from data.technical_analysis import get_technical_analysis
+from data.social_signals import get_quality_universe, get_social_intelligence
+from filters.quality_filter import passes_all_quality_filters
+from filters.price_action_filter import passes_all_price_action_filters, is_fresh_signal
+from analysis.ai_analyzer import AIAnalyzer
+
+
+class SupabotScanner:
+    """
+    Main scanner class that orchestrates all analysis modules.
+    """
+    
+    def __init__(self):
+        self.ai_analyzer = AIAnalyzer() if ENABLE_AI_ANALYSIS else None
+        self.scan_results = []
+        self.filtered_results = []
+    
+    def scan(self, custom_tickers: List[str] = None, top_k: int = None) -> pd.DataFrame:
+        """
+        Run complete scan pipeline.
+        
+        Pipeline:
+        1. Get quality universe (curated stocks or custom list)
+        2. Filter by quality (market cap, liquidity, fundamentals)
+        3. Filter by price action (not pumped, not falling)
+        4. Check social signals (buzz acceleration)
+        5. Run technical analysis
+        6. Run AI analysis (optional)
+        7. Score and rank
+        8. Return top K candidates
+        
+        Args:
+            custom_tickers: Optional list to scan instead of default universe
+            top_k: Number of top candidates to return (default from config)
+        
+        Returns:
+            DataFrame with top candidates, sorted by composite score
+        """
+        
+        top_k = top_k or SCANNER_CONFIG.top_k
+        
+        print("\n" + "="*70)
+        print("🤖 SUPABOT V2 - QUALITY-FIRST SCANNER")
+        print("="*70)
+        
+        # Step 1: Get universe
+        print(f"\n📊 Step 1: Getting quality universe...")
+        universe = custom_tickers if custom_tickers else get_quality_universe()
+        universe = universe[:SCANNER_CONFIG.scan_limit]  # Limit to scan_limit
+        print(f"   → {len(universe)} stocks in universe")
+        
+        # Step 2: Quality filtering
+        print(f"\n🔍 Step 2: Quality filtering...")
+        quality_passed = self._filter_by_quality(universe)
+        print(f"   → {len(quality_passed)} passed quality filters")
+        
+        if len(quality_passed) == 0:
+            print("\n❌ No stocks passed quality filters!")
+            return pd.DataFrame()
+        
+        # Step 3: Price action filtering
+        print(f"\n📈 Step 3: Price action filtering...")
+        price_action_passed = self._filter_by_price_action(quality_passed)
+        print(f"   → {len(price_action_passed)} passed price action filters")
+        
+        if len(price_action_passed) == 0:
+            print("\n❌ No stocks passed price action filters!")
+            return pd.DataFrame()
+        
+        # Step 4: Social signals analysis
+        print(f"\n🌐 Step 4: Analyzing social signals...")
+        social_scored = self._analyze_social_signals(price_action_passed)
+        print(f"   → {len(social_scored)} stocks with social activity")
+        
+        # Step 5: Technical analysis
+        print(f"\n📊 Step 5: Running technical analysis...")
+        technical_scored = self._analyze_technicals(social_scored)
+        print(f"   → Technical analysis complete")
+        
+        # Step 6: AI analysis (optional)
+        if ENABLE_AI_ANALYSIS and self.ai_analyzer:
+            print(f"\n🤖 Step 6: Running AI analysis...")
+            ai_analyzed = self._run_ai_analysis(technical_scored)
+            print(f"   → AI analysis complete")
+        else:
+            print(f"\n⚠️  Step 6: AI analysis disabled")
+            ai_analyzed = technical_scored
+        
+        # Step 7: Score and rank
+        print(f"\n🏆 Step 7: Scoring and ranking...")
+        final_scores = self._calculate_final_scores(ai_analyzed)
+
+        print(f"\n📊 SCORING SUMMARY:")
+        for stock in final_scores:
+            ticker = stock['ticker']
+            score = stock['composite_score']
+            rating = stock['rating']
+    
+            if score >= SCANNER_CONFIG.min_composite_score:
+                print(f"   ✓ {ticker}: {score}/5.0 - {rating} (INCLUDED)")
+            else:
+                print(f"   ✗ {ticker}: {score}/5.0 - {rating} (Below threshold {SCANNER_CONFIG.min_composite_score})")
+        
+        # Step 8: Select top K
+        df = pd.DataFrame(final_scores)
+        
+        if df.empty:
+            print("\n❌ No candidates after scoring!")
+            return pd.DataFrame()
+        
+        # Sort by composite score
+        df = df.sort_values('composite_score', ascending=False)
+        
+        # Apply minimum score threshold
+        df = df[df['composite_score'] >= SCANNER_CONFIG.min_composite_score]
+        
+        top_candidates = df.head(top_k)
+        
+        print(f"\n✅ Found {len(top_candidates)} high-quality candidates!")
+        print("="*70 + "\n")
+        
+        return top_candidates
+    
+    def _filter_by_quality(self, tickers: List[str]) -> List[Dict]:
+        """Filter tickers by fundamental quality."""
+        
+        passed = []
+        
+        for ticker in tickers:
+            try:
+                # Get stock info
+                stock_data = get_stock_info(ticker)
+                
+                if not stock_data:
+                    continue
+                
+                # Run quality filters
+                passes, reason = passes_all_quality_filters(stock_data)
+                
+                if passes:
+                    passed.append({
+                        'ticker': ticker,
+                        'stock_data': stock_data
+                    })
+            
+            except Exception as e:
+                print(f"   Error filtering {ticker}: {e}")
+                continue
+        
+        return passed
+    
+    
+    def _filter_by_price_action(self, stocks: List[Dict]) -> List[Dict]:
+        """Filter by price action and momentum."""
+        
+        passed = []
+        
+        for stock in stocks:
+            try:
+                ticker = stock['ticker']
+                stock_data = stock['stock_data']
+                
+                # Get price changes
+                price_changes = get_price_changes(ticker)
+                stock_data.update(price_changes)
+                
+                # Get technical data (for RSI, volume)
+                technical = get_technical_analysis(ticker)
+                
+                # Run price action filters
+                passes, reason = passes_all_price_action_filters(price_changes, technical)
+
+                if not passes:
+                    print(f"   ✗ {ticker}: {reason}")
+
+                if passes:
+                    # Check if fresh signal
+                    is_fresh = is_fresh_signal(
+                        price_changes.get('change_7d', 0),
+                        price_changes.get('change_90d', 0)
+                    )
+                    
+                    passed.append({
+                        'ticker': ticker,
+                        'stock_data': stock_data,
+                        'price_changes': price_changes,
+                        'technical': technical,
+                        'is_fresh': is_fresh
+                    })
+            
+            except Exception as e:
+                print(f"   Error checking price action for {stock['ticker']}: {e}")
+                continue
+        
+        return passed
+    
+    def _analyze_social_signals(self, stocks: List[Dict]) -> List[Dict]:
+        """Analyze social signals for each stock."""
+        
+        results = []
+        
+        for stock in stocks:
+            try:
+                ticker = stock['ticker']
+                
+                # Get social intelligence
+                social = get_social_intelligence(ticker)
+                
+                # Only keep if meaningful social activity
+                if social.get('composite_score', 0) > 0.2:
+                    stock['social'] = social
+                    results.append(stock)
+            
+            except Exception as e:
+                print(f"   Error analyzing social for {stock['ticker']}: {e}")
+                # Still include even if social fails
+                stock['social'] = {'composite_score': 0.0, 'signal_strength': 'weak'}
+                results.append(stock)
+        
+        return results
+    
+    def _analyze_technicals(self, stocks: List[Dict]) -> List[Dict]:
+        """Run technical analysis (if not already done)."""
+        
+        for stock in stocks:
+            # Technical already done in price action filter
+            # Just ensure it exists
+            if 'technical' not in stock:
+                try:
+                    stock['technical'] = get_technical_analysis(stock['ticker'])
+                except:
+                    stock['technical'] = {'technical_score': 3.0, 'technical_outlook': 'neutral'}
+        
+        return stocks
+    
+    def _run_ai_analysis(self, stocks: List[Dict]) -> List[Dict]:
+        """Run AI analysis on each stock."""
+        
+        for stock in stocks:
+            try:
+                ticker = stock['ticker']
+                
+                ai_result = self.ai_analyzer.analyze_stock(
+                    ticker,
+                    stock['stock_data'],
+                    stock['social'],
+                    stock['technical']
+                )
+                
+                stock['ai_analysis'] = ai_result
+            
+            except Exception as e:
+                print(f"   Error in AI analysis for {ticker}: {e}")
+                # Provide default scores if AI fails
+                stock['ai_analysis'] = {
+                    'rating': 'HOLD',
+                    'conviction': 'LOW',
+                    'composite_score': 3.0,
+                    'fundamental_score': 3.0,
+                    'technical_score': 3.0,
+                    'sentiment_score': 3.0,
+                    'risk_score': 0.5
+                }
+        
+        return stocks
+    
+    def _calculate_final_scores(self, stocks: List[Dict]) -> List[Dict]:
+        """Calculate final composite scores for ranking."""
+        
+        results = []
+        
+        for stock in stocks:
+            try:
+                ticker = stock['ticker']
+                stock_data = stock['stock_data']
+                price_changes = stock.get('price_changes', {})
+                social = stock.get('social', {})
+                technical = stock.get('technical', {})
+                ai_analysis = stock.get('ai_analysis', {})
+                
+                # Use AI composite if available, otherwise calculate
+                if ENABLE_AI_ANALYSIS and 'composite_score' in ai_analysis:
+                    composite_score = ai_analysis['composite_score']
+                    rating = ai_analysis.get('rating', 'HOLD')
+                    conviction = ai_analysis.get('conviction', 'MEDIUM')
+                else:
+                    # Fallback: calculate simple composite
+                    tech_score = technical.get('technical_score', 3.0)
+                    social_score = social.get('composite_score', 0.3) * 5  # Scale to 1-5
+                    
+                    composite_score = (tech_score * 0.6 + social_score * 0.4)
+                    
+                    if composite_score >= 4.0:
+                        rating = "BUY"
+                        conviction = "HIGH"
+                    elif composite_score >= 3.5:
+                        rating = "BUY"
+                        conviction = "MEDIUM"
+                    else:
+                        rating = "HOLD"
+                        conviction = "LOW"
+                
+                # Get additional data
+                float_data = get_float_analysis(ticker)
+                short_data = get_short_interest(ticker)
+                
+                # Build result dict
+                result = {
+                    'ticker': ticker,
+                    'price': stock_data.get('price', 0),
+                    'market_cap': stock_data.get('market_cap', 0),
+                    'sector': stock_data.get('sector', 'Unknown'),
+                    
+                    # Price changes
+                    'change_7d': price_changes.get('change_7d', 0),
+                    'change_1d': price_changes.get('change_1d', 0),
+                    'change_90d': price_changes.get('change_90d', 0),
+                    'is_fresh': stock.get('is_fresh', False),
+                    
+                    # Technical
+                    'rsi': technical.get('rsi', 50),
+                    'technical_score': technical.get('technical_score', 3.0),
+                    'technical_outlook': technical.get('technical_outlook', 'neutral'),
+                    
+                    # Social
+                    'social_score': social.get('composite_score', 0),
+                    'social_strength': social.get('signal_strength', 'weak'),
+                    'x_mentions': social.get('x_recent_mentions', 0),
+                    'is_accelerating': social.get('is_accelerating', False),
+                    'has_catalysts': social.get('has_catalysts', False),
+                    
+                    # Float & Short
+                    'float_millions': float_data.get('float_millions', 0),
+                    'rotation_pct': float_data.get('rotation_pct', 0),
+                    'parabolic_setup': float_data.get('parabolic_setup', False),
+                    'short_percent': short_data.get('short_percent', 0),
+                    'squeeze_potential': short_data.get('squeeze_potential', False),
+                    
+                    # AI Analysis
+                    'composite_score': round(float(composite_score), 2),
+                    'rating': rating,
+                    'conviction': conviction,
+                    
+                    # Risk management (from AI or defaults)
+                    'position_size': ai_analysis.get('position_size', 'half'),
+                    'stop_loss': ai_analysis.get('stop_loss', stock_data.get('price', 0) * 0.92),
+                    'hold_period': ai_analysis.get('hold_period', '2-4 weeks'),
+                }
+                
+                results.append(result)
+            
+            except Exception as e:
+                print(f"   Error scoring {stock['ticker']}: {e}")
+                continue
+        
+        return results
+
+
+def run_scan(custom_tickers: List[str] = None, top_k: int = None) -> pd.DataFrame:
+    """
+    Convenience function to run a scan.
+    
+    Args:
+        custom_tickers: Optional list of tickers to scan
+        top_k: Number of top candidates to return
+    
+    Returns:
+        DataFrame with top candidates
+    """
+    scanner = SupabotScanner()
+    return scanner.scan(custom_tickers=custom_tickers, top_k=top_k)
+
+
+if __name__ == "__main__":
+    # Test the scanner
+    print("\nTesting Scanner with a small sample...\n")
+    
+    # Test with a few quality stocks
+    test_tickers = ["PLTR", "SOFI", "NET", "DDOG", "RBLX"]
+    
+    results = run_scan(custom_tickers=test_tickers, top_k=3)
+    
+    if not results.empty:
+        print("\n" + "="*70)
+        print("TOP CANDIDATES:")
+        print("="*70 + "\n")
+        
+        for i, (_, row) in enumerate(results.iterrows(), 1):
+            print(f"{i}. {row['ticker']} - {row['rating']} (Score: {row['composite_score']}/5.0)")
+            print(f"   Price: ${row['price']:.2f} | 7d: {row['change_7d']:+.1f}% | Fresh: {row['is_fresh']}")
+            print(f"   Technical: {row['technical_score']:.1f}/5 ({row['technical_outlook']})")
+            print(f"   Social: {row['social_strength']} ({row['x_mentions']} X posts)")
+            print(f"   Position: {row['position_size']} | Stop: ${row['stop_loss']:.2f}")
+            print()
+    else:
+        print("\n❌ No candidates found!")
