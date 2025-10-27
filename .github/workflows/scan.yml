@@ -1,0 +1,70 @@
+name: Supabot V2 Auto Scanner
+
+on:
+  schedule:
+    # Run 3x per day during market hours (EST)
+    # 10:30 AM EST = 2:30 PM UTC
+    - cron: '30 14 * * 1-5'
+    # 1:00 PM EST = 5:00 PM UTC  
+    - cron: '0 17 * * 1-5'
+    # 3:30 PM EST = 7:30 PM UTC
+    - cron: '30 19 * * 1-5'
+  
+  workflow_dispatch:  # Manual trigger button
+
+jobs:
+  scan-stocks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Supabot V2 Scanner
+        env:
+          # API Keys (from GitHub Secrets)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: 'gpt-4o-mini'
+          
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          USE_X_SIGNAL: 'true'
+          
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          
+          # Bot Settings
+          MOCK_MODE: 'false'
+          ENABLE_AI_ANALYSIS: 'true'
+        
+        run: |
+          python agent_run.py
+      
+      - name: Upload scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-results-${{ github.run_number }}
+          path: outputs/*.csv
+          retention-days: 30
