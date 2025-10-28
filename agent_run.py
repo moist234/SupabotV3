@@ -247,15 +247,27 @@ def main():
         console.print(f"  • {fresh_count} fresh signals")
         console.print(f"  • {high_conviction} high conviction plays")
         console.print(f"  • Scan time: {elapsed:.1f}s")
+
+        console.print(f"\n[bold]🔔 Sending Discord notifications...[/bold]")
+        from discord_notify import send_scan_results, send_high_conviction_alert
+        
+        send_scan_results(results, {'scanned': SCANNER_CONFIG.scan_limit})
+        for _, row in results.iterrows():
+            if row.get('conviction') == 'HIGH':
+                send_high_conviction_alert(row)
     
     else:
         console.print("\n[bold red]❌ No candidates found this scan.[/bold red]")
         console.print("\n[yellow]💡 Try:[/yellow]")
+        console.print(f"\n[bold]🔔 Sending Discord notification...[/bold]")
+        from discord_notify import send_scan_results
+        send_scan_results(pd.DataFrame(), {'scanned': SCANNER_CONFIG.scan_limit})
         console.print("  • Lower min_composite_score in config.py")
         console.print("  • Expand universe in data/social_signals.py")
         console.print("  • Check if market is quiet today")
     
     console.print("\n[bold green]✓ Scan complete![/bold green]\n")
+
 
 
 if __name__ == "__main__":
