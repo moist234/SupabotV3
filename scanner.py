@@ -279,97 +279,173 @@ class SupabotScanner:
         
         return stocks
     
-    def _calculate_final_scores(self, stocks: List[Dict]) -> List[Dict]:
-        """Calculate final composite scores for ranking."""
-        
-        results = []
-        
-        for stock in stocks:
-            try:
-                ticker = stock['ticker']
-                stock_data = stock['stock_data']
-                price_changes = stock.get('price_changes', {})
-                social = stock.get('social', {})
-                technical = stock.get('technical', {})
-                ai_analysis = stock.get('ai_analysis', {})
-                
-                # Use AI composite if available, otherwise calculate
-                if ENABLE_AI_ANALYSIS and 'composite_score' in ai_analysis:
-                    composite_score = ai_analysis['composite_score']
-                    rating = ai_analysis.get('rating', 'HOLD')
-                    conviction = ai_analysis.get('conviction', 'MEDIUM')
-                else:
-                    # Fallback: calculate simple composite
-                    tech_score = technical.get('technical_score', 3.0)
-                    social_score = social.get('composite_score', 0.3) * 5  # Scale to 1-5
-                    
-                    composite_score = (tech_score * 0.6 + social_score * 0.4)
-                    
-                    if composite_score >= 4.0:
-                        rating = "BUY"
-                        conviction = "HIGH"
-                    elif composite_score >= 3.5:
-                        rating = "BUY"
-                        conviction = "MEDIUM"
-                    else:
-                        rating = "HOLD"
-                        conviction = "LOW"
-                
-                # Get additional data
-                float_data = get_float_analysis(ticker)
-                short_data = get_short_interest(ticker)
-                
-                # Build result dict
-                result = {
-                    'ticker': ticker,
-                    'price': stock_data.get('price', 0),
-                    'market_cap': stock_data.get('market_cap', 0),
-                    'sector': stock_data.get('sector', 'Unknown'),
-                    
-                    # Price changes
-                    'change_7d': price_changes.get('change_7d', 0),
-                    'change_1d': price_changes.get('change_1d', 0),
-                    'change_90d': price_changes.get('change_90d', 0),
-                    'is_fresh': stock.get('is_fresh', False),
-                    
-                    # Technical
-                    'rsi': technical.get('rsi', 50),
-                    'technical_score': technical.get('technical_score', 3.0),
-                    'technical_outlook': technical.get('technical_outlook', 'neutral'),
-                    
-                    # Social
-                    'social_score': social.get('composite_score', 0),
-                    'social_strength': social.get('signal_strength', 'weak'),
-                    'x_mentions': social.get('x_recent_mentions', 0),
-                    'is_accelerating': social.get('is_accelerating', False),
-                    'has_catalysts': social.get('has_catalysts', False),
-                    
-                    # Float & Short
-                    'float_millions': float_data.get('float_millions', 0),
-                    'rotation_pct': float_data.get('rotation_pct', 0),
-                    'parabolic_setup': float_data.get('parabolic_setup', False),
-                    'short_percent': short_data.get('short_percent', 0),
-                    'squeeze_potential': short_data.get('squeeze_potential', False),
-                    
-                    # AI Analysis
-                    'composite_score': round(float(composite_score), 2),
-                    'rating': rating,
-                    'conviction': conviction,
-                    
-                    # Risk management (from AI or defaults)
-                    'position_size': ai_analysis.get('position_size', 'half'),
-                    'stop_loss': ai_analysis.get('stop_loss', stock_data.get('price', 0) * 0.92),
-                    'hold_period': ai_analysis.get('hold_period', '2-4 weeks'),
-                }
-                
-                results.append(result)
+def _calculate_final_scores(self, stocks: List[Dict]) -> List[Dict]:
+    """
+    Calculate final composite scores with ENHANCED fundamental data.
+    """
+    
+    # Import enhanced modules
+    from data.fundamentals import get_financial_statements, calculate_advanced_valuation, calculate_quality_score
+    from data.news_events import get_catalyst_summary
+    
+    results = []
+    
+    for stock in stocks:
+        try:
+            ticker = stock['ticker']
+            stock_data = stock['stock_data']
+            price_changes = stock.get('price_changes', {})
+            social = stock.get('social', {})
+            technical = stock.get('technical', {})
+            ai_analysis = stock.get('ai_analysis', {})
             
-            except Exception as e:
-                print(f"   Error scoring {stock['ticker']}: {e}")
-                continue
+            # ============ GET ENHANCED DATA ============
+            print(f"   → Getting enhanced data for {ticker}...")
+            
+            financials = get_financial_statements(ticker)
+            valuation = calculate_advanced_valuation(ticker)
+            catalysts = get_catalyst_summary(ticker)
+            quality_score = calculate_quality_score(financials)
+            
+            # ============ ENHANCED COMPOSITE SCORE ============
+            # Use AI composite if available, otherwise calculate with enhanced data
+            if ENABLE_AI_ANALYSIS and 'composite_score' in ai_analysis:
+                base_composite = ai_analysis['composite_score']
+                rating = ai_analysis.get('rating', 'HOLD')
+                conviction = ai_analysis.get('conviction', 'MEDIUM')
+            else:
+                # Fallback: calculate simple composite
+                tech_score = technical.get('technical_score', 3.0)
+                social_score = social.get('composite_score', 0.3) * 5
+                
+                base_composite = (tech_score * 0.6 + social_score * 0.4)
+                
+                if base_composite >= 4.0:
+                    rating = "BUY"
+                    conviction = "HIGH"
+                elif base_composite >= 3.5:
+                    rating = "BUY"
+                    conviction = "MEDIUM"
+                else:
+                    rating = "HOLD"
+                    conviction = "LOW"
+            
+            # ============ APPLY ENHANCEMENTS ============
+            enhanced_score = base_composite
+            
+            # 1. Quality boost (up to +0.5)
+            quality_boost = quality_score * 0.5
+            enhanced_score += quality_boost
+            
+            # 2. Catalyst boost (up to +0.4)
+            catalyst_boost = catalysts.get('catalyst_score', 0) * 0.4
+            enhanced_score += catalyst_boost
+            
+            # 3. Valuation penalty/boost
+            ev_ebitda = valuation.get('ev_to_ebitda', 0)
+            if ev_ebitda > 0:
+                if ev_ebitda < 10:  # Undervalued
+                    enhanced_score += 0.3
+                elif ev_ebitda > 30:  # Expensive
+                    enhanced_score -= 0.3
+            
+            # 4. Earnings timing adjustment
+            days_to_earnings = catalysts.get('upcoming_earnings', {}).get('days_until_earnings', 999)
+            if days_to_earnings < 7:
+                # Before earnings = higher risk
+                enhanced_score -= 0.2
+            
+            # Cap at 5.0
+            enhanced_score = min(enhanced_score, 5.0)
+            
+            # ============ UPGRADE RATING IF WARRANTED ============
+            if enhanced_score >= 4.5 and conviction != 'HIGH':
+                rating = "STRONG_BUY"
+                conviction = "HIGH"
+            elif enhanced_score >= 3.8 and rating == 'HOLD':
+                rating = "BUY"
+                conviction = "MEDIUM" if quality_score > 0.6 else "LOW"
+            
+            # Get additional data
+            float_data = get_float_analysis(ticker)
+            short_data = get_short_interest(ticker)
+            
+            # ============ BUILD ENHANCED RESULT ============
+            result = {
+                'ticker': ticker,
+                'price': stock_data.get('price', 0),
+                'market_cap': stock_data.get('market_cap', 0),
+                'sector': stock_data.get('sector', 'Unknown'),
+                
+                # Price changes
+                'change_7d': price_changes.get('change_7d', 0),
+                'change_1d': price_changes.get('change_1d', 0),
+                'change_90d': price_changes.get('change_90d', 0),
+                'is_fresh': stock.get('is_fresh', False),
+                
+                # Technical
+                'rsi': technical.get('rsi', 50),
+                'technical_score': technical.get('technical_score', 3.0),
+                'technical_outlook': technical.get('technical_outlook', 'neutral'),
+                
+                # Social
+                'social_score': social.get('composite_score', 0),
+                'social_strength': social.get('signal_strength', 'weak'),
+                'x_mentions': social.get('x_recent_mentions', 0),
+                'is_accelerating': social.get('is_accelerating', False),
+                'has_catalysts': social.get('has_catalysts', False),
+                
+                # Float & Short
+                'float_millions': float_data.get('float_millions', 0),
+                'rotation_pct': float_data.get('rotation_pct', 0),
+                'parabolic_setup': float_data.get('parabolic_setup', False),
+                'short_percent': short_data.get('short_percent', 0),
+                'squeeze_potential': short_data.get('squeeze_potential', False),
+                
+                # ============ ENHANCED: Fundamentals ============
+                'revenue_millions': financials.get('revenue', 0) / 1_000_000,
+                'gross_margin': financials.get('gross_margin', 0),
+                'operating_margin': financials.get('operating_margin', 0),
+                'fcf_margin': financials.get('fcf_margin', 0),
+                'debt_to_equity': financials.get('debt_to_equity', 0),
+                'fundamental_quality': quality_score,
+                
+                # ============ ENHANCED: Valuation ============
+                'ev_to_ebitda': valuation.get('ev_to_ebitda', 0),
+                'price_to_fcf': valuation.get('price_to_fcf', 0),
+                'fcf_yield': valuation.get('fcf_yield', 0),
+                
+                # ============ ENHANCED: Catalysts ============
+                'catalyst_score': catalysts.get('catalyst_score', 0),
+                'catalyst_summary': catalysts.get('catalyst_summary', 'None'),
+                'news_sentiment': catalysts.get('recent_news_sentiment', 'neutral'),
+                'positive_news_count': catalysts.get('positive_news_count', 0),
+                'earnings_date': catalysts.get('upcoming_earnings', {}).get('earnings_date', 'Unknown'),
+                'days_until_earnings': catalysts.get('upcoming_earnings', {}).get('days_until_earnings', 999),
+                
+                # ============ Composite Score (ENHANCED!) ============
+                'composite_score': round(float(enhanced_score), 2),
+                'base_score': round(float(base_composite), 2),
+                'quality_boost': round(float(quality_boost), 2),
+                'catalyst_boost': round(float(catalyst_boost), 2),
+                
+                # AI Analysis
+                'rating': rating,
+                'conviction': conviction,
+                
+                # Risk management
+                'position_size': ai_analysis.get('position_size', 'half'),
+                'stop_loss': ai_analysis.get('stop_loss', stock_data.get('price', 0) * 0.92),
+                'hold_period': ai_analysis.get('hold_period', '2-4 weeks'),
+            }
+            
+            results.append(result)
         
-        return results
-
+        except Exception as e:
+            print(f"   Error scoring {stock['ticker']}: {e}")
+            continue
+    
+    return results
 
 def run_scan(custom_tickers: List[str] = None, top_k: int = None) -> pd.DataFrame:
     """

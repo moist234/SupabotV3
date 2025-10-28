@@ -100,7 +100,7 @@ def display_candidates_table(df: pd.DataFrame) -> Table:
 
 
 def display_details(df: pd.DataFrame):
-    """Display detailed breakdown for each candidate."""
+    """Display detailed breakdown for each candidate with ENHANCED data."""
     
     for idx, (_, row) in enumerate(df.iterrows(), 1):
         console.print(f"\n[bold cyan]{'='*70}[/bold cyan]")
@@ -114,10 +114,67 @@ def display_details(df: pd.DataFrame):
         console.print(f"  Sector: {row['sector']}")
         console.print(f"  Composite Score: [yellow]{row['composite_score']:.2f}/5.0[/yellow]")
         
-        # Scores breakdown
-        console.print(f"\n[bold]🎯 Score Breakdown:[/bold]")
+        # ============ ENHANCED: Score Breakdown ============
+        if 'base_score' in row and pd.notna(row.get('base_score')):
+            console.print(f"\n[bold]🔢 Score Breakdown:[/bold]")
+            console.print(f"  Base Score: {row['base_score']:.2f}")
+            console.print(f"  + Quality Boost: +{row.get('quality_boost', 0):.2f}")
+            console.print(f"  + Catalyst Boost: +{row.get('catalyst_boost', 0):.2f}")
+            console.print(f"  [bold]= Final: {row['composite_score']:.2f}/5.0[/bold]")
+        
+        # Component scores
+        console.print(f"\n[bold]🎯 Component Scores:[/bold]")
         console.print(f"  Technical: {row.get('technical_score', 0):.1f}/5.0 ({row.get('technical_outlook', 'neutral')})")
         console.print(f"  Social: {row.get('social_score', 0):.2f} ({row.get('social_strength', 'weak')})")
+        
+        # ============ ENHANCED: Fundamentals ============
+        if row.get('revenue_millions', 0) > 0:
+            console.print(f"\n[bold]💰 Fundamentals:[/bold]")
+            console.print(f"  Revenue: ${row['revenue_millions']:.0f}M")
+            console.print(f"  Gross Margin: {row.get('gross_margin', 0):.1f}%")
+            console.print(f"  Operating Margin: {row.get('operating_margin', 0):.1f}%")
+            console.print(f"  FCF Margin: {row.get('fcf_margin', 0):.1f}%")
+            console.print(f"  Debt/Equity: {row.get('debt_to_equity', 0):.2f}")
+            
+            quality = row.get('fundamental_quality', 0)
+            quality_rating = row.get('quality_rating', 'unknown')
+            quality_color = "green" if quality > 0.7 else "yellow" if quality > 0.4 else "red"
+            console.print(f"  Quality Score: [{quality_color}]{quality:.2f}/1.0 ({quality_rating})[/{quality_color}]")
+        
+        # ============ ENHANCED: Valuation ============
+        if row.get('ev_to_ebitda', 0) > 0:
+            console.print(f"\n[bold]📈 Valuation:[/bold]")
+            
+            ev_ebitda = row.get('ev_to_ebitda', 0)
+            ev_color = "green" if ev_ebitda < 15 else "yellow" if ev_ebitda < 25 else "red"
+            console.print(f"  EV/EBITDA: [{ev_color}]{ev_ebitda:.1f}x[/{ev_color}]")
+            
+            console.print(f"  P/FCF: {row.get('price_to_fcf', 0):.1f}x")
+            console.print(f"  FCF Yield: {row.get('fcf_yield', 0):.2f}%")
+            console.print(f"  P/E: {row.get('pe_ratio', 0):.1f}")
+        
+        # ============ ENHANCED: Catalysts & News ============
+        catalyst_score = row.get('catalyst_score', 0)
+        if catalyst_score > 0:
+            console.print(f"\n[bold]🎪 Catalysts:[/bold]")
+            
+            catalyst_color = "green" if catalyst_score > 0.6 else "yellow" if catalyst_score > 0.3 else "white"
+            console.print(f"  Catalyst Score: [{catalyst_color}]{catalyst_score:.2f}/1.0[/{catalyst_color}]")
+            console.print(f"  Summary: {row.get('catalyst_summary', 'None')}")
+            
+            news_sentiment = row.get('news_sentiment', 'neutral')
+            news_color = "green" if news_sentiment == 'positive' else "red" if news_sentiment == 'negative' else "yellow"
+            console.print(f"  News Sentiment: [{news_color}]{news_sentiment.upper()}[/{news_color}]")
+            
+            pos_news = row.get('positive_news_count', 0)
+            if pos_news > 0:
+                console.print(f"  Positive Articles: {pos_news}")
+            
+            days_to_earnings = row.get('days_until_earnings', 999)
+            if days_to_earnings < 30:
+                earnings_date = row.get('earnings_date', 'Unknown')
+                earnings_color = "yellow" if days_to_earnings < 7 else "white"
+                console.print(f"  Next Earnings: [{earnings_color}]{earnings_date} ({days_to_earnings} days)[/{earnings_color}]")
         
         # Price action
         console.print(f"\n[bold]📈 Price Action:[/bold]")
@@ -126,18 +183,22 @@ def display_details(df: pd.DataFrame):
         console.print(f"  90-day: {row.get('change_90d', 0):+.1f}%")
         console.print(f"  RSI: {row.get('rsi', 50):.1f}")
         
-        # Signals
+        # Special signals
         signals = []
         if row.get('is_fresh'):
-            signals.append("✨ Fresh (best entry)")
+            signals.append("✨ Fresh signal (best entry)")
         if row.get('is_accelerating'):
             signals.append("📈 Buzz accelerating")
         if row.get('has_catalysts'):
-            signals.append("📰 Has catalysts")
+            signals.append(f"📰 {row.get('catalyst_count', 0)} social catalysts")
         if row.get('parabolic_setup'):
             signals.append("💥 Parabolic setup")
         if row.get('squeeze_potential'):
-            signals.append("🚀 Squeeze potential")
+            signals.append(f"🚀 Squeeze potential ({row.get('short_percent', 0):.0f}% short)")
+        if row.get('fundamental_quality', 0) > 0.7:
+            signals.append("💎 High quality fundamentals")
+        if row.get('ev_to_ebitda', 0) > 0 and row.get('ev_to_ebitda', 0) < 12:
+            signals.append("💰 Undervalued (EV/EBITDA)")
         
         if signals:
             console.print(f"\n[bold]🎪 Special Signals:[/bold]")
@@ -146,40 +207,13 @@ def display_details(df: pd.DataFrame):
         
         # Risk management
         console.print(f"\n[bold]🛡️  Risk Management:[/bold]")
-        console.print(f"  Conviction: [yellow]{row.get('conviction', 'UNKNOWN')}[/yellow]")
+        
+        conviction_color = "green" if row.get('conviction') == 'HIGH' else "yellow" if row.get('conviction') == 'MEDIUM' else "red"
+        console.print(f"  Conviction: [{conviction_color}]{row.get('conviction', 'UNKNOWN')}[/{conviction_color}]")
+        
         console.print(f"  Position Size: {row.get('position_size', 'unknown')}")
-        console.print(f"  Stop Loss: ${row.get('stop_loss', 0):.2f}")
+        console.print(f"  Stop Loss: ${row.get('stop_loss', 0):.2f} ({((row.get('stop_loss', 0) / row.get('price', 1) - 1) * 100):.1f}%)")
         console.print(f"  Hold Period: {row.get('hold_period', 'unknown')}")
-
-
-def display_legend():
-    """Display signal legend and action guide."""
-    
-    console.print("\n" + "="*70)
-    console.print("[bold cyan]📖 SIGNAL LEGEND[/bold cyan]")
-    console.print("="*70)
-    
-    console.print("\n[bold]Symbols:[/bold]")
-    console.print("  ✨ = [green]FRESH[/green] - Getting buzz but hasn't moved yet (BEST ENTRY)")
-    console.print("  📈 = [yellow]ACCELERATING[/yellow] - Buzz increasing rapidly")
-    console.print("  📰 = [blue]CATALYSTS[/blue] - Real news/earnings driving interest")
-    console.print("  💥 = [magenta]PARABOLIC[/magenta] - Low float + high rotation")
-    console.print("  🚀 = [red]SQUEEZE[/red] - High short interest (>20%)")
-    
-    console.print("\n[bold]Rating Guide:[/bold]")
-    console.print("  [bold green]STRONG_BUY 🔥[/bold green] = High conviction, full position")
-    console.print("  [green]BUY ⚡[/green] = Good setup, half position")
-    console.print("  [yellow]HOLD[/yellow] = Wait for better entry")
-    console.print("  [red]AVOID[/red] = Skip this trade")
-    
-    console.print("\n[bold]Best Combinations:[/bold]")
-    console.print("  ✨ 📰 📈 = [bold green]JACKPOT[/bold green] - Fresh + Catalysts + Accelerating")
-    console.print("  ✨ 📈     = [bold green]EXCELLENT[/bold green] - Early entry with momentum")
-    console.print("  ✨ 📰     = [green]STRONG[/green] - Fresh with real catalyst")
-    console.print("  📈 💥     = [yellow]VOLATILE[/yellow] - High risk/reward")
-    
-    console.print("\n" + "="*70 + "\n")
-
 
 def save_results(df: pd.DataFrame) -> str:
     """Save results to CSV."""

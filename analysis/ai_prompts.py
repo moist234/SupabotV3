@@ -7,6 +7,32 @@ Supabot V2 - AI Master Prompts
 
 PROMPT_360_SCANNER = """Act as a senior market analyst for a hedge fund. Analyze {ticker} ({company_name}) in the context of its sector: {sector}.
 
+**FINANCIAL METRICS (Latest Quarter):**
+- Revenue: ${revenue:.0f}M (Growth: {revenue_growth:+.1f}%)
+- Gross Margin: {gross_margin:.1f}%
+- Operating Margin: {operating_margin:.1f}%  
+- FCF Margin: {fcf_margin:.1f}%
+- Debt/Equity: {debt_to_equity_ratio:.2f}
+
+**VALUATION:**
+- Market Cap: ${market_cap_billions:.2f}B
+- EV/EBITDA: {ev_to_ebitda:.1f}x
+- Price/FCF: {price_to_fcf:.1f}x
+- FCF Yield: {fcf_yield:.2f}%
+- P/E: {pe_ratio:.1f}
+
+**RECENT CATALYSTS:**
+- News Sentiment: {news_sentiment} ({positive_news_count} positive articles)
+- Catalyst Summary: {catalyst_summary}
+- Next Earnings: {earnings_date} ({days_until_earnings} days)
+
+**PRICE ACTION:**
+- Current: ${price:.2f}
+- 7-day: {change_7d:+.1f}%
+- 90-day: {change_90d:+.1f}%
+
+**CRITICAL:** With these fundamentals and catalysts, assess if this is a quality investment opportunity or a value trap.
+
 **CRITICAL CONTEXT:**
 - Current Price: ${price:.2f}
 - Market Cap: ${market_cap_billions:.2f}B
@@ -266,7 +292,7 @@ Respond ONLY with valid JSON. If geopolitical risks are minimal for this company
 
 def build_prompt_context(ticker: str, stock_data: dict, social_data: dict, technical_data: dict) -> dict:
     """
-    Build context dictionary for prompt templates.
+    Build context dictionary for prompt templates with ENHANCED data.
     
     Args:
         ticker: Stock symbol
@@ -275,53 +301,128 @@ def build_prompt_context(ticker: str, stock_data: dict, social_data: dict, techn
         technical_data: From get_technical_analysis()
     
     Returns:
-        Dict with all variables needed for prompt formatting
+        Dict with all variables needed for AI prompt formatting
     """
     
-    # Extract and format data
+    # Import enhanced data modules
+    try:
+        from data.fundamentals import get_financial_statements, calculate_advanced_valuation, calculate_quality_score
+        from data.news_events import get_catalyst_summary
+        
+        # Get enhanced fundamental data
+        financials = get_financial_statements(ticker)
+        valuation = calculate_advanced_valuation(ticker)
+        catalysts = get_catalyst_summary(ticker)
+        quality_score = calculate_quality_score(financials)
+    except Exception as e:
+        print(f"Warning: Could not load enhanced data for {ticker}: {e}")
+        financials = {}
+        valuation = {}
+        catalysts = {}
+        quality_score = 0.5
+    
+    # Extract price changes (ensure they exist in stock_data)
+    change_7d = stock_data.get('change_7d', 0)
+    change_1d = stock_data.get('change_1d', 0)
+    change_90d = stock_data.get('change_90d', 0)
+    
+    # Extract and format basic data
     price = stock_data.get('price', 0)
     market_cap = stock_data.get('market_cap', 0)
     
+    # Extract social data safely
+    x_mentions = social_data.get('x_recent_mentions', 0)
+    reddit_mentions = social_data.get('reddit_total_mentions', 0)
+    is_accelerating = social_data.get('is_accelerating', False)
+    catalyst_count = social_data.get('catalyst_count', 0)
+    
+    # Extract technical data safely
+    rsi = technical_data.get('rsi', 50)
+    volume_analysis = technical_data.get('volume_analysis', {})
+    volume_ratio = volume_analysis.get('volume_ratio', 1.0)
+    moving_averages = technical_data.get('moving_averages', {})
+    sma_20 = moving_averages.get('sma_20', price)
+    sma_50 = moving_averages.get('sma_50', price)
+    
+    # Build comprehensive context
     context = {
-        # Basic info
+        # ============ Basic Info ============
         'ticker': ticker,
-        'company_name': ticker,  # Could enhance with real company name
-        'price': price,
-        'market_cap_billions': market_cap / 1_000_000_000 if market_cap > 0 else 0,
+        'company_name': ticker,
+        'price': float(price),
+        'market_cap_billions': float(market_cap / 1_000_000_000) if market_cap > 0 else 0,
         'sector': stock_data.get('sector', 'Unknown'),
+        'industry': stock_data.get('industry', 'Unknown'),
         
-        # Price changes
-        'change_7d': stock_data.get('change_7d', 0),
-        'change_1d': stock_data.get('change_1d', 0),
-        'change_90d': stock_data.get('change_90d', 0),
+        # ============ Price Changes ============
+        'change_7d': float(change_7d),
+        'change_1d': float(change_1d),
+        'change_90d': float(change_90d),
         
-        # Fundamentals
-        'pe_ratio': stock_data.get('pe_ratio', 0),
-        'revenue_growth': stock_data.get('revenue_growth', 0),
-        'profit_margin': stock_data.get('profit_margin', 0),
+        # ============ Basic Fundamentals ============
+        'pe_ratio': float(stock_data.get('pe_ratio', 0)),
+        'forward_pe': float(stock_data.get('forward_pe', 0)),
+        'peg_ratio': float(stock_data.get('peg_ratio', 0)),
+        'revenue_growth': float(stock_data.get('revenue_growth', 0)),
+        'profit_margin': float(stock_data.get('profit_margin', 0)),
         
-        # Float & short
-        'float_millions': stock_data.get('float_millions', 0),
-        'short_percent': stock_data.get('short_percent', 0),
+        # ============ ENHANCED: Financial Statements ============
+        'revenue': float(financials.get('revenue', 0) / 1_000_000),  # In millions
+        'net_income': float(financials.get('net_income', 0) / 1_000_000),
+        'free_cash_flow': float(financials.get('free_cash_flow', 0) / 1_000_000),
+        'gross_margin': float(financials.get('gross_margin', 0)),
+        'operating_margin': float(financials.get('operating_margin', 0)),
+        'fcf_margin': float(financials.get('fcf_margin', 0)),
+        'debt_to_equity_ratio': float(financials.get('debt_to_equity', 0)),
+        'cash': float(financials.get('cash', 0) / 1_000_000),
         
-        # Social signals
-        'x_mentions': social_data.get('x_recent_mentions', 0),
-        'reddit_mentions': social_data.get('reddit_total_mentions', 0),
-        'is_accelerating': social_data.get('is_accelerating', False),
-        'catalyst_count': social_data.get('catalyst_count', 0),
-        'social_signal': social_data.get('signal_strength', 'weak'),
+        # ============ ENHANCED: Advanced Valuation ============
+        'enterprise_value': float(valuation.get('enterprise_value', 0) / 1_000_000_000),  # In billions
+        'ev_to_ebitda': float(valuation.get('ev_to_ebitda', 0)),
+        'price_to_fcf': float(valuation.get('price_to_fcf', 0)),
+        'fcf_yield': float(valuation.get('fcf_yield', 0)),
+        'ev_to_revenue': float(valuation.get('ev_to_revenue', 0)),
         
-        # Technical
-        'rsi': technical_data.get('rsi', 50),
-        'volume_ratio': technical_data.get('volume_analysis', {}).get('volume_ratio', 1.0),
-        'sma_20': technical_data.get('moving_averages', {}).get('sma_20', price),
-        'sma_50': technical_data.get('moving_averages', {}).get('sma_50', price),
-        'technical_outlook': technical_data.get('technical_outlook', 'neutral'),
+        # ============ ENHANCED: Quality Score ============
+        'fundamental_quality_score': float(quality_score),
+        'quality_rating': 'high' if quality_score > 0.7 else 'medium' if quality_score > 0.4 else 'low',
         
-        # Volatility description
-        'volatility_description': 'high' if abs(stock_data.get('change_7d', 0)) > 15 else 'moderate' if abs(stock_data.get('change_7d', 0)) > 7 else 'low',
+        # ============ ENHANCED: Catalysts & News ============
+        'catalyst_score': float(catalysts.get('catalyst_score', 0)),
+        'catalyst_summary': str(catalysts.get('catalyst_summary', 'No recent catalysts')),
+        'catalyst_types': catalysts.get('catalyst_types', []),
+        'news_sentiment': str(catalysts.get('recent_news_sentiment', 'neutral')),
+        'positive_news_count': int(catalysts.get('positive_news_count', 0)),
+        'negative_news_count': int(catalysts.get('negative_news_count', 0)),
         
-        # International operations (simplified)
+        # Earnings
+        'earnings_date': str(catalysts.get('upcoming_earnings', {}).get('earnings_date', 'Unknown')),
+        'days_until_earnings': int(catalysts.get('upcoming_earnings', {}).get('days_until_earnings', 999)),
+        'is_earnings_week': bool(catalysts.get('upcoming_earnings', {}).get('is_earnings_week', False)),
+        
+        # ============ Float & Short ============
+        'float_millions': float(stock_data.get('float_millions', 0)),
+        'short_percent': float(stock_data.get('short_percent', 0)),
+        
+        # ============ Social Signals ============
+        'x_mentions': int(x_mentions),
+        'reddit_mentions': int(reddit_mentions),
+        'is_accelerating': bool(is_accelerating),
+        'social_acceleration': 'ACCELERATING' if is_accelerating else 'STABLE',
+        'catalyst_count': int(catalyst_count),
+        'social_signal': str(social_data.get('signal_strength', 'weak')),
+        
+        # ============ Technical ============
+        'rsi': float(rsi),
+        'volume_ratio': float(volume_ratio),
+        'sma_20': float(sma_20),
+        'sma_50': float(sma_50),
+        'technical_outlook': str(technical_data.get('technical_outlook', 'neutral')),
+        
+        # ============ Volatility ============
+        'volatility_description': 'high' if abs(change_7d) > 15 else 'moderate' if abs(change_7d) > 7 else 'low',
+        
+        # ============ International ============
         'has_international': 'Yes' if market_cap > 5_000_000_000 else 'Limited',
     }
     
