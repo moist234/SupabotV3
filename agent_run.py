@@ -215,6 +215,29 @@ def display_details(df: pd.DataFrame):
         console.print(f"  Stop Loss: ${row.get('stop_loss', 0):.2f} ({((row.get('stop_loss', 0) / row.get('price', 1) - 1) * 100):.1f}%)")
         console.print(f"  Hold Period: {row.get('hold_period', 'unknown')}")
 
+def display_legend():
+    """Display signal legend and action guide."""
+    
+    console.print("\n" + "="*70)
+    console.print("[bold cyan]📖 SIGNAL LEGEND[/bold cyan]")
+    console.print("="*70)
+    
+    console.print("\n[bold]Symbols:[/bold]")
+    console.print("  ✨ = [green]FRESH[/green] - Getting buzz but hasn't moved yet (BEST ENTRY)")
+    console.print("  📈 = [yellow]ACCELERATING[/yellow] - Buzz increasing rapidly")
+    console.print("  📰 = [blue]CATALYSTS[/blue] - Real news/earnings driving interest")
+    console.print("  💥 = [magenta]PARABOLIC[/magenta] - Low float + high rotation")
+    console.print("  🚀 = [red]SQUEEZE[/red] - High short interest (>20%)")
+    console.print("  👔💰 = [green]INSIDER BUYING[/green] - Cluster buying detected")
+    
+    console.print("\n[bold]Rating Guide:[/bold]")
+    console.print("  [bold green]STRONG_BUY 🔥[/bold green] = High conviction, 10% position")
+    console.print("  [green]BUY ⚡[/green] = Good setup, 5% position")
+    console.print("  [yellow]HOLD[/yellow] = Okay setup, watch it")
+    console.print("  [red]AVOID[/red] = Skip this trade")
+    
+    console.print("\n" + "="*70 + "\n")
+
 def save_results(df: pd.DataFrame) -> str:
     """Save results to CSV."""
     
