@@ -47,8 +47,6 @@ def display_candidates_table(df: pd.DataFrame) -> Table:
             flags.append("✨")
         if row.get('parabolic_setup', False):
             flags.append("💥")
-        if row.get('squeeze_potential', False):
-            flags.append("🚀")
         if row.get('is_accelerating', False):
             flags.append("📈")
         if row.get('has_catalysts', False):
@@ -193,8 +191,6 @@ def display_details(df: pd.DataFrame):
             signals.append(f"📰 {row.get('catalyst_count', 0)} social catalysts")
         if row.get('parabolic_setup'):
             signals.append("💥 Parabolic setup")
-        if row.get('squeeze_potential'):
-            signals.append(f"🚀 Squeeze potential ({row.get('short_percent', 0):.0f}% short)")
         if row.get('fundamental_quality', 0) > 0.7:
             signals.append("💎 High quality fundamentals")
         if row.get('ev_to_ebitda', 0) > 0 and row.get('ev_to_ebitda', 0) < 12:
