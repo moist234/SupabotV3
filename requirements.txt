@@ -12,3 +12,5 @@ finvizfinance>=0.14.0
 finnhub-python>=2.4.20
 tqdm>=4.66.0
 yahooquery>=2.3.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0

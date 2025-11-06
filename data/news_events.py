@@ -33,6 +33,12 @@ NEUTRAL_KEYWORDS = [
     'announces', 'reports', 'files', 'schedules', 'updates'
 ]
 
+# NEW: Trade policy keywords
+TRADE_POLICY_KEYWORDS = [
+    'tariff', 'trade war', 'sanctions', 'export control',
+    'import duty', 'trade agreement', 'trade deal'
+]
+
 
 @functools.lru_cache(maxsize=500)
 def get_company_news(ticker: str, days: int = 7) -> List[Dict]:
@@ -98,15 +104,7 @@ def get_company_news(ticker: str, days: int = 7) -> List[Dict]:
 
 
 def analyze_sentiment(text: str) -> str:
-    """
-    Analyze news sentiment (positive/neutral/negative).
-    
-    Args:
-        text: News headline or summary
-    
-    Returns:
-        'positive', 'neutral', or 'negative'
-    """
+    """Analyze news sentiment (positive/neutral/negative)."""
     
     text_lower = text.lower()
     
@@ -122,17 +120,7 @@ def analyze_sentiment(text: str) -> str:
 
 
 def detect_catalysts(news: List[Dict]) -> Dict:
-    """
-    Detect catalysts from news.
-    
-    Returns:
-        {
-            'has_catalysts': bool,
-            'catalyst_count': int,
-            'catalyst_types': list,
-            'catalyst_score': float (0-1)
-        }
-    """
+    """Detect catalysts from news."""
     
     catalysts = []
     
@@ -162,11 +150,8 @@ def detect_catalysts(news: List[Dict]) -> Dict:
         if any(word in headline for word in ['upgrade', 'price target', 'buy rating']):
             catalysts.append('analyst_upgrade')
     
-    # Remove duplicates
     unique_catalysts = list(set(catalysts))
-    
-    # Calculate score
-    catalyst_score = min(len(unique_catalysts) / 3.0, 1.0)  # Max at 3+ catalysts
+    catalyst_score = min(len(unique_catalysts) / 3.0, 1.0)
     
     return {
         'has_catalysts': len(unique_catalysts) > 0,
@@ -176,20 +161,19 @@ def detect_catalysts(news: List[Dict]) -> Dict:
     }
 
 
-@functools.lru_cache(maxsize=500)
+# NEW: Trade policy detection
+def has_trade_policy_mentions(news: List[Dict]) -> bool:
+    """Check if company mentioned in trade policy context."""
+    for article in news:
+        headline = article.get('headline', '').lower()
+        if any(keyword in headline for keyword in TRADE_POLICY_KEYWORDS):
+            return True
+    return False
+
+
 @functools.lru_cache(maxsize=500)
 def get_earnings_date(ticker: str) -> Dict:
-    """
-    Get next earnings date from Yahoo Finance.
-    
-    Returns:
-        {
-            'earnings_date': str,
-            'days_until_earnings': int,
-            'is_before_earnings': bool,
-            'is_earnings_week': bool
-        }
-    """
+    """Get next earnings date from Yahoo Finance."""
     
     if MOCK_MODE:
         future_date = datetime.now() + timedelta(days=15)
@@ -206,14 +190,12 @@ def get_earnings_date(ticker: str) -> Dict:
         
         stock = yf.Ticker(ticker)
         
-        # Try to get earnings date from calendar
         try:
             calendar = stock.calendar
             
             if calendar is None:
                 return {}
             
-            # Calendar can be dict or DataFrame
             if isinstance(calendar, dict):
                 earnings_date_raw = calendar.get('Earnings Date')
             elif isinstance(calendar, pd.DataFrame):
@@ -224,11 +206,9 @@ def get_earnings_date(ticker: str) -> Dict:
             else:
                 return {}
             
-            # Handle different date formats
             if earnings_date_raw is None:
                 return {}
             
-            # Could be a list, Series, or single value
             if isinstance(earnings_date_raw, list):
                 earnings_date = earnings_date_raw[0]
             elif isinstance(earnings_date_raw, pd.Series):
@@ -236,7 +216,6 @@ def get_earnings_date(ticker: str) -> Dict:
             else:
                 earnings_date = earnings_date_raw
             
-            # Convert to datetime if needed
             if not isinstance(earnings_date, datetime):
                 earnings_date = pd.to_datetime(earnings_date)
             
@@ -250,7 +229,6 @@ def get_earnings_date(ticker: str) -> Dict:
             }
         
         except Exception:
-            # If calendar fails, try earnings_dates attribute
             if hasattr(stock, 'earnings_dates') and stock.earnings_dates is not None:
                 next_date = stock.earnings_dates.index[0]
                 days_until = (next_date - datetime.now()).days
@@ -265,30 +243,19 @@ def get_earnings_date(ticker: str) -> Dict:
         return {}
     
     except Exception as e:
-        # Silently fail - earnings date is nice-to-have, not critical
         return {}
 
 
 def get_catalyst_summary(ticker: str) -> Dict:
-    """
-    Comprehensive catalyst analysis.
-    
-    Combines: news sentiment, upcoming earnings, recent events.
-    
-    Returns:
-        {
-            'catalyst_score': float (0-1),
-            'has_positive_catalysts': bool,
-            'upcoming_earnings': dict,
-            'recent_news_sentiment': str,
-            'catalyst_summary': str
-        }
-    """
+    """Comprehensive catalyst analysis."""
     
     # Get data
     news = get_company_news(ticker, days=7)
     catalysts = detect_catalysts(news)
     earnings = get_earnings_date(ticker)
+    
+    # NEW: Check trade policy exposure
+    trade_exposed = has_trade_policy_mentions(news)
     
     # Aggregate sentiment
     positive_news = [n for n in news if n['sentiment'] == 'positive']
@@ -316,6 +283,8 @@ def get_catalyst_summary(ticker: str) -> Dict:
         summary_parts.append(f"{len(positive_news)} positive news")
     if earnings.get('is_earnings_week', False):
         summary_parts.append(f"Earnings in {earnings['days_until_earnings']} days")
+    if trade_exposed:
+        summary_parts.append("Trade policy exposure")
     
     catalyst_summary = "; ".join(summary_parts) if summary_parts else "No significant catalysts"
     
@@ -327,7 +296,8 @@ def get_catalyst_summary(ticker: str) -> Dict:
         'positive_news_count': len(positive_news),
         'negative_news_count': len(negative_news),
         'catalyst_types': catalysts.get('catalyst_types', []),
-        'catalyst_summary': catalyst_summary
+        'catalyst_summary': catalyst_summary,
+        'has_trade_exposure': trade_exposed  # NEW!
     }
 
 
@@ -349,6 +319,7 @@ if __name__ == "__main__":
     print(f"  Catalyst Score: {catalysts['catalyst_score']:.2f}/1.0")
     print(f"  News Sentiment: {catalysts['recent_news_sentiment'].upper()}")
     print(f"  Summary: {catalysts['catalyst_summary']}")
+    print(f"  Trade Policy Exposure: {catalysts.get('has_trade_exposure', False)}")
     
     if catalysts['upcoming_earnings']:
         print(f"  Next Earnings: {catalysts['upcoming_earnings'].get('earnings_date', 'Unknown')}")

@@ -7,6 +7,26 @@ Supabot V2 - AI Master Prompts
 
 PROMPT_360_SCANNER = """Act as a senior market analyst for a hedge fund. Analyze {ticker} ({company_name}) in the context of its sector: {sector}.
 
+**MACRO ENVIRONMENT:**
+- Fed Funds Rate: {fed_funds_rate:.2f}%
+- Inflation (CPI): {inflation_rate:.1f}
+- Unemployment: {unemployment_rate:.1f}%
+- GDP Growth: {gdp_growth:+.1f}%
+- USD Strength: {usd_strength}
+
+**How do current macro conditions impact {sector} sector?**
+- Are rate hikes/cuts helping or hurting?
+- Is inflation a tailwind or headwind?
+- Currency exposure (if international operations)?
+
+**FINANCIAL METRICS:**
+... (rest of existing prompt)
+
+**CRITICAL ANALYSIS:**
+Given the macro backdrop (rates at {fed_funds_rate:.2f}%, inflation at {inflation_rate:.1f}), 
+how does {ticker} perform in this environment? Is this a sector that benefits or suffers?
+
+
 **FINANCIAL METRICS (Latest Quarter):**
 - Revenue: ${revenue:.0f}M (Growth: {revenue_growth:+.1f}%)
 - Gross Margin: {gross_margin:.1f}%
@@ -292,7 +312,7 @@ Respond ONLY with valid JSON. If geopolitical risks are minimal for this company
 
 def build_prompt_context(ticker: str, stock_data: dict, social_data: dict, technical_data: dict) -> dict:
     """
-    Build context dictionary for prompt templates with ENHANCED data.
+    Build context dictionary for prompt templates with ENHANCED data + MACRO.
     
     Args:
         ticker: Stock symbol
@@ -320,6 +340,22 @@ def build_prompt_context(ticker: str, stock_data: dict, social_data: dict, techn
         valuation = {}
         catalysts = {}
         quality_score = 0.5
+    
+    # NEW: Get macro data
+    try:
+        from data.macro_data import get_macro_summary
+        macro = get_macro_summary()
+    except Exception as e:
+        print(f"Warning: Could not load macro data: {e}")
+        macro = {
+            'vix': 0,
+            'vix_level': 'unknown',
+            'market_fear': 'Unknown',
+            'usd_strength': 'unknown',
+            'china_trade_risk': 'unknown',
+            'rate_environment': 'unknown',
+            'ten_year_yield': 0
+        }
     
     # Extract price changes (ensure they exist in stock_data)
     change_7d = stock_data.get('change_7d', 0)
@@ -418,6 +454,17 @@ def build_prompt_context(ticker: str, stock_data: dict, social_data: dict, techn
         'sma_20': float(sma_20),
         'sma_50': float(sma_50),
         'technical_outlook': str(technical_data.get('technical_outlook', 'neutral')),
+        
+        # ============ MACRO DATA (NEW!) ============
+        'vix': float(macro.get('vix', 0)),
+        'vix_level': str(macro.get('vix_level', 'unknown')),
+        'market_fear': str(macro.get('market_fear', 'Unknown')),
+        'usd_cny': float(macro.get('usd_cny', 0)),
+        'usd_eur': float(macro.get('usd_eur', 0)),
+        'usd_strength': str(macro.get('usd_strength', 'unknown')),
+        'china_trade_risk': str(macro.get('china_trade_risk', 'unknown')),
+        'ten_year_yield': float(macro.get('ten_year_yield', 0)),
+        'rate_environment': str(macro.get('rate_environment', 'unknown')),
         
         # ============ Volatility ============
         'volatility_description': 'high' if abs(change_7d) > 15 else 'moderate' if abs(change_7d) > 7 else 'low',
