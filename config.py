@@ -34,7 +34,7 @@ class ScannerConfig:
     
     # How many stocks to process
     scan_limit: int = 100          # Scan top 100 trending tickers
-    top_k: int = 5                 # Return best 5 candidates
+    top_k: int = 3                # Return best 5 candidates
     
     # Market cap filters ($USD)
     min_market_cap: float = 500_000_000      # Make sure this line exists
