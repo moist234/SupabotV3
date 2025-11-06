@@ -387,7 +387,7 @@ class AIAnalyzer:
         if composite >= 4.5:
             rating = "STRONG_BUY"
             conviction = "HIGH"
-        elif composite >= 3.8:
+        elif composite >= 3.5:
             rating = "BUY"
             conviction = "HIGH" if fundamental >= 4.0 else "MEDIUM"
         elif composite >= 3.0:

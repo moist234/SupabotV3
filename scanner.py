@@ -132,6 +132,10 @@ class SupabotScanner:
         # Apply minimum score threshold
         df = df[df['composite_score'] >= SCANNER_CONFIG.min_composite_score]
         
+        df = df[df['is_fresh'] == True]
+        if df.empty:
+            print("   ⚠️  No fresh signals found - no recommendations")
+            return pd.DataFrame()
         top_candidates = df.head(top_k)
         
         print(f"\n✅ Found {len(top_candidates)} high-quality candidates!")
@@ -341,6 +345,9 @@ class SupabotScanner:
                     
                     # 3. INSIDER BOOST (up to +0.6) - MAJOR SIGNAL!
                     insider_boost = insider.get('insider_score', 0) * 0.6
+
+                    if stock.get('is_fresh', False):
+                        enhanced_score += 0.5  # Fresh is proven edge
                     
                     enhanced_score += quality_boost + catalyst_boost + insider_boost
                     

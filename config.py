@@ -69,7 +69,7 @@ class ScannerConfig:
     require_positive_earnings: bool = False # Set True to require profit
     
     # Scoring thresholds
-    min_composite_score: float = 2.8       # Minimum 3.5/5.0 to pass
+    min_composite_score: float = 3.5       # Minimum 3.5/5.0 to pass
     min_fundamental_score: float = 2.8     # Min fundamentals
     min_technical_score: float = 3.0       # Min technical setup
     
@@ -129,7 +129,7 @@ class RiskConfig:
 # ============ Subreddit Configuration ============
 REDDIT_SUBREDDITS = [
     "wallstreetbets",
-    "pennystocks", 
+    "ValueInvesting" 
     "smallstreetbets",
     "Shortsqueeze",
     "StockMarket",
@@ -143,7 +143,7 @@ REDDIT_SUBREDDITS = [
 SUBREDDIT_WEIGHTS = {
     "wallstreetbets": 1.0,      # Highest weight
     "options": 0.9,
-    "pennystocks": 0.9,
+    "ValueInvesting": 0.9,
     "smallstreetbets": 0.9,
     "Shortsqueeze": 0.85,
     "daytrading": 0.7,
