@@ -1,6 +1,7 @@
 """
-Supabot V2 - Main Scanner
-Orchestrates all modules to find high-quality trading opportunities.
+Supabot V2 - Main Scanner (FINAL - Risk Optimized)
+REQUIRES: Fresh + Accelerating (validated 62% WR, +3.25% avg)
+EXCLUDES: Squeeze signals (validated 22% WR, -16% avg, too risky)
 """
 import os
 import sys
@@ -55,7 +56,7 @@ class SupabotScanner:
         top_k = top_k or SCANNER_CONFIG.top_k
         
         print("\n" + "="*70)
-        print("🤖 SUPABOT V2 - QUALITY-FIRST SCANNER")
+        print("🤖 SUPABOT V2 - VALIDATED EDGE SCANNER")
         print("="*70)
         
         # Step 1: Get universe
@@ -132,10 +133,12 @@ class SupabotScanner:
         # Apply minimum score threshold
         df = df[df['composite_score'] >= SCANNER_CONFIG.min_composite_score]
         
+        # Require fresh signals
         df = df[df['is_fresh'] == True]
         if df.empty:
             print("   ⚠️  No fresh signals found - no recommendations")
             return pd.DataFrame()
+        
         top_candidates = df.head(top_k)
         
         print(f"\n✅ Found {len(top_candidates)} high-quality candidates!")
@@ -273,7 +276,7 @@ class SupabotScanner:
         return stocks
     
     def _calculate_final_scores(self, stocks: List[Dict]) -> List[Dict]:
-        """Calculate final composite scores with ALL enhancements."""
+        """Calculate final composite scores with VALIDATED filters."""
         
         # Import enhanced modules
         try:
@@ -296,6 +299,49 @@ class SupabotScanner:
                 social = stock.get('social', {})
                 technical = stock.get('technical', {})
                 ai_analysis = stock.get('ai_analysis', {})
+                
+                # ============ VALIDATED EDGE FILTERS ============
+                # Based on 57+ picks validation:
+                # - Pure Fresh+Accel: 62% WR, +3.25% avg
+                # - With Squeeze: 22% WR, -16% avg (TOXIC)
+                # - No Fresh: 16% WR, -4.8% avg
+                
+                is_fresh = stock.get('is_fresh', False)
+                is_accelerating = social.get('is_accelerating', False)
+                
+                # REQUIRE Fresh + Accelerating
+                if not (is_fresh and is_accelerating):
+                    print(f"   ✗ {ticker}: Missing Fresh+Accel combo (required)")
+                    continue
+                
+                # ============ EXCLUDE SQUEEZE SIGNALS (VALIDATED TOXIC) ============
+                # Squeeze signal performance (9 trades):
+                # - Win rate: 22% (2/9)
+                # - Average return: -16.4%
+                # - Worst losses: -15.96%, -14.27%, -14%, -10.71%
+                # - Risk/reward: 0.65:1 (terrible)
+                # CONCLUSION: Too risky, exclude all squeeze signals
+                
+                # Get float & short data BEFORE scoring
+                float_data = get_float_analysis(ticker)
+                short_data = get_short_interest(ticker)
+                
+                has_squeeze = short_data.get('squeeze_potential', False)
+                short_percent = short_data.get('short_percent', 0)
+                parabolic_setup = float_data.get('parabolic_setup', False)
+                
+                # Exclude any squeeze potential
+                if has_squeeze or short_percent > 20:
+                    print(f"   ✗ {ticker}: Squeeze signal 🚀 ({short_percent:.0f}% short) - EXCLUDED")
+                    print(f"      Validated toxic: 22% WR, -16% avg, catastrophic losses")
+                    continue
+                
+                # Exclude parabolic setups (low float, high rotation)
+                if parabolic_setup:
+                    print(f"   ✗ {ticker}: Parabolic setup 💥 - EXCLUDED (too volatile)")
+                    continue
+                
+                print(f"   ✓ {ticker}: PURE Fresh+Accel (validated 62% WR, +3.25% avg)")
                 
                 # ============ GET ENHANCED DATA ============
                 if has_enhanced_data:
@@ -343,7 +389,7 @@ class SupabotScanner:
                     # 2. Catalyst boost (up to +0.4)
                     catalyst_boost = catalysts.get('catalyst_score', 0) * 0.4
                     
-                    # 3. INSIDER BOOST (up to +0.6) - MAJOR SIGNAL!
+                    # 3. INSIDER BOOST (up to +0.6)
                     insider_boost = insider.get('insider_score', 0) * 0.6
 
                     if stock.get('is_fresh', False):
@@ -378,10 +424,6 @@ class SupabotScanner:
                     rating = "HOLD"
                     conviction = "MEDIUM"
                 
-                # Get float & short data
-                float_data = get_float_analysis(ticker)
-                short_data = get_short_interest(ticker)
-                
                 # ============ BUILD COMPLETE RESULT ============
                 result = {
                     # Basic info
@@ -409,12 +451,12 @@ class SupabotScanner:
                     'has_catalysts': social.get('has_catalysts', False),
                     'catalyst_count': social.get('catalyst_count', 0),
                     
-                    # Float & Short
+                    # Float & Short (for display - squeeze already filtered out)
                     'float_millions': float_data.get('float_millions', 0),
                     'rotation_pct': float_data.get('rotation_pct', 0),
-                    'parabolic_setup': float_data.get('parabolic_setup', False),
+                    'parabolic_setup': False,  # Always false (filtered out)
                     'short_percent': short_data.get('short_percent', 0),
-                    'squeeze_potential': short_data.get('squeeze_potential', False),
+                    'squeeze_potential': False,  # Always false (filtered out)
                     
                     # ============ ENHANCED DATA ============
                     # Fundamentals
@@ -439,7 +481,7 @@ class SupabotScanner:
                     'earnings_date': catalysts.get('upcoming_earnings', {}).get('earnings_date', 'Unknown') if catalysts else 'Unknown',
                     'days_until_earnings': catalysts.get('upcoming_earnings', {}).get('days_until_earnings', 999) if catalysts else 999,
                     
-                    # ============ INSIDER DATA (NEW!) ============
+                    # ============ INSIDER DATA ============
                     'insider_score': insider.get('insider_score', 0),
                     'insider_boost': round(float(insider_boost), 2),
                     'has_insider_buying': insider.get('has_cluster_buying', False),
@@ -489,7 +531,7 @@ def run_scan(custom_tickers: List[str] = None, top_k: int = None) -> pd.DataFram
 
 if __name__ == "__main__":
     # Test the scanner
-    print("\nTesting Scanner with insider tracking...\n")
+    print("\nTesting Scanner - Pure Fresh+Accel Only (No Squeeze)...\n")
     
     test_tickers = ["PLTR", "SOFI", "NET", "NVDA", "RBLX"]
     
@@ -497,7 +539,7 @@ if __name__ == "__main__":
     
     if not results.empty:
         print("\n" + "="*70)
-        print("TOP CANDIDATES:")
+        print("TOP CANDIDATES (Pure Fresh+Accel, No Squeeze):")
         print("="*70 + "\n")
         
         for i, (_, row) in enumerate(results.iterrows(), 1):
@@ -505,8 +547,7 @@ if __name__ == "__main__":
             
             print(f"{i}. {row['ticker']}{insider_flag} - {row['rating']} (Score: {row['composite_score']}/5.0)")
             print(f"   Price: ${row['price']:.2f} | 7d: {row['change_7d']:+.1f}% | Fresh: {row['is_fresh']}")
-            print(f"   Base: {row['base_score']:.2f} + Insider: +{row['insider_boost']:.2f}")
-            print(f"   Insider: {row['insider_summary']}")
+            print(f"   Signals: ✨ Fresh + 📈 Accelerating ONLY (no 🚀 squeeze)")
             print(f"   Position: {row['position_size']} | Stop: ${row['stop_loss']:.2f}")
             print()
     else:
