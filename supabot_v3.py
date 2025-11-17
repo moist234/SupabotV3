@@ -17,6 +17,7 @@ CHANGES FROM V2:
 - STRICTER buzz: 20+ Twitter AND 2+ Reddit (vs 10+ Twitter)
 - 10x faster, $20/month cheaper
 """
+import re
 import os
 import sys
 from datetime import datetime, timedelta
@@ -109,7 +110,16 @@ def check_fresh(ticker: str) -> Dict:
 
 
 def check_reddit_confirmation(ticker: str) -> int:
-    """Get Reddit mention count (cross-platform confirmation)."""
+    """
+    Get Reddit mention count with SMART matching strategy.
+    
+    STRATEGY:
+    - Short tickers (≤2 letters): ONLY count $TICKER format (strict)
+    - Normal tickers (3+ letters): Count $TICKER OR word boundaries (flexible)
+    
+    This avoids false positives for "AS", "A", "IT" while catching 
+    real mentions for "AMD", "PLTR", "NVDA".
+    """
     try:
         reddit = praw.Reddit(
             client_id=REDDIT_CLIENT_ID,
@@ -118,18 +128,49 @@ def check_reddit_confirmation(ticker: str) -> int:
         )
         
         count = 0
+        cutoff_time = datetime.utcnow() - timedelta(hours=24)
+        
+        # Determine matching strategy based on ticker length
+        is_short_ticker = len(ticker) <= 2
+        
+        if is_short_ticker:
+            print(f"   🔍 Reddit: Using STRICT matching for '{ticker}' (≤2 letters)")
+        
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
             try:
                 subreddit = reddit.subreddit(sub_name)
-                for post in subreddit.new(limit=50):
-                    text_upper = f"{post.title} {post.selftext}".upper()
-                    if f"${ticker}" in text_upper or f" {ticker} " in text_upper:
+                
+                for post in subreddit.new(limit=30):
+                    # Filter by time (last 24 hours only)
+                    post_time = datetime.utcfromtimestamp(post.created_utc)
+                    if post_time < cutoff_time:
+                        continue
+                    
+                    # Combine title and body
+                    text = f"{post.title} {post.selftext}"
+                    text_upper = text.upper()
+                    
+                    # METHOD 1: Always check for $TICKER format (works for all)
+                    if f"${ticker}" in text_upper:
                         count += 1
-            except:
+                        continue
+                    
+                    # METHOD 2: For LONGER tickers, also check word boundaries
+                    if not is_short_ticker:
+                        # Example: "AMD" matches in "I bought AMD", but not in "DIAMOND"
+                        pattern = r'\b' + re.escape(ticker) + r'\b'
+                        if re.search(pattern, text, re.IGNORECASE):
+                            count += 1
+                    
+                    # For short tickers: ONLY $TICKER counted (already checked above)
+            
+            except Exception as e:
                 continue
         
         return count
-    except:
+    
+    except Exception as e:
+        print(f"   Reddit error: {e}")
         return 0
 
 
