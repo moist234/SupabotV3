@@ -1,0 +1,2 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze
+A,2025-11-16,07:20 PM,Sunday,146.82000732421875,0.03,18.48,41643376640,Large ($10-50B),Healthcare,0.55,False,26,Moderate,93,1.37,True,True,False

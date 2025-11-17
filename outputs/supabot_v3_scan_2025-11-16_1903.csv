@@ -1,0 +1,48 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze
+A,2025-11-16,06:57 PM,Sunday,146.82000732421875,0.03,18.48,41643376640,Large ($10-50B),Healthcare,0.55,False,21,Moderate,13,1.37,True,True,False
+AAON,2025-11-16,06:57 PM,Sunday,94.04000091552734,0.62,17.71,7769113088,Mid ($2-10B),Industrials,0.75,False,16,Moderate,0,12.73,True,True,False
+AAPL,2025-11-16,06:57 PM,Sunday,272.4100036621094,0.94,28.52,4033205501952,Mega (>$50B),Technology,0.94,False,20,Moderate,0,0.78,True,True,False
+ABT,2025-11-16,06:57 PM,Sunday,130.58999633789062,4.86,-1.38,227079274496,Mega (>$50B),Healthcare,0.96,False,23,Moderate,0,1.17,True,True,False
+ACI,2025-11-16,06:58 PM,Sunday,18.209999084472656,4.18,-17.02,10002889728,Large ($10-50B),Consumer Defensive,0.72,False,22,Moderate,0,14.86,True,True,False
+ACM,2025-11-16,06:58 PM,Sunday,133.52000427246094,0.99,15.69,17721288704,Large ($10-50B),Industrials,1.21,False,19,Moderate,0,3.1,True,True,False
+ADAM,2025-11-16,06:58 PM,Sunday,7.150000095367432,3.62,9.86,645700608,Small (<$2B),Real Estate,0.48,False,28,Moderate,0,2.83,True,True,False
+ADC,2025-11-16,06:58 PM,Sunday,73.77999877929688,1.84,5.44,8496284160,Mid ($2-10B),Real Estate,0.8,False,26,Moderate,0,10.24,True,True,False
+ADM,2025-11-16,06:58 PM,Sunday,58.61000061035156,4.12,7.69,28271917056,Large ($10-50B),Consumer Defensive,0.68,False,13,Weak,0,3.53,True,True,False
+ADMA,2025-11-16,06:58 PM,Sunday,15.5600004196167,1.24,-15.76,3735364608,Mid ($2-10B),Healthcare,0.82,False,11,Weak,0,8.58,True,True,False
+ADNT,2025-11-16,06:58 PM,Sunday,20.020000457763672,0.2,-12.46,1675080064,Small (<$2B),Consumer Cyclical,1.21,False,14,Weak,0,13.38,True,True,False
+ADT,2025-11-16,06:58 PM,Sunday,8.260000228881836,1.72,-2.77,6869612032,Mid ($2-10B),Industrials,0.78,False,14,Weak,0,8.01,True,True,False
+AEE,2025-11-16,06:58 PM,Sunday,105.0199966430664,3.69,9.85,28407373824,Large ($10-50B),Utilities,0.79,False,15,Weak,0,4.17,True,True,False
+AEG,2025-11-16,06:58 PM,Sunday,7.800000190734863,4.0,9.86,12538557440,Large ($10-50B),Financial Services,0.99,False,12,Weak,0,0.13,True,True,False
+AEP,2025-11-16,06:59 PM,Sunday,121.30000305175781,2.08,16.24,64881803264,Mega (>$50B),Utilities,0.89,False,20,Moderate,0,3.96,True,True,False
+AER,2025-11-16,06:59 PM,Sunday,136.86000061035156,2.42,19.55,23295201280,Large ($10-50B),Industrials,0.62,False,22,Moderate,0,1.96,True,True,False
+AFL,2025-11-16,06:59 PM,Sunday,114.33999633789062,2.79,12.4,60278341632,Mega (>$50B),Financial Services,0.86,False,21,Moderate,0,1.23,True,True,False
+AHR,2025-11-16,06:59 PM,Sunday,48.31999969482422,2.61,34.25,8548206080,Mid ($2-10B),Real Estate,1.36,False,27,Moderate,0,2.34,True,True,False
+AIG,2025-11-16,06:59 PM,Sunday,77.75,1.87,-5.16,42275782656,Large ($10-50B),Financial Services,0.82,False,17,Moderate,0,3.48,True,True,False
+AJG,2025-11-16,06:59 PM,Sunday,258.510009765625,4.22,-17.38,66386661376,Mega (>$50B),Financial Services,0.9,False,28,Moderate,0,1.65,True,True,False
+AKRO,2025-11-16,06:59 PM,Sunday,54.25,0.37,4.33,4465652736,Mid ($2-10B),Healthcare,0.53,False,19,Moderate,0,5.62,True,True,False
+AL,2025-11-16,07:00 PM,Sunday,63.900001525878906,0.25,8.66,7141785600,Mid ($2-10B),Industrials,0.64,False,24,Moderate,0,2.64,True,True,False
+ALC,2025-11-16,07:00 PM,Sunday,77.6500015258789,4.45,-12.46,38707994624,Large ($10-50B),Healthcare,0.95,False,19,Moderate,0,0.0,True,True,False
+ALE,2025-11-16,07:00 PM,Sunday,67.5,0.28,5.06,3921641984,Mid ($2-10B),Utilities,1.01,False,26,Moderate,0,1.78,True,True,False
+ALNY,2025-11-16,07:00 PM,Sunday,449.1600036621094,3.36,39.21,59975708672,Mega (>$50B),Healthcare,0.88,False,13,Weak,0,3.75,True,True,False
+ALSN,2025-11-16,07:00 PM,Sunday,81.7300033569336,1.2,-14.16,6849723392,Mid ($2-10B),Consumer Cyclical,0.74,False,16,Moderate,0,4.49,True,True,False
+AMBA,2025-11-16,07:00 PM,Sunday,87.83999633789062,1.55,30.21,3790806784,Mid ($2-10B),Technology,0.9,False,24,Moderate,0,4.75,True,True,False
+AMP,2025-11-16,07:00 PM,Sunday,458.0,0.11,-15.01,42682740736,Large ($10-50B),Financial Services,1.0,False,14,Weak,0,2.76,True,True,False
+AMT,2025-11-16,07:00 PM,Sunday,183.58999633789062,2.32,-16.2,85947039744,Mega (>$50B),Real Estate,1.27,False,23,Moderate,0,1.22,True,True,False
+AMX,2025-11-16,07:00 PM,Sunday,23.219999313354492,1.09,33.81,70124888064,Mega (>$50B),Communication Services,1.02,False,17,Moderate,0,0.65,True,True,False
+AON,2025-11-16,07:01 PM,Sunday,350.1300048828125,2.47,-2.27,75429380096,Mega (>$50B),Financial Services,0.69,False,25,Moderate,0,0.89,True,True,False
+APG,2025-11-16,07:01 PM,Sunday,37.349998474121094,2.67,7.95,15608947712,Large ($10-50B),Industrials,1.16,False,26,Moderate,0,2.97,True,True,False
+APLS,2025-11-16,07:01 PM,Sunday,20.329999923706055,1.9,4.1,2572257536,Mid ($2-10B),Healthcare,0.98,False,15,Weak,0,15.83,True,True,False
+AR,2025-11-16,07:01 PM,Sunday,34.36000061035156,4.66,-4.16,10599854080,Large ($10-50B),Energy,1.03,False,26,Moderate,0,4.45,True,True,False
+ARCO,2025-11-16,07:01 PM,Sunday,7.289999961853027,2.39,-3.12,1544160256,Small (<$2B),Consumer Cyclical,1.38,False,26,Moderate,0,3.5,True,True,False
+ARR,2025-11-16,07:02 PM,Sunday,16.690000534057617,0.12,4.83,1867581696,Small (<$2B),Real Estate,1.06,False,17,Moderate,0,9.03,True,True,False
+ARWR,2025-11-16,07:02 PM,Sunday,41.2599983215332,2.36,118.77,5704506368,Mid ($2-10B),Healthcare,0.73,False,11,Weak,0,11.0,True,True,False
+ASC,2025-11-16,07:02 PM,Sunday,12.8100004196167,2.81,24.39,522150944,Small (<$2B),Industrials,0.81,False,23,Moderate,0,5.19,True,True,False
+ASH,2025-11-16,07:02 PM,Sunday,51.5099983215332,1.52,-4.74,2426986240,Mid ($2-10B),Basic Materials,0.84,False,26,Moderate,0,4.71,True,True,False
+ATEC,2025-11-16,07:02 PM,Sunday,19.739999771118164,0.1,70.47,3000713728,Mid ($2-10B),Healthcare,1.14,False,15,Weak,0,10.89,True,True,False
+ATI,2025-11-16,07:02 PM,Sunday,99.37000274658203,2.98,12.86,13500772352,Large ($10-50B),Industrials,0.61,False,21,Moderate,0,2.75,True,True,False
+ATMU,2025-11-16,07:02 PM,Sunday,47.63999938964844,3.34,22.31,3968616704,Mid ($2-10B),Consumer Cyclical,0.42,False,13,Weak,0,2.57,True,True,False
+ATO,2025-11-16,07:02 PM,Sunday,175.1199951171875,1.47,14.03,28568377344,Large ($10-50B),Utilities,1.17,False,19,Moderate,0,3.86,True,True,False
+ATR,2025-11-16,07:02 PM,Sunday,118.61000061035156,2.63,-24.6,7887422464,Mid ($2-10B),Healthcare,0.7,False,27,Moderate,0,1.95,True,True,False
+AVA,2025-11-16,07:03 PM,Sunday,41.11000061035156,3.45,8.81,3363907584,Mid ($2-10B),Utilities,0.72,False,15,Weak,0,5.48,True,True,False
+AWK,2025-11-16,07:03 PM,Sunday,131.6199951171875,1.14,-6.63,25682163712,Large ($10-50B),Utilities,1.0,False,27,Moderate,0,4.46,True,True,False
+AXTA,2025-11-16,07:03 PM,Sunday,28.90999984741211,3.55,-6.56,6329802752,Mid ($2-10B),Basic Materials,0.6,False,14,Weak,0,2.98,True,True,False

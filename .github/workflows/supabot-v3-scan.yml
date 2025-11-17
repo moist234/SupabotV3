@@ -1,0 +1,79 @@
+name: Supabot V3 Scanner (Optimized)
+
+on:
+  schedule:
+    # Run once daily at 12:00 PM EST = 4:00 PM UTC
+    - cron: '0 16 * * 1-5'
+  
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  scan-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # V3 is faster
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: 📦 Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: ⚙️ Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🚀 Run Supabot V3 (Optimized)
+        env:
+          # API Keys (V3 only needs these)
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          DISCORD_WEBHOOK_V3: ${{ secrets.DISCORD_WEBHOOK_V3 }}
+        
+        run: |
+          echo "🚀 Starting V3 optimized scan at $(date)"
+          python3 supabot_v3.py
+          echo "✅ V3 scan completed at $(date)"
+        
+        continue-on-error: true
+      
+      - name: 📊 Upload V3 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-scan-results-${{ github.run_number }}
+          path: outputs/supabot_v3*.csv
+          retention-days: 30
+          if-no-files-found: warn
+      
+      - name: 📋 Display V3 summary
+        if: always()
+        run: |
+          echo "=================================="
+          echo "V3 Scan Summary (Optimized)"
+          echo "=================================="
+          if [ -d "outputs" ]; then
+            echo "Generated files:"
+            ls -lh outputs/supabot_v3*.csv 2>/dev/null || echo "No V3 CSV files found"
+          else
+            echo "⚠️  No outputs directory"
+          fi
+      
+      - name: 🚨 Notify on failure
+        if: failure()
+        run: |
+          echo "❌ V3 Workflow failed!"
+          echo "Check logs above for errors"
