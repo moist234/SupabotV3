@@ -2,8 +2,8 @@ name: Supabot V3 Scanner (Optimized)
 
 on:
   schedule:
-    # Run once daily at 12:00 PM EST = 4:00 PM UTC
-    - cron: '0 16 * * 1-5'
+    # Run once daily at 2:00 PM EST = 7:00 PM UTC
+    - cron: '0 19 * * 1-5'
   
   workflow_dispatch:  # Manual trigger
 
