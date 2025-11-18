@@ -45,9 +45,10 @@ MIN_MARKET_CAP = 500_000_000
 MIN_PRICE = 5.0
 MIN_VOLUME_USD = 2_000_000
 MAX_SHORT_PERCENT = 20.0
-MIN_TWITTER_BUZZ = 20
-MIN_REDDIT_BUZZ = 2
-SCAN_LIMIT = 100  # Reduced from 200 to save Twitter API credits
+MIN_TWITTER_BUZZ = 15  # Lowered from 20 (match V2 style)
+MIN_REDDIT_BUZZ = 5    # Raised from 2 (match V2 style)
+USE_OR_LOGIC = True    # Use OR instead of AND (15+ Twitter OR 5+ Reddit)
+SCAN_LIMIT = 100       # Reduced from 200 to save Twitter API credits
 
 print("\n" + "="*70)
 print("🤖 SUPABOT V3 - TWO-WEEK MOMENTUM EDITION")
@@ -476,7 +477,30 @@ def send_discord_notification(picks: List[Dict]):
         )
         
         for i, pick in enumerate(picks[:10], 1):
-            volume_flag = "📊" if pick.get('volume_spike', False) else ""
+            # Build signal emojis (match V2 style)
+            signals = []
+            signals.append("✨")  # Always Fresh
+            signals.append("📈")  # Always Accelerating
+            
+            # High conviction criteria (same as V2):
+            # - Past week momentum 3-6% (building)
+            # - Explosive/Strong buzz (30+ Twitter)
+            # - Volume spike
+            is_high_conviction = (
+                3 <= pick.get('change_prev_7d', 0) <= 6 and
+                pick.get('twitter_mentions', 0) >= 30
+            ) or (
+                pick.get('buzz_level') in ['Explosive', 'Strong'] and
+                pick.get('volume_spike', False)
+            )
+            
+            if is_high_conviction:
+                signals.append("🔥")
+            
+            if pick.get('volume_spike', False) and not is_high_conviction:
+                signals.append("📊")
+            
+            signal_str = " ".join(signals)
             
             value_parts = [
                 f"**${pick['price']:.2f}**",
@@ -486,7 +510,7 @@ def send_discord_notification(picks: List[Dict]):
             ]
             
             embed.add_embed_field(
-                name=f"#{i}. {pick['ticker']} {volume_flag}",
+                name=f"#{i}. {pick['ticker']} {signal_str}",
                 value=" | ".join(value_parts),
                 inline=False
             )
