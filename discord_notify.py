@@ -1,6 +1,6 @@
 """
-Supabot V2 - Discord Notifications
-Send beautiful formatted alerts to Discord.
+Supabot V2 - Discord Notifications (UPDATED)
+Added mention counts to Discord notifications
 """
 import os
 import sys
@@ -14,11 +14,7 @@ from config import DISCORD_WEBHOOK_URL, DISPLAY_CONFIG
 
 def send_scan_results(df: pd.DataFrame, scan_stats: dict = None):
     """
-    Send scan results to Discord.
-    
-    Args:
-        df: DataFrame with top candidates
-        scan_stats: Optional dict with scan statistics
+    Send scan results to Discord with mention counts.
     """
     
     if not DISCORD_WEBHOOK_URL:
@@ -90,12 +86,24 @@ def send_scan_results(df: pd.DataFrame, scan_stats: dict = None):
         
         name = f"#{i}. {row['ticker']} {signal_str}"
         
+        # BUILD VALUE WITH MENTIONS ← UPDATED!
         value_parts = [
             f"**{rating}** {conviction_emoji}",
             f"Score: {row.get('composite_score', 0):.2f}/5.0",
             f"Price: ${row.get('price', 0):.2f}",
             f"7d: {row.get('change_7d', 0):+.1f}%",
         ]
+        
+        # ADD MENTIONS ← NEW!
+        twitter = row.get('x_mentions', 0)
+        reddit = row.get('reddit_total_mentions', 0)  # Try multiple column names
+        if twitter == 0:
+            twitter = row.get('twitter_mentions', 0)
+        if reddit == 0:
+            reddit = row.get('reddit_mentions', 0)
+        
+        if twitter > 0 or reddit > 0:
+            value_parts.append(f"Buzz: {twitter}🐦 {reddit}🤖")
         
         # Add notable info
         if row.get('has_catalysts'):
@@ -133,10 +141,7 @@ def send_scan_results(df: pd.DataFrame, scan_stats: dict = None):
 
 def send_high_conviction_alert(row: pd.Series):
     """
-    Send special alert for high-conviction plays.
-    
-    Args:
-        row: Series with stock data
+    Send special alert for high-conviction plays with mentions.
     """
     
     if not DISCORD_WEBHOOK_URL or not DISPLAY_CONFIG.send_jackpot_alerts:
@@ -182,6 +187,17 @@ def send_high_conviction_alert(row: pd.Series):
     embed.add_embed_field(name="Stop Loss", value=f"${row['stop_loss']:.2f}", inline=True)
     embed.add_embed_field(name="Hold Period", value=row.get('hold_period', 'unknown'), inline=True)
     
+    # ADD MENTIONS ← NEW!
+    twitter = row.get('x_mentions', row.get('twitter_mentions', 0))
+    reddit = row.get('reddit_total_mentions', row.get('reddit_mentions', 0))
+    
+    if twitter > 0 or reddit > 0:
+        embed.add_embed_field(
+            name="Social Buzz",
+            value=f"{twitter}🐦 Twitter | {reddit}🤖 Reddit",
+            inline=False
+        )
+    
     # Signals
     signals = []
     if row.get('is_fresh'): signals.append("✨ Fresh")
@@ -224,6 +240,8 @@ if __name__ == "__main__":
         'is_accelerating': True,
         'has_catalysts': True,
         'catalyst_count': 2,
+        'x_mentions': 35,
+        'reddit_mentions': 5,
         'position_size': 'half',
         'stop_loss': 46.0,
         'hold_period': '2-4 weeks'
