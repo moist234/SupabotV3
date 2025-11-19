@@ -119,7 +119,15 @@ def check_reddit_confirmation(ticker: str) -> int:
         
         count = 0
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
-        is_short_ticker = len(ticker) <= 2
+        
+        # Problematic tickers (common words)
+        COMMON_WORD_TICKERS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW', 'WORK', 'PLAY', 'NEXT', 'LAST', 'BACK', 'WELL', 'VERY', 'JUST', 'LIKE', 'LOVE', 'HATE']
+        
+        # Use strict matching for short tickers OR common words
+        is_strict_only = len(ticker) <= 2 or ticker.upper() in COMMON_WORD_TICKERS
+        
+        if is_strict_only:
+            print(f"   🔍 Reddit: Using STRICT matching for '{ticker}' (short or common word)")
         
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
             try:
@@ -133,13 +141,13 @@ def check_reddit_confirmation(ticker: str) -> int:
                     text = f"{post.title} {post.selftext}"
                     text_upper = text.upper()
                     
-                    # Always check $TICKER
+                    # Always check $TICKER format (most reliable)
                     if f"${ticker}" in text_upper:
                         count += 1
                         continue
                     
-                    # For longer tickers, check word boundaries
-                    if not is_short_ticker:
+                    # For normal tickers (not short, not common words), also check word boundaries
+                    if not is_strict_only:
                         pattern = r'\b' + re.escape(ticker) + r'\b'
                         if re.search(pattern, text, re.IGNORECASE):
                             count += 1
