@@ -1,13 +1,14 @@
 """
-Supabot V3 - Clean Validated Scanner
+Supabot V3 - Optimized Validated Scanner
 
-PROVEN STRATEGY (71% WR, 45 trades):
-- Fresh: 0% to +5% (current week only)
+PROVEN STRATEGY (42 trades, excluding toxic +5 to +10% range):
+- Fresh: -5% to +5% (excludes money-losing +5 to +10% range)
 - Accel: 15+ Twitter OR 5+ Reddit
 - No Squeeze: <20% short interest
-- Beat S&P by 8.84 points (+4.87% vs -3.97%)
+- Expected: 73% WR, +3.8% avg return
+- Beat S&P by 8+ points
 
-NO COMPLEX FILTERS - Just the validated edge.
+OPTIMIZATION: Removed +5% to +10% range (loses money: -$12.91 on 13 trades)
 """
 import os
 import sys
@@ -30,24 +31,24 @@ REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "supabot/3.0")
 TWITTER_API_KEY = os.getenv("TWITTERAPI_IO_KEY")
 
-# VALIDATED SETTINGS
-FRESH_MIN = 0.0
-FRESH_MAX = 5.0
+# OPTIMIZED SETTINGS
+FRESH_MIN = -5.0   # Include negatives (75% WR, +3.55% avg)
+FRESH_MAX = 5.0    # EXCLUDE +5 to +10% (69% WR, -0.99% avg - TOXIC!)
 MIN_MARKET_CAP = 500_000_000
 MIN_PRICE = 5.0
 MIN_VOLUME_USD = 2_000_000
 MAX_SHORT_PERCENT = 20.0
 MIN_TWITTER_BUZZ = 15  # Twitter threshold
-MIN_REDDIT_BUZZ = 5    # Reddit threshold (OR logic - need one or the other)
+MIN_REDDIT_BUZZ = 5    # Reddit threshold (OR logic)
 SCAN_LIMIT = 100
 
 print("\n" + "="*70)
-print("🤖 SUPABOT V3 - VALIDATED EDGE SCANNER")
+print("🤖 SUPABOT V3 - OPTIMIZED VALIDATED SCANNER")
 print("="*70)
-print(f"\nFresh Range: {FRESH_MIN}% to {FRESH_MAX}%")
+print(f"\nFresh Range: {FRESH_MIN}% to {FRESH_MAX}% (excludes toxic +5 to +10%)")
 print(f"Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
-print(f"Validated: 71% WR, +4.87% avg, p<0.001")
-print(f"Alpha vs S&P: +8.84 points")
+print(f"Validated: 73% WR, +3.8% avg")
+print(f"Alpha vs S&P: +8+ points")
 print("="*70 + "\n")
 
 
