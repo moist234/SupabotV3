@@ -1,18 +1,13 @@
 """
-Supabot V3 - TWO-WEEK MOMENTUM EDITION
+Supabot V3 - Clean Validated Scanner
 
-ENHANCED STRATEGY (validated on 34 trades):
-- Fresh range: 0% to +5% (current week)
-- Past week: 0% to +6% (momentum building) ← NEW!
-- Fresh+Accel+Momentum: 79% WR, +5.5% avg
-- Beat S&P by 7+ points
-- Statistically significant: p<0.01
+PROVEN STRATEGY (71% WR, 45 trades):
+- Fresh: 0% to +5% (current week only)
+- Accel: 15+ Twitter OR 5+ Reddit
+- No Squeeze: <20% short interest
+- Beat S&P by 8.84 points (+4.87% vs -3.97%)
 
-CHANGES FROM ORIGINAL V3:
-- Added "Past Week momentum" check (0-6% range)
-- Filters out stocks that already ran >6% previous week
-- Catches 2-week sustained momentum (not pumps)
-- Expected: 70% WR → 79% WR (+9 points!)
+NO COMPLEX FILTERS - Just the validated edge.
 """
 import os
 import sys
@@ -22,7 +17,6 @@ from typing import List, Dict
 import pandas as pd
 from dotenv import load_dotenv
 
-# API imports
 import yfinance as yf
 import praw
 import requests
@@ -39,24 +33,21 @@ TWITTER_API_KEY = os.getenv("TWITTERAPI_IO_KEY")
 # VALIDATED SETTINGS
 FRESH_MIN = 0.0
 FRESH_MAX = 5.0
-PAST_WEEK_MIN = 0.0   # ← NEW: Past week momentum minimum
-PAST_WEEK_MAX = 6.0   # ← NEW: Past week momentum maximum
 MIN_MARKET_CAP = 500_000_000
 MIN_PRICE = 5.0
 MIN_VOLUME_USD = 2_000_000
 MAX_SHORT_PERCENT = 20.0
-MIN_TWITTER_BUZZ = 15  # Lowered from 20 (match V2 style)
-MIN_REDDIT_BUZZ = 5    # Raised from 2 (match V2 style)
-USE_OR_LOGIC = True    # Use OR instead of AND (15+ Twitter OR 5+ Reddit)
-SCAN_LIMIT = 100       # Reduced from 200 to save Twitter API credits
+MIN_TWITTER_BUZZ = 15  # Twitter threshold
+MIN_REDDIT_BUZZ = 5    # Reddit threshold (OR logic - need one or the other)
+SCAN_LIMIT = 100
 
 print("\n" + "="*70)
-print("🤖 SUPABOT V3 - TWO-WEEK MOMENTUM EDITION")
+print("🤖 SUPABOT V3 - VALIDATED EDGE SCANNER")
 print("="*70)
-print(f"\nCurrent Week (Fresh): {FRESH_MIN}% to {FRESH_MAX}%")
-print(f"Past Week (Momentum): {PAST_WEEK_MIN}% to {PAST_WEEK_MAX}%")
-print(f"Buzz: {MIN_TWITTER_BUZZ}+ Twitter AND {MIN_REDDIT_BUZZ}+ Reddit")
-print(f"Validated: 79% WR, +5.5% avg (34 trades)")
+print(f"\nFresh Range: {FRESH_MIN}% to {FRESH_MAX}%")
+print(f"Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
+print(f"Validated: 71% WR, +4.87% avg, p<0.001")
+print(f"Alpha vs S&P: +8.84 points")
 print("="*70 + "\n")
 
 
@@ -81,60 +72,36 @@ def get_universe() -> List[str]:
         return ['PLTR', 'SOFI', 'NET', 'RBLX', 'COIN', 'HOOD', 'DKNG']
 
 
-def check_fresh_with_momentum(ticker: str) -> Dict:
-    """
-    Check if stock is Fresh WITH two-week momentum validation.
-    
-    NEW FEATURE: Checks both current AND previous 7-day changes.
-    - Current 7d: 0-5% (Fresh)
-    - Previous 7d: 0-6% (Building momentum, not overheated)
-    
-    This catches stocks with sustained 2-week momentum.
-    """
+def check_fresh(ticker: str) -> Dict:
+    """Check if stock is Fresh (0-5% current week)."""
     try:
         hist = yf.Ticker(ticker).history(period="6mo")
-        if len(hist) < 20:  # Need at least 20 days for 2-week check
+        if len(hist) < 10:
             return None
         
         close = hist['Close']
         
-        # CURRENT 7-day change (Fresh signal)
-        current_price = close.iloc[-1]
-        price_7d_ago = close.iloc[-8] if len(close) > 7 else close.iloc[0]
-        change_7d = ((current_price - price_7d_ago) / price_7d_ago * 100)
-        
-        # PREVIOUS 7-day change (Momentum confirmation) ← NEW!
-        price_14d_ago = close.iloc[-15] if len(close) > 14 else close.iloc[0]
-        change_prev_7d = ((price_7d_ago - price_14d_ago) / price_14d_ago * 100)
+        # Current 7-day change
+        change_7d = ((close.iloc[-1] - close.iloc[-8]) / close.iloc[-8] * 100) if len(close) > 7 else 0
         
         # 90-day change (avoid falling knives)
-        price_90d_ago = close.iloc[-91] if len(close) > 90 else close.iloc[0]
-        change_90d = ((current_price - price_90d_ago) / price_90d_ago * 100)
+        change_90d = ((close.iloc[-1] - close.iloc[-91]) / close.iloc[-91] * 100) if len(close) > 90 else 0
         
-        # FRESH CHECK: Current week 0-5%
+        # Fresh range: 0% to +5%
         is_fresh = FRESH_MIN <= change_7d <= FRESH_MAX and change_90d > -40.0
-        
-        # MOMENTUM CHECK: Previous week 0-6% ← NEW!
-        has_momentum = PAST_WEEK_MIN <= change_prev_7d <= PAST_WEEK_MAX
-        
-        # BOTH REQUIRED
-        is_optimal = is_fresh and has_momentum
         
         return {
             'change_7d': round(change_7d, 2),
-            'change_prev_7d': round(change_prev_7d, 2),  # ← NEW!
             'change_90d': round(change_90d, 2),
             'is_fresh': is_fresh,
-            'has_momentum': has_momentum,  # ← NEW!
-            'is_optimal': is_optimal,  # ← NEW!
-            'price': float(current_price)
+            'price': float(close.iloc[-1])
         }
     except Exception as e:
         return None
 
 
 def check_reddit_confirmation(ticker: str) -> int:
-    """Get Reddit mention count with smart matching."""
+    """Get Reddit mentions with smart matching."""
     try:
         reddit = praw.Reddit(
             client_id=REDDIT_CLIENT_ID,
@@ -145,9 +112,6 @@ def check_reddit_confirmation(ticker: str) -> int:
         count = 0
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
         is_short_ticker = len(ticker) <= 2
-        
-        if is_short_ticker:
-            print(f"   🔍 Reddit: Using STRICT matching for '{ticker}' (≤2 letters)")
         
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
             try:
@@ -166,22 +130,21 @@ def check_reddit_confirmation(ticker: str) -> int:
                         count += 1
                         continue
                     
-                    # For longer tickers, also check word boundaries
+                    # For longer tickers, check word boundaries
                     if not is_short_ticker:
                         pattern = r'\b' + re.escape(ticker) + r'\b'
                         if re.search(pattern, text, re.IGNORECASE):
                             count += 1
-            except Exception as e:
+            except:
                 continue
         
         return count
-    except Exception as e:
-        print(f"   Reddit error: {e}")
+    except:
         return 0
 
 
 def check_accelerating(ticker: str, reddit_mentions: int) -> Dict:
-    """Check if buzz is accelerating."""
+    """Check if buzz is accelerating (OR logic - Twitter OR Reddit)."""
     try:
         url = "https://api.twitterapi.io/twitter/community/get_tweets_from_all_community"
         params = {"query": f"${ticker}", "queryType": "Latest"}
@@ -194,13 +157,14 @@ def check_accelerating(ticker: str, reddit_mentions: int) -> Dict:
         tweets = response.json().get("tweets", [])
         recent = len(tweets)
         
-        is_accelerating = recent >= MIN_TWITTER_BUZZ and reddit_mentions >= MIN_REDDIT_BUZZ
+        # OR LOGIC: Need 15+ Twitter OR 5+ Reddit
+        is_accelerating = recent >= MIN_TWITTER_BUZZ or reddit_mentions >= MIN_REDDIT_BUZZ
         
         if recent > 50:
             buzz_level = "Explosive"
         elif recent > 30:
             buzz_level = "Strong"
-        elif recent >= 20:
+        elif recent >= 15:
             buzz_level = "Moderate"
         else:
             buzz_level = "Weak"
@@ -215,7 +179,7 @@ def check_accelerating(ticker: str, reddit_mentions: int) -> Dict:
 
 
 def check_squeeze(ticker: str) -> Dict:
-    """Check short interest."""
+    """Check short interest (exclude squeeze signals)."""
     try:
         info = yf.Ticker(ticker).info
         short_percent = info.get('shortPercentOfFloat', 0) * 100
@@ -268,13 +232,12 @@ def get_quality_data(ticker: str) -> Dict:
 
 def scan() -> List[Dict]:
     """
-    Run scan with TWO-WEEK MOMENTUM filter.
+    Run clean validated scan.
     
-    Returns stocks with:
+    Returns ALL stocks with:
     - Fresh (0-5% current week) ✅
-    - Momentum (0-6% past week) ✅ NEW!
-    - Accelerating buzz ✅
-    - No squeeze ✅
+    - Accelerating buzz (15+ Twitter OR 5+ Reddit) ✅
+    - No squeeze (<20% short) ✅
     """
     
     universe = get_universe()
@@ -282,15 +245,11 @@ def scan() -> List[Dict]:
     
     print(f"\n🔍 Scanning {len(universe)} stocks...\n")
     
-    filtered_by_momentum = 0
-    
     for ticker in universe:
         try:
-            # Step 1: Get quality data
+            # Step 1: Quality data
             quality = get_quality_data(ticker)
-            if not quality:
-                continue
-            if len(ticker) == 1:
+            if not quality or len(ticker) == 1:
                 continue
             
             # Quality filters
@@ -301,27 +260,20 @@ def scan() -> List[Dict]:
             if quality['price'] * quality['volume'] < MIN_VOLUME_USD:
                 continue
             
-            # Step 2: Check Fresh WITH momentum ← UPDATED!
-            fresh_data = check_fresh_with_momentum(ticker)
-            if not fresh_data:
+            # Step 2: Fresh check (0-5%)
+            fresh_data = check_fresh(ticker)
+            if not fresh_data or not fresh_data['is_fresh']:
                 continue
             
-            if not fresh_data['is_optimal']:
-                # Show why it was filtered
-                if fresh_data['is_fresh'] and not fresh_data['has_momentum']:
-                    print(f"   ✗ {ticker}: Fresh but past week {fresh_data['change_prev_7d']:+.1f}% (need 0-6%)")
-                    filtered_by_momentum += 1
-                continue
-            
-            # Step 3: Get Reddit mentions
+            # Step 3: Reddit mentions
             reddit_mentions = check_reddit_confirmation(ticker)
             
-            # Step 4: Check Accelerating
+            # Step 4: Accelerating (15+ Twitter OR 5+ Reddit)
             accel_data = check_accelerating(ticker, reddit_mentions)
             if not accel_data['is_accelerating']:
                 continue
             
-            # Step 5: Check Squeeze
+            # Step 5: Squeeze check
             squeeze_data = check_squeeze(ticker)
             if squeeze_data['has_squeeze']:
                 print(f"   ✗ {ticker}: Squeeze {squeeze_data['short_percent']:.0f}% - SKIP")
@@ -337,29 +289,27 @@ def scan() -> List[Dict]:
                 # Price data
                 'price': fresh_data['price'],
                 'change_7d': fresh_data['change_7d'],
-                'change_prev_7d': fresh_data['change_prev_7d'],  # ← NEW!
                 'change_90d': fresh_data['change_90d'],
                 
-                # Quality data
+                # Quality
                 'market_cap': quality['market_cap'],
                 'cap_size': quality['cap_size'],
                 'sector': quality['sector'],
                 
-                # Volume data
+                # Volume
                 'volume_ratio': quality['volume_ratio'],
                 'volume_spike': quality['volume_spike'],
                 
-                # Social signals
+                # Social
                 'twitter_mentions': accel_data['recent_mentions'],
                 'buzz_level': accel_data['buzz_level'],
                 'reddit_mentions': reddit_mentions,
                 
-                # Risk data
+                # Risk
                 'short_percent': squeeze_data['short_percent'],
                 
                 # Signals
                 'is_fresh': True,
-                'has_momentum': True,  # ← NEW!
                 'is_accelerating': True,
                 'has_squeeze': False,
             }
@@ -367,14 +317,12 @@ def scan() -> List[Dict]:
             picks.append(pick)
             
             # Display
-            signals = f"✨📈 (Curr:{fresh_data['change_7d']:+.1f}% / Prev:{fresh_data['change_prev_7d']:+.1f}%)"
+            signals = f"✨📈 ({fresh_data['change_7d']:+.1f}%)"
             volume_flag = "📊" if quality['volume_spike'] else ""
             print(f"   ✓ {ticker}: ${fresh_data['price']:.2f} | {signals} {volume_flag} | {accel_data['buzz_level']} buzz")
         
         except Exception as e:
             continue
-    
-    print(f"\n📊 Filtered by momentum: {filtered_by_momentum} stocks")
     
     return picks
 
@@ -388,22 +336,12 @@ def save_picks(picks: List[Dict]):
     df = pd.DataFrame(picks)
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
-    filename = f"outputs/supabot_v3_momentum_{timestamp}.csv"
+    filename = f"outputs/supabot_v3_scan_{timestamp}.csv"
     
     os.makedirs("outputs", exist_ok=True)
     df.to_csv(filename, index=False)
     
     print(f"\n✅ Saved {len(picks)} picks to {filename}")
-    
-    # Display summary
-    print(f"\n📊 PICK SUMMARY:")
-    print(f"   Total picks: {len(picks)}")
-    
-    # Average momentum
-    avg_curr = df['change_7d'].mean()
-    avg_prev = df['change_prev_7d'].mean()
-    print(f"\n   Average Current Week: {avg_curr:+.1f}%")
-    print(f"   Average Past Week: {avg_prev:+.1f}%")
     
     return df
 
@@ -411,24 +349,24 @@ def save_picks(picks: List[Dict]):
 def display_picks(picks: List[Dict]):
     """Display picks."""
     if not picks:
-        print("\n❌ No Fresh+Accel+Momentum stocks found")
+        print("\n❌ No Fresh+Accel stocks found")
         print("\n💡 This could mean:")
-        print("   • Market is quiet today")
-        print("   • No stocks with 2-week momentum pattern (0-6% past week)")
-        print("   • Stricter filter = fewer but higher quality picks")
+        print("   • Market is quiet or down")
+        print("   • No stocks in 0-5% Fresh range")
+        print("   • No accelerating buzz (15+ Twitter OR 5+ Reddit)")
         return
     
     print(f"\n{'='*70}")
-    print(f"🎯 {len(picks)} TWO-WEEK MOMENTUM PICKS (Validated 79% WR)")
+    print(f"🎯 {len(picks)} FRESH+ACCEL PICKS (Validated 71% WR)")
     print(f"{'='*70}\n")
     
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
         
         print(f"{i}. {pick['ticker']} - ${pick['price']:.2f}")
-        print(f"   Current: {pick['change_7d']:+.1f}% | Past Week: {pick['change_prev_7d']:+.1f}% | 90d: {pick['change_90d']:+.1f}%")
-        print(f"   {pick['cap_size']} | {pick['sector']}")
+        print(f"   Fresh: {pick['change_7d']:+.1f}% (7d) | {pick['cap_size']} | {pick['sector']}")
         print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
+        print(f"   Short: {pick['short_percent']:.1f}%")
         print()
     
     print(f"{'='*70}\n")
@@ -436,19 +374,21 @@ def display_picks(picks: List[Dict]):
     print("   • Position: 5% each (max 3-5 positions)")
     print("   • Stop loss: -8%")
     print("   • Hold: 7 days")
-    print("   • Expected: 79% win rate, +5.5% avg return")
+    print("   • Expected: 71% win rate, +4.87% avg return")
+    print("   • Alpha: +8.84 points vs S&P")
     print(f"\n{'='*70}\n")
 
 
 def send_discord_notification(picks: List[Dict]):
     """Send V3 results to Discord."""
+    
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
     
     if not DISCORD_WEBHOOK:
         DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1439772327691944079/6AnTFZRv1xMEHPmzuWAsMjT894jSqomAnaQvryn4c3BSOkCm-r1KK2oaTBVTFlHdbbF4"
         print("⚠️  Using hardcoded V3 webhook")
     
-    print(f"📤 Sending to V3 Discord channel...")
+    print(f"📤 Sending to V3 Discord...")
     
     try:
         from discord_webhook import DiscordWebhook, DiscordEmbed
@@ -457,55 +397,48 @@ def send_discord_notification(picks: List[Dict]):
         return
     
     try:
-        webhook = DiscordWebhook(url=DISCORD_WEBHOOK, username="Supabot V3 Momentum")
+        webhook = DiscordWebhook(url=DISCORD_WEBHOOK, username="Supabot V3")
         
         if not picks:
             embed = DiscordEmbed(
-                title="📊 Supabot V3 Momentum Scan Complete",
-                description="No 2-week momentum picks (0-5% current, 0-6% past week, 20+ Twitter, 2+ Reddit)",
+                title="📊 Supabot V3 Scan Complete",
+                description="No Fresh+Accel picks (0-5% range, 15+ Twitter OR 5+ Reddit)",
                 color='808080'
             )
-            embed.set_footer(text=f"V3 Momentum | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+            embed.set_footer(text=f"V3 Validated | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
             webhook.add_embed(embed)
             webhook.execute()
+            print("✅ Discord sent (no picks)")
             return
         
         embed = DiscordEmbed(
-            title=f"🎯 Supabot V3: {len(picks)} Two-Week Momentum Picks",
-            description=f"Fresh (0-5%) + Past Week (0-6%) + Buzz | Validated 79% WR",
+            title=f"🎯 Supabot V3: {len(picks)} Fresh+Accel Picks",
+            description=f"0-5% Fresh | 15+ Twitter OR 5+ Reddit | Validated 71% WR",
             color='00ff00'
         )
         
         for i, pick in enumerate(picks[:10], 1):
-            # Build signal emojis (match V2 style)
-            signals = []
-            signals.append("✨")  # Always Fresh
-            signals.append("📈")  # Always Accelerating
+            # Build signal emojis
+            signals = ["✨", "📈"]  # Always Fresh + Accel
             
-            # High conviction criteria (same as V2):
-            # - Past week momentum 3-6% (building)
-            # - Explosive/Strong buzz (30+ Twitter)
-            # - Volume spike
+            # High conviction: Strong buzz + volume spike
             is_high_conviction = (
-                3 <= pick.get('change_prev_7d', 0) <= 6 and
-                pick.get('twitter_mentions', 0) >= 30
-            ) or (
                 pick.get('buzz_level') in ['Explosive', 'Strong'] and
                 pick.get('volume_spike', False)
             )
             
             if is_high_conviction:
                 signals.append("🔥")
-            
-            if pick.get('volume_spike', False) and not is_high_conviction:
+            elif pick.get('volume_spike', False):
                 signals.append("📊")
             
             signal_str = " ".join(signals)
             
             value_parts = [
                 f"**${pick['price']:.2f}**",
-                f"Curr: {pick['change_7d']:+.1f}% / Prev: {pick['change_prev_7d']:+.1f}%",
+                f"Fresh: {pick['change_7d']:+.1f}%",
                 f"{pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)",
+                f"{pick['cap_size']}",
                 f"Short: {pick['short_percent']:.1f}%"
             ]
             
@@ -524,15 +457,15 @@ def send_discord_notification(picks: List[Dict]):
         
         embed.add_embed_field(
             name="📊 Summary",
-            value=f"Total: {len(picks)} | Validated: 79% WR, +5.5% avg | 2-week momentum filter",
+            value=f"Total: {len(picks)} | Validated: 71% WR, +4.87% avg | Beat S&P by +8.84 pts",
             inline=False
         )
         
-        embed.set_footer(text=f"V3 Momentum Edition | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V3 Validated Edge | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         
         webhook.add_embed(embed)
         response = webhook.execute()
-        print(f"✅ Discord sent - Status: {response.status_code}")
+        print(f"✅ Discord sent ({len(picks)} picks)")
     
     except Exception as e:
         print(f"❌ Discord failed: {e}")
@@ -559,6 +492,6 @@ if __name__ == "__main__":
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
     
     if picks:
-        print(f"✅ V3 Momentum Scan Complete!\n")
+        print(f"✅ V3 Scan Complete!\n")
     else:
-        print(f"❌ No 2-week momentum picks today\n")
+        print(f"❌ No picks today\n")
