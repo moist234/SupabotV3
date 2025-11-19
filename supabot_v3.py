@@ -49,8 +49,8 @@ print("🤖 SUPABOT V3 - OPTIMIZED VALIDATED SCANNER")
 print("="*70)
 print(f"\nFresh Range: {FRESH_MIN}% to {FRESH_MAX}% (excludes toxic +5 to +10%)")
 print(f"Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
-print(f"Validated: 73% WR, +3.8% avg")
-print(f"Alpha vs S&P: +8+ points")
+print(f"Validated: 70% WR, +4.71% avg (37 trades)")
+print(f"Alpha vs S&P: +8.96 points")
 print("="*70 + "\n")
 
 
@@ -423,13 +423,13 @@ def display_picks(picks: List[Dict]):
         return
     
     print(f"\n{'='*70}")
-    print(f"🎯 {len(picks)} FRESH+ACCEL PICKS (Validated 73% WR)")
+    print(f"🎯 TOP 5 FRESH+ACCEL PICKS (Validated 70% WR)")
     print(f"{'='*70}\n")
     
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
         
-        print(f"{i}. {pick['ticker']} - ${pick['price']:.2f}")
+        print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (Score: {pick['quality_score']:.0f}/100)")
         print(f"   Fresh: {pick['change_7d']:+.1f}% (7d) | {pick['cap_size']} | {pick['sector']}")
         print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
         print(f"   Short: {pick['short_percent']:.1f}%")
@@ -437,11 +437,11 @@ def display_picks(picks: List[Dict]):
     
     print(f"{'='*70}\n")
     print("📋 Trade Plan:")
-    print("   • Position: 5% each (max 3-5 positions)")
+    print("   • Position: 5% each (max 5 positions)")
     print("   • Stop loss: -8%")
     print("   • Hold: 7 days")
-    print("   • Expected: 73% win rate, +3.8% avg return")
-    print("   • Alpha: +8+ points vs S&P")
+    print("   • Expected: 70% win rate, +4.71% avg return")
+    print("   • Alpha: +8.96 points vs S&P")
     print(f"\n{'='*70}\n")
 
 
@@ -502,6 +502,7 @@ def send_discord_notification(picks: List[Dict]):
             
             value_parts = [
                 f"**${pick['price']:.2f}**",
+                f"Score: {pick.get('quality_score', 0):.0f}/100",
                 f"Fresh: {pick['change_7d']:+.1f}%",
                 f"{pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)",
                 f"{pick['cap_size']}",
@@ -523,7 +524,7 @@ def send_discord_notification(picks: List[Dict]):
         
         embed.add_embed_field(
             name="📊 Summary",
-            value=f"Total: {len(picks)} | Validated: 73% WR, +3.8% avg | Excludes toxic +5 to +10%",
+            value=f"Total: {len(picks)} | Validated: 70% WR, +4.71% avg (37 trades) | Alpha: +8.96 pts vs S&P",
             inline=False
         )
         
