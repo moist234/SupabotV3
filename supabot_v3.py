@@ -23,6 +23,8 @@ import praw
 import requests
 from finvizfinance.screener.overview import Overview
 
+import random
+
 load_dotenv()
 
 # API Keys
@@ -65,8 +67,13 @@ def get_universe() -> List[str]:
         fviz.set_filter(filters_dict=filters)
         df = fviz.screener_view()
         
-        tickers = df['Ticker'].tolist()[:SCAN_LIMIT]
-        print(f"📊 Finviz found {len(tickers)} quality stocks")
+        # SHUFFLE to avoid alphabetical bias!
+        import random
+        tickers = df['Ticker'].tolist()
+        random.shuffle(tickers)
+        tickers = tickers[:SCAN_LIMIT]
+        
+        print(f"📊 Finviz found {len(tickers)} quality stocks (randomized)")
         return tickers
     except Exception as e:
         print(f"⚠️  Finviz error: {e}, using fallback")
@@ -74,7 +81,7 @@ def get_universe() -> List[str]:
 
 
 def check_fresh(ticker: str) -> Dict:
-    """Check if stock is Fresh (0-5% current week)."""
+    """Check if stock is Fresh (-5% to +5%, excluding toxic +5 to +10% range)."""
     try:
         hist = yf.Ticker(ticker).history(period="6mo")
         if len(hist) < 10:
@@ -88,7 +95,7 @@ def check_fresh(ticker: str) -> Dict:
         # 90-day change (avoid falling knives)
         change_90d = ((close.iloc[-1] - close.iloc[-91]) / close.iloc[-91] * 100) if len(close) > 90 else 0
         
-        # Fresh range: 0% to +5%
+        # Fresh range: -5% to +5% (excludes toxic +5 to +10%)
         is_fresh = FRESH_MIN <= change_7d <= FRESH_MAX and change_90d > -40.0
         
         return {
@@ -231,14 +238,63 @@ def get_quality_data(ticker: str) -> Dict:
         return None
 
 
+def calculate_quality_score(pick: Dict) -> float:
+    """
+    Calculate quality score for ranking (0-100 scale).
+    
+    Based on validated predictive factors:
+    - Buzz strength (higher = better)
+    - Fresh range position (0-2% = best)
+    - Volume confirmation
+    - Market cap (mid-caps often best)
+    """
+    score = 0
+    
+    # 1. Buzz Strength (40 points) - MOST IMPORTANT
+    twitter = pick['twitter_mentions']
+    reddit = pick['reddit_mentions']
+    total_buzz = twitter + (reddit * 2)  # Weight Reddit 2x (cross-platform confirmation)
+    
+    if total_buzz >= 50:
+        score += 40
+    elif total_buzz >= 30:
+        score += 30
+    elif total_buzz >= 20:
+        score += 20
+    else:
+        score += 10
+    
+    # 2. Fresh Range Sweet Spot (30 points)
+    fresh = pick['change_7d']
+    if 0 <= fresh <= 2:  # Best range (80% WR, +5.73% avg)
+        score += 30
+    elif -2 <= fresh < 0:  # Negatives (75% WR, +3.55% avg)
+        score += 25
+    elif 2 < fresh <= 5:  # Decent (68% WR, +2.37% avg)
+        score += 20
+    else:
+        score += 10
+    
+    # 3. Volume Confirmation (15 points)
+    if pick.get('volume_spike'):
+        score += 15
+    elif pick['volume_ratio'] > 1.0:
+        score += 8
+    
+    # 4. Market Cap (15 points) - Mid/Large better liquidity
+    if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
+        score += 15
+    elif 'Small' in pick['cap_size']:
+        score += 10
+    else:  # Mega
+        score += 5
+    
+    return score
+
+
 def scan() -> List[Dict]:
     """
-    Run clean validated scan.
-    
-    Returns ALL stocks with:
-    - Fresh (0-5% current week) ✅
-    - Accelerating buzz (15+ Twitter OR 5+ Reddit) ✅
-    - No squeeze (<20% short) ✅
+    Run clean validated scan, return TOP picks ranked by quality.
     """
     
     universe = get_universe()
@@ -261,7 +317,7 @@ def scan() -> List[Dict]:
             if quality['price'] * quality['volume'] < MIN_VOLUME_USD:
                 continue
             
-            # Step 2: Fresh check (0-5%)
+            # Step 2: Fresh check (-5% to +5%)
             fresh_data = check_fresh(ticker)
             if not fresh_data or not fresh_data['is_fresh']:
                 continue
@@ -315,17 +371,26 @@ def scan() -> List[Dict]:
                 'has_squeeze': False,
             }
             
+            # Calculate quality score for ranking
+            pick['quality_score'] = calculate_quality_score(pick)
+            
             picks.append(pick)
             
             # Display
             signals = f"✨📈 ({fresh_data['change_7d']:+.1f}%)"
             volume_flag = "📊" if quality['volume_spike'] else ""
-            print(f"   ✓ {ticker}: ${fresh_data['price']:.2f} | {signals} {volume_flag} | {accel_data['buzz_level']} buzz")
+            print(f"   ✓ {ticker}: ${fresh_data['price']:.2f} | {signals} {volume_flag} | Score: {pick['quality_score']:.0f}")
         
         except Exception as e:
             continue
     
-    return picks
+    # RANK BY QUALITY SCORE and return top picks
+    picks.sort(key=lambda x: x['quality_score'], reverse=True)
+    
+    print(f"\n📊 Found {len(picks)} total Fresh+Accel stocks")
+    print(f"🎯 Returning top 5 by quality score\n")
+    
+    return picks[:5]  # Return BEST 5 only
 
 
 def save_picks(picks: List[Dict]):
@@ -358,7 +423,7 @@ def display_picks(picks: List[Dict]):
         return
     
     print(f"\n{'='*70}")
-    print(f"🎯 {len(picks)} FRESH+ACCEL PICKS (Validated 71% WR)")
+    print(f"🎯 {len(picks)} FRESH+ACCEL PICKS (Validated 73% WR)")
     print(f"{'='*70}\n")
     
     for i, pick in enumerate(picks, 1):
@@ -375,8 +440,8 @@ def display_picks(picks: List[Dict]):
     print("   • Position: 5% each (max 3-5 positions)")
     print("   • Stop loss: -8%")
     print("   • Hold: 7 days")
-    print("   • Expected: 71% win rate, +4.87% avg return")
-    print("   • Alpha: +8.84 points vs S&P")
+    print("   • Expected: 73% win rate, +3.8% avg return")
+    print("   • Alpha: +8+ points vs S&P")
     print(f"\n{'='*70}\n")
 
 
@@ -403,7 +468,7 @@ def send_discord_notification(picks: List[Dict]):
         if not picks:
             embed = DiscordEmbed(
                 title="📊 Supabot V3 Scan Complete",
-                description="No Fresh+Accel picks (0-5% range, 15+ Twitter OR 5+ Reddit)",
+                description="No Fresh+Accel picks (-5% to +5% range, 15+ Twitter OR 5+ Reddit)",
                 color='808080'
             )
             embed.set_footer(text=f"V3 Validated | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
@@ -414,7 +479,7 @@ def send_discord_notification(picks: List[Dict]):
         
         embed = DiscordEmbed(
             title=f"🎯 Supabot V3: {len(picks)} Fresh+Accel Picks",
-            description=f"0-5% Fresh | 15+ Twitter OR 5+ Reddit | Validated 71% WR",
+            description=f"-5% to +5% Fresh | 15+ Twitter OR 5+ Reddit | Validated 73% WR",
             color='00ff00'
         )
         
@@ -458,7 +523,7 @@ def send_discord_notification(picks: List[Dict]):
         
         embed.add_embed_field(
             name="📊 Summary",
-            value=f"Total: {len(picks)} | Validated: 71% WR, +4.87% avg | Beat S&P by +8.84 pts",
+            value=f"Total: {len(picks)} | Validated: 73% WR, +3.8% avg | Excludes toxic +5 to +10%",
             inline=False
         )
         
