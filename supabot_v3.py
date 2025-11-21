@@ -53,6 +53,49 @@ print(f"Validated: 70% WR, +4.71% avg (37 trades)")
 print(f"Alpha vs S&P: +8.96 points")
 print("="*70 + "\n")
 
+def load_recent_entries() -> set:
+    """Load tickers entered in last 7 days."""
+    from datetime import datetime, timedelta
+    
+    recent_file = "outputs/recent_entries.csv"
+    
+    if not os.path.exists(recent_file):
+        return set()
+    
+    try:
+        df = pd.read_csv(recent_file)
+        cutoff = datetime.now() - timedelta(days=7)
+        
+        # Filter to last 7 days
+        df['entry_date'] = pd.to_datetime(df['entry_date'])
+        recent = df[df['entry_date'] >= cutoff]
+        
+        return set(recent['ticker'].tolist())
+    except:
+        return set()
+
+
+def save_recent_entries(picks: List[Dict]):
+    """Save today's picks to recent entries file."""
+    recent_file = "outputs/recent_entries.csv"
+    
+    # Load existing
+    if os.path.exists(recent_file):
+        existing = pd.read_csv(recent_file)
+    else:
+        existing = pd.DataFrame(columns=['ticker', 'entry_date'])
+    
+    # Add new picks
+    new_entries = pd.DataFrame([
+        {'ticker': p['ticker'], 'entry_date': p['entry_date']}
+        for p in picks
+    ])
+    
+    # Combine and save
+    combined = pd.concat([existing, new_entries], ignore_index=True)
+    combined.to_csv(recent_file, index=False)
+
+
 
 def get_universe() -> List[str]:
     """Get quality stock universe from Finviz."""
@@ -306,6 +349,10 @@ def scan() -> List[Dict]:
     """
     
     universe = get_universe()
+    recent_entries = load_recent_entries()
+    universe = [t for t in universe if t not in recent_entries]
+    print(f"📋 After cooldown filter: {len(universe)} stocks (removed recent entries)")
+    
     picks = []
     
     print(f"\n🔍 Scanning {len(universe)} stocks...\n")
@@ -557,6 +604,7 @@ if __name__ == "__main__":
     
     if picks:
         save_picks(picks)
+        save_recent_entries(picks)
     
     print(f"\n{'='*70}")
     print("📤 SENDING DISCORD NOTIFICATION...")
