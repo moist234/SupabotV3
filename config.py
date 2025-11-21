@@ -51,7 +51,7 @@ class ScannerConfig:
     min_90d_change: float = 0.0    # Must be in uptrend (0%+ over 90d)
     max_1d_change: float = 12.0    # Skip daily spikes >12%
     fresh_min: float = -5.0        # Fresh range: -5% to +10%
-    fresh_max: float = 10.0
+    fresh_max: float = 5.0
     
     # Social signal thresholds
     min_x_mentions: int = 10       # Minimum X/Twitter posts
