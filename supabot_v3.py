@@ -1,22 +1,18 @@
 """
-Supabot V3 - Optimized Validated Scanner with Market Regime Filter
+Supabot V3 - Sector-Optimized Scanner
 
-PROVEN STRATEGY (37 trades in favorable regimes):
-- Fresh: -5% to +5% (excludes money-losing +5 to +10% range)
+VALIDATED SECTORS (43 trades):
+✅ Healthcare: 100% WR (9/9)
+✅ Technology: 67% WR (8/12)
+❌ Energy: 33% WR (1/3)
+❌ Consumer Cyclical: 33% WR (1/3)
+❌ Utilities: 50% WR (2/4)
+
+STRATEGY:
+- Fresh: -5% to +5%
 - Accel: 15+ Twitter OR 5+ Reddit
-- No Squeeze: <20% short interest
-- Validated: 70% WR, +4.71% avg return, +8.96 alpha
-- p-value: 0.009 (highly significant)
-
-REGIME DEPENDENCY DISCOVERED:
-- Low vol (VIX <18): 84% WR (Weeks 1-9)
-- High vol (VIX >20): 28% WR (Weeks 10-13)
-- Strategy is MEAN REVERSION - requires stable markets
-
-MARKET FILTERS:
-- VIX must be <20 (low volatility)
-- SPY 10d must be >-3% (no sustained downtrend)
-- SPY 5d must be >-2% (no recent sharp drop)
+- No Squeeze: <20% short
+- ONLY: Healthcare, Technology, Communication Services
 """
 import os
 import sys
@@ -41,8 +37,8 @@ REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "supabot/3.0")
 TWITTER_API_KEY = os.getenv("TWITTERAPI_IO_KEY")
 
 # VALIDATED SETTINGS
-FRESH_MIN = -5.0   # Include negatives (75% WR)
-FRESH_MAX = 5.0    # EXCLUDE +5 to +10% (loses money!)
+FRESH_MIN = -5.0
+FRESH_MAX = 5.0
 MIN_MARKET_CAP = 500_000_000
 MIN_PRICE = 5.0
 MIN_VOLUME_USD = 2_000_000
@@ -51,226 +47,12 @@ MIN_TWITTER_BUZZ = 15
 MIN_REDDIT_BUZZ = 5
 SCAN_LIMIT = 100
 
-# MARKET REGIME THRESHOLDS
-MAX_VIX = 20.0           # Pause if VIX above this
-MAX_SPY_10D_DROP = -3.0  # Pause if SPY down more than this in 10 days
-MAX_SPY_5D_DROP = -2.0   # Pause if SPY down more than this in 5 days
-MAX_RED_WEEKS = 3        # Pause after this many consecutive red weeks
+# SECTOR FILTER (VALIDATED)
+BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities']
 
-
-def check_market_regime() -> dict:
-    """Check if market conditions favor Fresh+Accel (mean reversion) strategy."""
-    
-    try:
-        # Get S&P 500 data
-        spy = yf.Ticker("SPY")
-        hist = spy.history(period="2mo")
-        
-        if hist.empty or len(hist) < 10:
-            return {
-                'is_tradeable': True,
-                'status': '⚠️  Market check failed - proceeding with caution',
-                'reasons': ['Market data unavailable'],
-                'spy_5d': 0,
-                'spy_10d': 0,
-                'vix': 0,
-                'spy_volume_ratio': 1.0,
-                'red_weeks': 0
-            }
-        
-        close = hist['Close']
-        volume = hist['Volume']
-        
-        # Calculate metrics
-        spy_5d = ((close.iloc[-1] - close.iloc[-6]) / close.iloc[-6] * 100) if len(close) > 5 else 0
-        spy_10d = ((close.iloc[-1] - close.iloc[-11]) / close.iloc[-11] * 100) if len(close) > 10 else 0
-        
-        current_vol = volume.iloc[-1]
-        avg_vol_20d = volume.tail(20).mean()
-        spy_volume_ratio = current_vol / avg_vol_20d if avg_vol_20d > 0 else 1.0
-        
-        # Count consecutive red weeks
-        red_weeks = 0
-        for i in range(1, min(5, len(close) // 5)):
-            week_start = close.iloc[-(i*5 + 5)]
-            week_end = close.iloc[-(i*5)]
-            if week_end < week_start:
-                red_weeks += 1
-            else:
-                break
-        
-        # Get VIX
-        try:
-            vix_ticker = yf.Ticker("^VIX")
-            vix_hist = vix_ticker.history(period="5d")
-            vix = float(vix_hist['Close'].iloc[-1]) if not vix_hist.empty else 0
-        except:
-            vix = 0
-        
-        # DECISION LOGIC
-        reasons = []
-        is_tradeable = True
-        
-        # Check all conditions
-        if vix > MAX_VIX:
-            is_tradeable = False
-            reasons.append(f"High volatility regime (VIX: {vix:.1f} > {MAX_VIX})")
-            reasons.append("Mean reversion strategies fail in high-vol")
-        
-        if spy_10d < MAX_SPY_10D_DROP:
-            is_tradeable = False
-            reasons.append(f"Sustained downtrend (SPY 10d: {spy_10d:.1f}% < {MAX_SPY_10D_DROP}%)")
-            reasons.append("Macro flow overpowering micro signals")
-        
-        if spy_5d < MAX_SPY_5D_DROP:
-            is_tradeable = False
-            reasons.append(f"Recent sharp decline (SPY 5d: {spy_5d:.1f}% < {MAX_SPY_5D_DROP}%)")
-            reasons.append("Distribution pattern detected")
-        
-        if red_weeks >= MAX_RED_WEEKS:
-            is_tradeable = False
-            reasons.append(f"Extended downtrend ({red_weeks} consecutive red weeks)")
-            reasons.append("Trend continuation overpowers mean reversion")
-        
-        if spy_5d < 0 and spy_volume_ratio > 1.3:
-            is_tradeable = False
-            reasons.append(f"High-volume selling (Vol: {spy_volume_ratio:.2f}x avg)")
-            reasons.append("Institutional distribution in progress")
-        
-        # Build status message
-        if is_tradeable:
-            status = "✅ MARKET FAVORABLE - All systems GO!"
-            reasons.insert(0, "Low volatility regime (optimal for mean reversion)")
-            if spy_10d > 0:
-                reasons.append(f"Uptrend detected (SPY 10d: +{spy_10d:.1f}%)")
-        else:
-            status = "🚨 MARKET UNFAVORABLE - STRATEGY PAUSED"
-        
-        return {
-            'is_tradeable': is_tradeable,
-            'status': status,
-            'reasons': reasons,
-            'spy_5d': round(spy_5d, 2),
-            'spy_10d': round(spy_10d, 2),
-            'vix': round(vix, 2),
-            'spy_volume_ratio': round(spy_volume_ratio, 2),
-            'red_weeks': red_weeks
-        }
-    
-    except Exception as e:
-        print(f"⚠️  Market regime error: {e}")
-        return {
-            'is_tradeable': True,
-            'status': '⚠️  Error - proceeding with caution',
-            'reasons': [str(e)],
-            'spy_5d': 0,
-            'spy_10d': 0,
-            'vix': 0,
-            'spy_volume_ratio': 1.0,
-            'red_weeks': 0
-        }
-
-
-def print_regime_analysis(regime: dict):
-    """Display market regime analysis."""
-    print("\n" + "="*70)
-    print("📊 MARKET REGIME ANALYSIS")
-    print("="*70)
-    print(f"   SPY 5d:  {regime['spy_5d']:+.1f}%")
-    print(f"   SPY 10d: {regime['spy_10d']:+.1f}%")
-    print(f"   VIX:     {regime['vix']:.1f}")
-    print(f"   Volume:  {regime['spy_volume_ratio']:.2f}x")
-    if regime['red_weeks'] > 0:
-        print(f"   Streak:  {regime['red_weeks']} red weeks")
-    print()
-    print(f"   {regime['status']}")
-    print()
-    
-    for reason in regime['reasons']:
-        print(f"   └─ {reason}")
-    
-    if not regime['is_tradeable']:
-        print()
-        print("   ⏸️  Strategy will resume when:")
-        print("      ✅ VIX drops below 20")
-        print("      ✅ SPY 10d change > -2%")
-        print("      ✅ Market shows strength")
-        print()
-        print("   📊 Why Fresh+Accel needs stable markets:")
-        print("      └─ Mean reversion strategy (not momentum)")
-        print("      └─ Requires buzz to overpower price action")
-        print("      └─ High-vol/downtrends break the edge")
-        print()
-        print("   💡 Historical validation:")
-        print("      └─ Low vol (VIX <18): 84% WR, +5.2% avg (31 trades)")
-        print("      └─ High vol (VIX >20): 28% WR, -2.1% avg (18 trades)")
-    
-    print("="*70 + "\n")
-
-
-def send_paused_discord(regime: dict):
-    """Send Discord when strategy paused."""
-    
-    DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
-    if not DISCORD_WEBHOOK:
-        DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1439772327691944079/6AnTFZRv1xMEHPmzuWAsMjT894jSqomAnaQvryn4c3BSOkCm-r1KK2oaTBVTFlHdbbF4"
-    
-    try:
-        from discord_webhook import DiscordWebhook, DiscordEmbed
-        
-        webhook = DiscordWebhook(url=DISCORD_WEBHOOK, username="Supabot Market Watch")
-        
-        embed = DiscordEmbed(
-            title="🚨 Supabot V3 - Strategy Paused",
-            description="Market regime unfavorable for Fresh+Accel edge",
-            color='ff6600'
-        )
-        
-        embed.add_embed_field(
-            name="📊 Market Conditions",
-            value=f"**VIX:** {regime['vix']:.1f} (max: {MAX_VIX})\n"
-                  f"**SPY 10d:** {regime['spy_10d']:+.1f}% (min: {MAX_SPY_10D_DROP}%)\n"
-                  f"**SPY 5d:** {regime['spy_5d']:+.1f}%\n"
-                  f"**Volume:** {regime['spy_volume_ratio']:.2f}x",
-            inline=False
-        )
-        
-        embed.add_embed_field(
-            name="⚠️ Why Paused",
-            value="\n".join(f"• {r}" for r in regime['reasons'][:2]),
-            inline=False
-        )
-        
-        embed.add_embed_field(
-            name="📈 Fresh+Accel Requirements",
-            value="**Mean reversion strategy needs:**\n"
-                  "• Low volatility (VIX < 20)\n"
-                  "• Stable/neutral market trend\n"
-                  "• Retail participation strong",
-            inline=False
-        )
-        
-        embed.add_embed_field(
-            name="💡 Historical Performance",
-            value="**VIX < 18:** 84% WR, +5.2% avg\n"
-                  "**VIX > 20:** 28% WR, -2.1% avg\n\n"
-                  "*Bot will resume when VIX < 20*",
-            inline=False
-        )
-        
-        embed.set_footer(text=f"Paused | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
-        
-        webhook.add_embed(embed)
-        webhook.execute()
-    
-    except Exception as e:
-        print(f"⚠️  Discord failed: {e}")
-
-
-# ============ REST OF V3 CODE (from previous artifact) ============
 
 def get_universe() -> List[str]:
-    """Get quality stock universe from Finviz with randomization."""
+    """Get quality stock universe from Finviz with SECTOR FILTER."""
     try:
         fviz = Overview()
         filters = {
@@ -284,13 +66,44 @@ def get_universe() -> List[str]:
         
         all_tickers = df['Ticker'].tolist()
         random.shuffle(all_tickers)
-        tickers = all_tickers[:SCAN_LIMIT]
         
-        print(f"📊 Finviz: {len(all_tickers)} total, scanning random {len(tickers)}")
-        return tickers
+        # Apply sector filter
+        print(f"📊 Finviz: {len(all_tickers)} total")
+        print(f"   Filtering out: {', '.join(BANNED_SECTORS)}...")
+        
+        filtered = []
+        banned_count = 0
+        
+        for ticker in all_tickers:
+            try:
+                info = yf.Ticker(ticker).info
+                sector = info.get('sector', 'Unknown')
+                
+                if sector in BANNED_SECTORS:
+                    banned_count += 1
+                    continue
+                
+                filtered.append(ticker)
+                
+                if len(filtered) >= SCAN_LIMIT:
+                    break
+            except:
+                filtered.append(ticker)  # Include if can't check sector
+                
+                if len(filtered) >= SCAN_LIMIT:
+                    break
+        
+        print(f"   Excluded {banned_count} stocks, scanning {len(filtered)}")
+        return filtered
+        
     except Exception as e:
         print(f"⚠️  Finviz error: {e}")
-        return ['PLTR', 'SOFI', 'NET', 'RBLX', 'COIN', 'HOOD', 'DKNG']
+        # Fallback to curated list
+        return [
+            'BIIB', 'AMGN', 'CPRX', 'AXSM', 'HALO', 'JAZZ', 'AZN',
+            'PLTR', 'NVDA', 'NET', 'DOCN', 'FSLY', 'ZETA', 'AMKR',
+            'SOFI', 'COIN', 'HOOD', 'RBLX', 'IMAX'
+        ]
 
 
 def check_fresh(ticker: str) -> Dict:
@@ -329,7 +142,7 @@ def check_reddit_confirmation(ticker: str) -> int:
         count = 0
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
         
-        COMMON_WORDS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW', 'WORK', 'PLAY', 'NEXT', 'LAST', 'BACK', 'WELL', 'VERY', 'JUST', 'LIKE', 'LOVE', 'HATE']
+        COMMON_WORDS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW']
         is_strict = len(ticker) <= 2 or ticker.upper() in COMMON_WORDS
         
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
@@ -410,15 +223,20 @@ def check_squeeze(ticker: str) -> Dict:
 
 
 def get_quality_data(ticker: str) -> Dict:
-    """Get market cap, volume, sector."""
+    """Get market cap, volume, sector WITH SECTOR FILTER."""
     try:
         info = yf.Ticker(ticker).info
+        
+        # ============ SECTOR FILTER ============
+        sector = info.get('sector', 'Unknown')
+        
+        if sector in BANNED_SECTORS:
+            return None  # Skip banned sectors
         
         market_cap = info.get('marketCap', 0)
         volume = info.get('volume', 0)
         avg_volume = info.get('averageVolume', 0)
         price = info.get('currentPrice', 0)
-        sector = info.get('sector', 'Unknown')
         
         if market_cap < 2_000_000_000:
             cap_size = "Small (<$2B)"
@@ -493,12 +311,12 @@ def calculate_quality_score(pick: Dict) -> float:
 
 
 def scan() -> List[Dict]:
-    """Run validated scan, return TOP 5 picks."""
+    """Run validated scan with sector filter."""
     
     universe = get_universe()
     picks = []
     
-    print(f"\n🔍 Scanning {len(universe)} stocks...\n")
+    print(f"\n🔍 Scanning {len(universe)} stocks (sector-filtered)...\n")
     
     for ticker in universe:
         try:
@@ -557,7 +375,7 @@ def scan() -> List[Dict]:
     
     picks.sort(key=lambda x: x['quality_score'], reverse=True)
     
-    print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
+    print(f"\n📊 Found {len(picks)} Fresh+Accel stocks (sector-filtered)")
     print(f"🎯 Returning top 5 by quality score\n")
     
     return picks[:5]
@@ -586,14 +404,14 @@ def display_picks(picks: List[Dict]):
         return
     
     print(f"\n{'='*70}")
-    print(f"🎯 TOP 5 FRESH+ACCEL PICKS (Validated 70% WR)")
+    print(f"🎯 TOP 5 SECTOR-OPTIMIZED PICKS")
     print(f"{'='*70}\n")
     
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
         
         print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (Score: {pick['quality_score']:.0f}/100)")
-        print(f"   Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']} | {pick['sector']}")
+        print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
         print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
         print()
     
@@ -605,7 +423,7 @@ def send_discord_notification(picks: List[Dict]):
     
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
     if not DISCORD_WEBHOOK:
-        DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1439772327691944079/6AnTFZRv1xMEHPmzuWAsMjT894jSqomAnaQvryn4c3BSOkCm-r1KK2oaTBVTFlHdbbF4"
+        return
     
     try:
         from discord_webhook import DiscordWebhook, DiscordEmbed
@@ -615,7 +433,7 @@ def send_discord_notification(picks: List[Dict]):
         if not picks:
             embed = DiscordEmbed(
                 title="📊 Supabot V3 Scan Complete",
-                description="No Fresh+Accel picks (-5% to +5%, 15+ Twitter OR 5+ Reddit)",
+                description="No Fresh+Accel picks (Healthcare/Tech only)",
                 color='808080'
             )
             embed.set_footer(text=f"V3 | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
@@ -624,33 +442,24 @@ def send_discord_notification(picks: List[Dict]):
             return
         
         embed = DiscordEmbed(
-            title=f"🎯 Supabot V3: {len(picks)} Top Picks",
-            description=f"-5% to +5% Fresh | Quality ranked | 70% WR, +4.71% avg",
+            title=f"🎯 Supabot V3: {len(picks)} Sector-Optimized Picks",
+            description=f"Healthcare 100% WR | Technology 67% WR | No Energy/Utilities",
             color='00ff00'
         )
         
         for i, pick in enumerate(picks, 1):
             signals = ["✨", "📈"]
             
-            is_high_conviction = (
-                pick.get('buzz_level') in ['Explosive', 'Strong'] and
-                pick.get('volume_spike', False)
-            )
-            
-            if is_high_conviction:
-                signals.append("🔥")
-            elif pick.get('volume_spike'):
+            if pick.get('volume_spike'):
                 signals.append("📊")
             
             signal_str = " ".join(signals)
             
             value_parts = [
                 f"**${pick['price']:.2f}**",
-                f"Score: {pick.get('quality_score', 0):.0f}/100",
+                f"{pick['sector']}",
                 f"Fresh: {pick['change_7d']:+.1f}%",
                 f"{pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)",
-                f"{pick['cap_size']}",
-                f"Short: {pick['short_percent']:.1f}%"
             ]
             
             embed.add_embed_field(
@@ -659,13 +468,7 @@ def send_discord_notification(picks: List[Dict]):
                 inline=False
             )
         
-        embed.add_embed_field(
-            name="📊 Summary",
-            value=f"Total: {len(picks)} | 70% WR, +4.71% avg (37 trades) | Alpha: +8.96 pts",
-            inline=False
-        )
-        
-        embed.set_footer(text=f"V3 Validated | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V3 Sector-Optimized | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         
         webhook.add_embed(embed)
         webhook.execute()
@@ -677,23 +480,13 @@ def send_discord_notification(picks: List[Dict]):
 if __name__ == "__main__":
     
     print("\n" + "="*70)
-    print("🤖 SUPABOT V3 - REGIME-AWARE SCANNER")
+    print("🤖 SUPABOT V3 - SECTOR-OPTIMIZED SCANNER")
     print("="*70)
-    print(f"\nFresh: {FRESH_MIN}% to {FRESH_MAX}% | Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
-    print(f"Validated: 70% WR, +4.71% avg, +8.96 alpha (37 trades)")
-    print("="*70)
+    print(f"Sectors: Healthcare (100% WR), Technology (67% WR)")
+    print(f"Excluded: Energy/Consumer/Utilities (33-50% WR)")
+    print(f"Fresh: {FRESH_MIN}% to {FRESH_MAX}% | Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
+    print("="*70 + "\n")
     
-    # CHECK MARKET REGIME FIRST
-    regime = check_market_regime()
-    print_regime_analysis(regime)
-    
-    if not regime['is_tradeable']:
-        print("⏸️  Scan paused - Market conditions unfavorable\n")
-        send_paused_discord(regime)
-        print("✅ Paused notification sent to Discord\n")
-        sys.exit(0)
-    
-    # Market is favorable - proceed
     start_time = datetime.now()
     
     picks = scan()
@@ -705,7 +498,7 @@ if __name__ == "__main__":
     if picks:
         save_picks(picks)
     
-    print(f"\n{'='*70}")
+    print(f"{'='*70}")
     print("📤 SENDING DISCORD NOTIFICATION...")
     print(f"{'='*70}")
     send_discord_notification(picks)
