@@ -79,16 +79,18 @@ class SupabotScanner:
         
         print(f"\n🏆 Step 7: Scoring and ranking...")
         final_scores = self._calculate_final_scores(ai_analyzed)
-        
+        print(f"\n   🔍 final_scores returned: {len(final_scores)} items")  # ← ADD THIS
+
         df = pd.DataFrame(final_scores)
-        
+        print(f"   🔍 DataFrame created: {len(df)} rows")  # ← ADD THIS
+        print(f"   🔍 DataFrame columns: {df.columns.tolist() if not df.empty else 'EMPTY'}")  # ← ADD THIS
+
         if df.empty:
             print("\n❌ No candidates after scoring!")
             return pd.DataFrame()
         
         df = df.sort_values('composite_score', ascending=False)
         df = df[df['composite_score'] >= SCANNER_CONFIG.min_composite_score]
-        df = df[df['is_fresh'] == True]
         
         if df.empty:
             print("   ⚠️  No fresh signals found")
@@ -231,8 +233,11 @@ class SupabotScanner:
                 
                 is_fresh = stock.get('is_fresh', False)
                 is_accelerating = social.get('is_accelerating', False)
-                
+                print(f"   DEBUG {ticker}: is_fresh={is_fresh}, is_accelerating={is_accelerating}")
+
                 if not (is_fresh and is_accelerating):
+                    print(f"   ✗ {ticker}: Filtered (fresh={is_fresh}, accel={is_accelerating})")
+
                     continue
                 
                 float_data = get_float_analysis(ticker)
@@ -244,7 +249,7 @@ class SupabotScanner:
                 if has_squeeze or short_percent > 20:
                     print(f"   ✗ {ticker}: Squeeze {short_percent:.0f}% - EXCLUDED")
                     continue
-                
+
                 if ENABLE_AI_ANALYSIS and 'composite_score' in ai_analysis:
                     base_composite = ai_analysis['composite_score']
                 else:
@@ -269,8 +274,10 @@ class SupabotScanner:
                 }
                 
                 results.append(result)
-            
-            except:
+                print(f"   ✅ {ticker}: Added to results! Score: {base_composite}")  # ← MOVE IT HERE
+
+            except Exception as e:
+                print(f"   ❌ {ticker}: ERROR creating result - {e}")
                 continue
         
         return results
