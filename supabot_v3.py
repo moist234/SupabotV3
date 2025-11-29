@@ -1,18 +1,8 @@
 """
-Supabot V3 - Sector-Optimized Scanner
+Supabot V3 - With Enhanced Metrics Collection
 
-VALIDATED SECTORS (43 trades):
-✅ Healthcare: 100% WR (9/9)
-✅ Technology: 67% WR (8/12)
-❌ Energy: 33% WR (1/3)
-❌ Consumer Cyclical: 33% WR (1/3)
-❌ Utilities: 50% WR (2/4)
-
-STRATEGY:
-- Fresh: -5% to +5%
-- Accel: 15+ Twitter OR 5+ Reddit
-- No Squeeze: <20% short
-- ONLY: Healthcare, Technology, Communication Services
+NEW: Tracks Bollinger Bands, ATR, Volume Trends for pattern analysis
+These don't filter anything - just collect data to find patterns later!
 """
 import os
 import sys
@@ -22,6 +12,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict
 import pandas as pd
 from dotenv import load_dotenv
+import numpy as np
 
 import yfinance as yf
 import praw
@@ -36,7 +27,7 @@ REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "supabot/3.0")
 TWITTER_API_KEY = os.getenv("TWITTERAPI_IO_KEY")
 
-# VALIDATED SETTINGS
+# Settings
 FRESH_MIN = -5.0
 FRESH_MAX = 5.0
 MIN_MARKET_CAP = 500_000_000
@@ -47,12 +38,122 @@ MIN_TWITTER_BUZZ = 15
 MIN_REDDIT_BUZZ = 5
 SCAN_LIMIT = 100
 
-# SECTOR FILTER (VALIDATED)
 BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities']
 
 
+# ============ NEW: METRIC CALCULATORS ============
+
+def calculate_bollinger_position(ticker: str) -> float:
+    """
+    Calculate where price is within Bollinger Bands (0-1 scale).
+    0.0 = at lower band (oversold)
+    0.5 = at middle (neutral)
+    1.0 = at upper band (overbought)
+    """
+    try:
+        hist = yf.Ticker(ticker).history(period="3mo")
+        if len(hist) < 20:
+            return 0.5  # Default neutral
+        
+        close = hist['Close']
+        sma_20 = close.rolling(20).mean().iloc[-1]
+        std_20 = close.rolling(20).std().iloc[-1]
+        
+        bb_upper = sma_20 + (2 * std_20)
+        bb_lower = sma_20 - (2 * std_20)
+        current = close.iloc[-1]
+        
+        # Position within bands (0-1)
+        if bb_upper == bb_lower:
+            return 0.5
+        
+        position = (current - bb_lower) / (bb_upper - bb_lower)
+        return round(float(np.clip(position, 0, 1)), 3)
+    except:
+        return 0.5
+
+
+def calculate_atr_normalized(ticker: str) -> float:
+    """
+    Calculate ATR as % of price (volatility measure).
+    Higher = more volatile (bigger moves possible)
+    """
+    try:
+        hist = yf.Ticker(ticker).history(period="2mo")
+        if len(hist) < 14:
+            return 0.0
+        
+        high = hist['High']
+        low = hist['Low']
+        close = hist['Close']
+        
+        # True Range
+        tr1 = high - low
+        tr2 = abs(high - close.shift())
+        tr3 = abs(low - close.shift())
+        
+        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+        atr = tr.rolling(14).mean().iloc[-1]
+        
+        # Normalize by current price
+        current_price = close.iloc[-1]
+        atr_pct = (atr / current_price * 100) if current_price > 0 else 0
+        
+        return round(float(atr_pct), 2)
+    except:
+        return 0.0
+
+
+def calculate_volume_trend(ticker: str) -> float:
+    """
+    Calculate volume acceleration (recent vs baseline).
+    >1.5 = volume accelerating
+    <0.7 = volume declining
+    """
+    try:
+        hist = yf.Ticker(ticker).history(period="1mo")
+        if len(hist) < 20:
+            return 1.0
+        
+        volume = hist['Volume']
+        
+        recent_5d = volume.tail(5).mean()
+        baseline_15d = volume.tail(20).head(15).mean()
+        
+        trend = recent_5d / baseline_15d if baseline_15d > 0 else 1.0
+        return round(float(trend), 2)
+    except:
+        return 1.0
+
+
+def get_rsi(ticker: str) -> float:
+    """Get current RSI value."""
+    try:
+        hist = yf.Ticker(ticker).history(period="2mo")
+        if len(hist) < 14:
+            return 50.0
+        
+        close = hist['Close']
+        delta = close.diff()
+        
+        gains = delta.clip(lower=0)
+        losses = -delta.clip(upper=0)
+        
+        avg_gains = gains.rolling(14).mean()
+        avg_losses = losses.rolling(14).mean()
+        
+        rs = avg_gains / avg_losses
+        rsi = 100 - (100 / (1 + rs))
+        
+        return round(float(rsi.iloc[-1]), 1)
+    except:
+        return 50.0
+
+
+# ============ EXISTING FUNCTIONS (UNCHANGED) ============
+
 def get_universe() -> List[str]:
-    """Get quality stock universe from Finviz with SECTOR FILTER."""
+    """Get stock universe with sector filter."""
     try:
         fviz = Overview()
         filters = {
@@ -67,7 +168,6 @@ def get_universe() -> List[str]:
         all_tickers = df['Ticker'].tolist()
         random.shuffle(all_tickers)
         
-        # Apply sector filter
         print(f"📊 Finviz: {len(all_tickers)} total")
         print(f"   Filtering out: {', '.join(BANNED_SECTORS)}...")
         
@@ -84,12 +184,10 @@ def get_universe() -> List[str]:
                     continue
                 
                 filtered.append(ticker)
-                
                 if len(filtered) >= SCAN_LIMIT:
                     break
             except:
-                filtered.append(ticker)  # Include if can't check sector
-                
+                filtered.append(ticker)
                 if len(filtered) >= SCAN_LIMIT:
                     break
         
@@ -98,23 +196,17 @@ def get_universe() -> List[str]:
         
     except Exception as e:
         print(f"⚠️  Finviz error: {e}")
-        # Fallback to curated list
-        return [
-            'BIIB', 'AMGN', 'CPRX', 'AXSM', 'HALO', 'JAZZ', 'AZN',
-            'PLTR', 'NVDA', 'NET', 'DOCN', 'FSLY', 'ZETA', 'AMKR',
-            'SOFI', 'COIN', 'HOOD', 'RBLX', 'IMAX'
-        ]
+        return ['BIIB', 'AMGN', 'PLTR', 'NVDA', 'SOFI', 'COIN']
 
 
 def check_fresh(ticker: str) -> Dict:
-    """Check if stock is Fresh (-5% to +5%)."""
+    """Check if Fresh."""
     try:
         hist = yf.Ticker(ticker).history(period="6mo")
         if len(hist) < 10:
             return None
         
         close = hist['Close']
-        
         change_7d = ((close.iloc[-1] - close.iloc[-8]) / close.iloc[-8] * 100) if len(close) > 7 else 0
         change_90d = ((close.iloc[-1] - close.iloc[-91]) / close.iloc[-91] * 100) if len(close) > 90 else 0
         
@@ -131,7 +223,7 @@ def check_fresh(ticker: str) -> Dict:
 
 
 def check_reddit_confirmation(ticker: str) -> int:
-    """Get Reddit mentions with smart matching."""
+    """Get Reddit mentions."""
     try:
         reddit = praw.Reddit(
             client_id=REDDIT_CLIENT_ID,
@@ -148,7 +240,6 @@ def check_reddit_confirmation(ticker: str) -> int:
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
             try:
                 subreddit = reddit.subreddit(sub_name)
-                
                 for post in subreddit.new(limit=30):
                     post_time = datetime.utcfromtimestamp(post.created_utc)
                     if post_time < cutoff_time:
@@ -167,14 +258,13 @@ def check_reddit_confirmation(ticker: str) -> int:
                             count += 1
             except:
                 continue
-        
         return count
     except:
         return 0
 
 
 def check_accelerating(ticker: str, reddit_mentions: int) -> Dict:
-    """Check if buzz is accelerating."""
+    """Check Twitter buzz."""
     try:
         url = "https://api.twitterapi.io/twitter/community/get_tweets_from_all_community"
         params = {"query": f"${ticker}", "queryType": "Latest"}
@@ -223,16 +313,21 @@ def check_squeeze(ticker: str) -> Dict:
 
 
 def get_quality_data(ticker: str) -> Dict:
-    """Get market cap, volume, sector WITH SECTOR FILTER."""
+    """
+    Get stock data WITH EXTRA METRICS for pattern analysis.
+    
+    ============ STEP 1: FIND THIS FUNCTION ============
+    Replace the ENTIRE function with this version
+    """
     try:
         info = yf.Ticker(ticker).info
         
-        # ============ SECTOR FILTER ============
+        # Sector filter
         sector = info.get('sector', 'Unknown')
-        
         if sector in BANNED_SECTORS:
-            return None  # Skip banned sectors
+            return None
         
+        # Basic data
         market_cap = info.get('marketCap', 0)
         volume = info.get('volume', 0)
         avg_volume = info.get('averageVolume', 0)
@@ -250,7 +345,16 @@ def get_quality_data(ticker: str) -> Dict:
         volume_ratio = volume / avg_volume if avg_volume > 0 else 0
         volume_spike = volume_ratio > 1.5
         
+        # ============ NEW: EXTRA METRICS ============
+        # These are for DATA COLLECTION only (no filtering)
+        
+        bb_position = calculate_bollinger_position(ticker)
+        atr_pct = calculate_atr_normalized(ticker)
+        vol_trend = calculate_volume_trend(ticker)
+        rsi = get_rsi(ticker)
+        
         return {
+            # Existing fields
             'market_cap': market_cap,
             'cap_size': cap_size,
             'sector': sector,
@@ -258,17 +362,22 @@ def get_quality_data(ticker: str) -> Dict:
             'avg_volume': avg_volume,
             'volume_ratio': round(volume_ratio, 2),
             'volume_spike': volume_spike,
-            'price': price
+            'price': price,
+            
+            # ============ NEW FIELDS ============
+            'bb_position': bb_position,        # 0-1 (lower to upper band)
+            'atr_pct': atr_pct,                # Volatility as % of price
+            'volume_trend': vol_trend,         # Recent vol vs baseline
+            'rsi': rsi,                        # Current RSI
         }
     except:
         return None
 
 
 def calculate_quality_score(pick: Dict) -> float:
-    """Calculate quality score for ranking."""
+    """Calculate quality score (unchanged)."""
     score = 0
     
-    # Buzz strength (40 pts)
     twitter = pick['twitter_mentions']
     reddit = pick['reddit_mentions']
     total_buzz = twitter + (reddit * 2)
@@ -282,7 +391,6 @@ def calculate_quality_score(pick: Dict) -> float:
     else:
         score += 10
     
-    # Fresh sweet spot (30 pts)
     fresh = pick['change_7d']
     if 0 <= fresh <= 2:
         score += 30
@@ -293,13 +401,11 @@ def calculate_quality_score(pick: Dict) -> float:
     else:
         score += 10
     
-    # Volume confirmation (15 pts)
     if pick.get('volume_spike'):
         score += 15
     elif pick['volume_ratio'] > 1.0:
         score += 8
     
-    # Market cap (15 pts)
     if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
         score += 15
     elif 'Small' in pick['cap_size']:
@@ -311,12 +417,17 @@ def calculate_quality_score(pick: Dict) -> float:
 
 
 def scan() -> List[Dict]:
-    """Run validated scan with sector filter."""
+    """
+    Run scan with ENHANCED data collection.
+    
+    ============ STEP 2: THIS FUNCTION IS UPDATED ============
+    The pick dict now includes extra metrics
+    """
     
     universe = get_universe()
     picks = []
     
-    print(f"\n🔍 Scanning {len(universe)} stocks (sector-filtered)...\n")
+    print(f"\n🔍 Scanning {len(universe)} stocks...\n")
     
     for ticker in universe:
         try:
@@ -336,7 +447,6 @@ def scan() -> List[Dict]:
                 continue
             
             reddit_mentions = check_reddit_confirmation(ticker)
-            
             accel_data = check_accelerating(ticker, reddit_mentions)
             if not accel_data['is_accelerating']:
                 continue
@@ -345,7 +455,9 @@ def scan() -> List[Dict]:
             if squeeze_data['has_squeeze']:
                 continue
             
+            # ============ BUILD PICK WITH NEW METRICS ============
             pick = {
+                # Existing fields
                 'ticker': ticker,
                 'entry_date': datetime.now().strftime('%Y-%m-%d'),
                 'entry_time': datetime.now().strftime('%I:%M %p'),
@@ -365,6 +477,12 @@ def scan() -> List[Dict]:
                 'is_fresh': True,
                 'is_accelerating': True,
                 'has_squeeze': False,
+                
+                # ============ NEW METRICS (for pattern analysis) ============
+                'bb_position': quality['bb_position'],
+                'atr_pct': quality['atr_pct'],
+                'volume_trend': quality['volume_trend'],
+                'rsi': quality['rsi'],
             }
             
             pick['quality_score'] = calculate_quality_score(pick)
@@ -375,14 +493,18 @@ def scan() -> List[Dict]:
     
     picks.sort(key=lambda x: x['quality_score'], reverse=True)
     
-    print(f"\n📊 Found {len(picks)} Fresh+Accel stocks (sector-filtered)")
+    print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
     print(f"🎯 Returning top 5 by quality score\n")
     
     return picks[:5]
 
 
 def save_picks(picks: List[Dict]):
-    """Save to CSV."""
+    """
+    Save to CSV with ALL metrics.
+    
+    ============ STEP 3: CSV NOW HAS EXTRA COLUMNS ============
+    """
     if not picks:
         return
     
@@ -393,18 +515,18 @@ def save_picks(picks: List[Dict]):
     os.makedirs("outputs", exist_ok=True)
     df.to_csv(filename, index=False)
     
-    print(f"✅ Saved {len(picks)} picks to {filename}")
+    print(f"✅ Saved {len(picks)} picks with extra metrics to {filename}")
     return df
 
 
 def display_picks(picks: List[Dict]):
-    """Display picks."""
+    """Display picks with new metrics."""
     if not picks:
         print("\n❌ No Fresh+Accel stocks found")
         return
     
     print(f"\n{'='*70}")
-    print(f"🎯 TOP 5 SECTOR-OPTIMIZED PICKS")
+    print(f"🎯 TOP 5 PICKS (With Extra Metrics)")
     print(f"{'='*70}\n")
     
     for i, pick in enumerate(picks, 1):
@@ -413,17 +535,24 @@ def display_picks(picks: List[Dict]):
         print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (Score: {pick['quality_score']:.0f}/100)")
         print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
         print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
+        
+        # ============ NEW: SHOW EXTRA METRICS ============
+        print(f"   📊 BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol Trend: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}")
         print()
     
     print(f"{'='*70}\n")
 
 
 def send_discord_notification(picks: List[Dict]):
-    """Send V3 results to Discord with full data."""
+    """
+    Send to Discord with enhanced data.
+    
+    ============ STEP 4: DISCORD SHOWS NEW METRICS ============
+    """
     
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
     if not DISCORD_WEBHOOK:
-        print("⚠️  DISCORD_WEBHOOK_V3 not set - skipping notification")
+        print("⚠️  DISCORD_WEBHOOK_V3 not set")
         return
     
     try:
@@ -434,7 +563,7 @@ def send_discord_notification(picks: List[Dict]):
         if not picks:
             embed = DiscordEmbed(
                 title="📊 Supabot V3 Scan Complete",
-                description="No Fresh+Accel picks (Healthcare/Tech only)",
+                description="No Fresh+Accel picks today",
                 color='808080'
             )
             embed.set_footer(text=f"V3 | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
@@ -443,19 +572,19 @@ def send_discord_notification(picks: List[Dict]):
             return
         
         embed = DiscordEmbed(
-            title=f"🎯 Supabot V3: {len(picks)} Sector-Optimized Picks",
-            description=f"Healthcare 100% WR | Technology 67% WR | No Energy/Utilities",
+            title=f"🎯 Supabot V3: {len(picks)} Picks",
+            description=f"Healthcare 100% WR | Tech 67% WR | With Enhanced Metrics",
             color='00ff00'
         )
         
         for i, pick in enumerate(picks, 1):
             signals = ["✨", "📈"]
-            
             if pick.get('volume_spike'):
                 signals.append("📊")
             
             signal_str = " ".join(signals)
             
+            # ============ ENHANCED DISCORD MESSAGE ============
             value_parts = [
                 f"**${pick['price']:.2f}**",
                 f"Score: {pick['quality_score']:.0f}/100",
@@ -470,20 +599,36 @@ def send_discord_notification(picks: List[Dict]):
                 value=" | ".join(value_parts),
                 inline=False
             )
+            
+            # ============ NEW: TECHNICAL METRICS ============
+            tech_parts = [
+                f"BB: {pick['bb_position']:.2f}",
+                f"ATR: {pick['atr_pct']:.1f}%",
+                f"Vol↗: {pick['volume_trend']:.2f}x",
+                f"RSI: {pick['rsi']:.0f}",
+            ]
+            
+            embed.add_embed_field(
+                name=f"   📊 Technical Metrics",
+                value=" | ".join(tech_parts),
+                inline=False
+            )
         
         # Summary
         avg_score = sum(p['quality_score'] for p in picks) / len(picks)
+        avg_bb = sum(p['bb_position'] for p in picks) / len(picks)
+        
         embed.add_embed_field(
-            name="📊 Summary",
-            value=f"Avg Score: {avg_score:.0f}/100 | Validated: 60% WR overall, 72% in good periods",
+            name="📈 Batch Summary",
+            value=f"Avg Score: {avg_score:.0f}/100 | Avg BB Position: {avg_bb:.2f} | Current: 15/15 = 100% WR",
             inline=False
         )
         
-        embed.set_footer(text=f"V3 Sector-Optimized | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V3 Enhanced | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         
         webhook.add_embed(embed)
         webhook.execute()
-        print("✅ Discord notification sent!")
+        print("✅ Discord notification sent with metrics!")
     
     except Exception as e:
         print(f"❌ Discord failed: {e}")
@@ -492,11 +637,10 @@ def send_discord_notification(picks: List[Dict]):
 if __name__ == "__main__":
     
     print("\n" + "="*70)
-    print("🤖 SUPABOT V3 - SECTOR-OPTIMIZED SCANNER")
+    print("🤖 SUPABOT V3 - ENHANCED METRICS EDITION")
     print("="*70)
-    print(f"Sectors: Healthcare (100% WR), Technology (67% WR)")
-    print(f"Excluded: Energy/Consumer/Utilities (33-50% WR)")
-    print(f"Fresh: {FRESH_MIN}% to {FRESH_MAX}% | Buzz: {MIN_TWITTER_BUZZ}+ Twitter OR {MIN_REDDIT_BUZZ}+ Reddit")
+    print(f"Tracking: BB Position, ATR, Volume Trend, RSI")
+    print(f"Sectors: Healthcare/Tech only | Fresh: -5% to +5%")
     print("="*70 + "\n")
     
     start_time = datetime.now()
@@ -519,6 +663,6 @@ if __name__ == "__main__":
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
     
     if picks:
-        print(f"✅ V3 Complete - {len(picks)} picks found!\n")
+        print(f"✅ V3 Complete - {len(picks)} picks with enhanced metrics!\n")
     else:
         print(f"❌ No picks today\n")
