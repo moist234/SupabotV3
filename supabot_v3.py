@@ -1,7 +1,7 @@
 """
-Supabot V3 - With Enhanced Metrics Collection
+Supabot V3 - With Enhanced Metrics Collection + 52-Week Positioning
 
-NEW: Tracks Bollinger Bands, ATR, Volume Trends for pattern analysis
+NEW: Tracks Bollinger Bands, ATR, Volume Trends, RSI, 52-week positioning for pattern analysis
 These don't filter anything - just collect data to find patterns later!
 """
 import os
@@ -41,7 +41,7 @@ SCAN_LIMIT = 100
 BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities']
 
 
-# ============ NEW: METRIC CALCULATORS ============
+# ============ METRIC CALCULATORS ============
 
 def calculate_bollinger_position(ticker: str) -> float:
     """
@@ -150,7 +150,43 @@ def get_rsi(ticker: str) -> float:
         return 50.0
 
 
-# ============ EXISTING FUNCTIONS (UNCHANGED) ============
+def calculate_52w_positioning(ticker: str) -> Dict:
+    """
+    Calculate distance to 52-week high/low.
+    
+    Returns:
+        dist_52w_high: % below 52w high (negative number, e.g., -15.5%)
+        dist_52w_low: % above 52w low (positive number, e.g., +32.8%)
+    
+    Example interpretations:
+        - dist_52w_high = -5%  → Stock is 5% below its 52w high (near breakout)
+        - dist_52w_high = -50% → Stock is 50% below its 52w high (deep pullback)
+        - dist_52w_low = +10%  → Stock is 10% above its 52w low (bouncing off lows)
+        - dist_52w_low = +100% → Stock doubled from its 52w low
+    """
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")
+        if len(hist) < 200:  # Need at least ~8 months of data
+            return {'dist_52w_high': 0.0, 'dist_52w_low': 0.0}
+        
+        high_52w = hist['High'].max()
+        low_52w = hist['Low'].min()
+        current = hist['Close'].iloc[-1]
+        
+        # Calculate % distance
+        # Negative = below high, Positive = above low
+        dist_high = ((current / high_52w) - 1) * 100
+        dist_low = ((current / low_52w) - 1) * 100
+        
+        return {
+            'dist_52w_high': round(float(dist_high), 2),
+            'dist_52w_low': round(float(dist_low), 2),
+        }
+    except:
+        return {'dist_52w_high': 0.0, 'dist_52w_low': 0.0}
+
+
+# ============ UNIVERSE & SIGNAL FUNCTIONS ============
 
 def get_universe() -> List[str]:
     """Get stock universe with sector filter."""
@@ -234,7 +270,7 @@ def check_reddit_confirmation(ticker: str) -> int:
         count = 0
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
         
-        COMMON_WORDS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW']
+        COMMON_WORDS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW', 'AT', 'IT', 'GO', 'SO', 'ON', 'BE', 'TO', 'IN', 'UP', 'OR', 'BY', 'FOR', 'ARE', 'WAS', 'CAN', 'ANY', 'NEW', 'HAS']
         is_strict = len(ticker) <= 2 or ticker.upper() in COMMON_WORDS
         
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
@@ -314,10 +350,7 @@ def check_squeeze(ticker: str) -> Dict:
 
 def get_quality_data(ticker: str) -> Dict:
     """
-    Get stock data WITH EXTRA METRICS for pattern analysis.
-    
-    ============ STEP 1: FIND THIS FUNCTION ============
-    Replace the ENTIRE function with this version
+    Get stock data WITH ALL METRICS for pattern analysis.
     """
     try:
         info = yf.Ticker(ticker).info
@@ -345,16 +378,15 @@ def get_quality_data(ticker: str) -> Dict:
         volume_ratio = volume / avg_volume if avg_volume > 0 else 0
         volume_spike = volume_ratio > 1.5
         
-        # ============ NEW: EXTRA METRICS ============
-        # These are for DATA COLLECTION only (no filtering)
-        
+        # ============ COLLECT ALL METRICS ============
         bb_position = calculate_bollinger_position(ticker)
         atr_pct = calculate_atr_normalized(ticker)
         vol_trend = calculate_volume_trend(ticker)
         rsi = get_rsi(ticker)
+        positioning = calculate_52w_positioning(ticker)
         
         return {
-            # Existing fields
+            # Basic fields
             'market_cap': market_cap,
             'cap_size': cap_size,
             'sector': sector,
@@ -364,18 +396,22 @@ def get_quality_data(ticker: str) -> Dict:
             'volume_spike': volume_spike,
             'price': price,
             
-            # ============ NEW FIELDS ============
-            'bb_position': bb_position,        # 0-1 (lower to upper band)
-            'atr_pct': atr_pct,                # Volatility as % of price
-            'volume_trend': vol_trend,         # Recent vol vs baseline
-            'rsi': rsi,                        # Current RSI
+            # Technical metrics
+            'bb_position': bb_position,
+            'atr_pct': atr_pct,
+            'volume_trend': vol_trend,
+            'rsi': rsi,
+            
+            # 52-week positioning
+            'dist_52w_high': positioning['dist_52w_high'],
+            'dist_52w_low': positioning['dist_52w_low'],
         }
     except:
         return None
 
 
 def calculate_quality_score(pick: Dict) -> float:
-    """Calculate quality score (unchanged)."""
+    """Calculate quality score."""
     score = 0
     
     twitter = pick['twitter_mentions']
@@ -418,10 +454,7 @@ def calculate_quality_score(pick: Dict) -> float:
 
 def scan() -> List[Dict]:
     """
-    Run scan with ENHANCED data collection.
-    
-    ============ STEP 2: THIS FUNCTION IS UPDATED ============
-    The pick dict now includes extra metrics
+    Run scan with ENHANCED data collection including 52-week positioning.
     """
     
     universe = get_universe()
@@ -455,34 +488,50 @@ def scan() -> List[Dict]:
             if squeeze_data['has_squeeze']:
                 continue
             
-            # ============ BUILD PICK WITH NEW METRICS ============
+            # ============ BUILD PICK WITH ALL METRICS ============
             pick = {
-                # Existing fields
+                # Entry info
                 'ticker': ticker,
                 'entry_date': datetime.now().strftime('%Y-%m-%d'),
                 'entry_time': datetime.now().strftime('%I:%M %p'),
                 'entry_day': datetime.now().strftime('%A'),
                 'price': fresh_data['price'],
+                
+                # Price changes
                 'change_7d': fresh_data['change_7d'],
                 'change_90d': fresh_data['change_90d'],
+                
+                # Stock info
                 'market_cap': quality['market_cap'],
                 'cap_size': quality['cap_size'],
                 'sector': quality['sector'],
+                
+                # Social buzz
+                'twitter_mentions': accel_data['recent_mentions'],
+                'reddit_mentions': reddit_mentions,
+                'buzz_level': accel_data['buzz_level'],
+                
+                # Volume
                 'volume_ratio': quality['volume_ratio'],
                 'volume_spike': quality['volume_spike'],
-                'twitter_mentions': accel_data['recent_mentions'],
-                'buzz_level': accel_data['buzz_level'],
-                'reddit_mentions': reddit_mentions,
+                
+                # Risk
                 'short_percent': squeeze_data['short_percent'],
+                
+                # Signals
                 'is_fresh': True,
                 'is_accelerating': True,
                 'has_squeeze': False,
                 
-                # ============ NEW METRICS (for pattern analysis) ============
+                # Technical metrics
                 'bb_position': quality['bb_position'],
                 'atr_pct': quality['atr_pct'],
                 'volume_trend': quality['volume_trend'],
                 'rsi': quality['rsi'],
+                
+                # 52-week positioning
+                'dist_52w_high': quality['dist_52w_high'],
+                'dist_52w_low': quality['dist_52w_low'],
             }
             
             pick['quality_score'] = calculate_quality_score(pick)
@@ -494,16 +543,14 @@ def scan() -> List[Dict]:
     picks.sort(key=lambda x: x['quality_score'], reverse=True)
     
     print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
-    print(f"🎯 Returning top 5 by quality score\n")
+    print(f"🎯 Returning top 10 by quality score\n")
     
-    return picks[:5]
+    return picks[:10]
 
 
 def save_picks(picks: List[Dict]):
     """
-    Save to CSV with ALL metrics.
-    
-    ============ STEP 3: CSV NOW HAS EXTRA COLUMNS ============
+    Save to CSV with ALL metrics including 52-week positioning.
     """
     if not picks:
         return
@@ -515,19 +562,19 @@ def save_picks(picks: List[Dict]):
     os.makedirs("outputs", exist_ok=True)
     df.to_csv(filename, index=False)
     
-    print(f"✅ Saved {len(picks)} picks with extra metrics to {filename}")
+    print(f"✅ Saved {len(picks)} picks with all metrics to {filename}")
     return df
 
 
 def display_picks(picks: List[Dict]):
-    """Display picks with new metrics."""
+    """Display picks with all metrics including 52-week positioning."""
     if not picks:
         print("\n❌ No Fresh+Accel stocks found")
         return
     
-    print(f"\n{'='*70}")
-    print(f"🎯 TOP 5 PICKS (With Extra Metrics)")
-    print(f"{'='*70}\n")
+    print(f"\n{'='*80}")
+    print(f"🎯 TOP 10 PICKS (With Enhanced Metrics + 52-Week Positioning)")
+    print(f"{'='*80}\n")
     
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
@@ -535,19 +582,16 @@ def display_picks(picks: List[Dict]):
         print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (Score: {pick['quality_score']:.0f}/100)")
         print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
         print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
-        
-        # ============ NEW: SHOW EXTRA METRICS ============
-        print(f"   📊 BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol Trend: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}")
+        print(f"   📊 BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}")
+        print(f"   📈 52w: {pick['dist_52w_high']:+.1f}% from high | {pick['dist_52w_low']:+.1f}% from low")
         print()
     
-    print(f"{'='*70}\n")
+    print(f"{'='*80}\n")
 
 
 def send_discord_notification(picks: List[Dict]):
     """
-    Send to Discord with enhanced data.
-    
-    ============ STEP 4: DISCORD SHOWS NEW METRICS ============
+    Send to Discord with all metrics including 52-week positioning.
     """
     
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
@@ -566,14 +610,14 @@ def send_discord_notification(picks: List[Dict]):
                 description="No Fresh+Accel picks today",
                 color='808080'
             )
-            embed.set_footer(text=f"V3 | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+            embed.set_footer(text=f"V3 Enhanced | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
             webhook.add_embed(embed)
             webhook.execute()
             return
         
         embed = DiscordEmbed(
             title=f"🎯 Supabot V3: {len(picks)} Picks",
-            description=f"Healthcare 100% WR | Tech 67% WR | With Enhanced Metrics",
+            description=f"Healthcare 100% WR | Tech 69% WR | With 52-Week Positioning",
             color='00ff00'
         )
         
@@ -584,7 +628,7 @@ def send_discord_notification(picks: List[Dict]):
             
             signal_str = " ".join(signals)
             
-            # ============ ENHANCED DISCORD MESSAGE ============
+            # Main info
             value_parts = [
                 f"**${pick['price']:.2f}**",
                 f"Score: {pick['quality_score']:.0f}/100",
@@ -600,7 +644,7 @@ def send_discord_notification(picks: List[Dict]):
                 inline=False
             )
             
-            # ============ NEW: TECHNICAL METRICS ============
+            # Technical metrics
             tech_parts = [
                 f"BB: {pick['bb_position']:.2f}",
                 f"ATR: {pick['atr_pct']:.1f}%",
@@ -613,22 +657,41 @@ def send_discord_notification(picks: List[Dict]):
                 value=" | ".join(tech_parts),
                 inline=False
             )
+            
+            # 52-week positioning
+            position_parts = [
+                f"52w High: {pick['dist_52w_high']:+.1f}%",
+                f"52w Low: {pick['dist_52w_low']:+.1f}%",
+            ]
+            
+            # Add interpretation
+            if pick['dist_52w_high'] > -10:
+                position_parts.append("(Near highs)")
+            elif pick['dist_52w_high'] < -40:
+                position_parts.append("(Deep pullback)")
+            
+            embed.add_embed_field(
+                name=f"   📍 52-Week Position",
+                value=" | ".join(position_parts),
+                inline=False
+            )
         
         # Summary
         avg_score = sum(p['quality_score'] for p in picks) / len(picks)
         avg_bb = sum(p['bb_position'] for p in picks) / len(picks)
+        avg_52w = sum(p['dist_52w_high'] for p in picks) / len(picks)
         
         embed.add_embed_field(
             name="📈 Batch Summary",
-            value=f"Avg Score: {avg_score:.0f}/100 | Avg BB Position: {avg_bb:.2f} | Current: 15/15 = 100% WR",
+            value=f"Avg Score: {avg_score:.0f}/100 | Avg BB: {avg_bb:.2f} | Avg 52w: {avg_52w:+.1f}% | Win Rate: 15/15 = 100%",
             inline=False
         )
         
-        embed.set_footer(text=f"V3 Enhanced | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V3 Enhanced + 52w | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         
         webhook.add_embed(embed)
         webhook.execute()
-        print("✅ Discord notification sent with metrics!")
+        print("✅ Discord notification sent with all metrics!")
     
     except Exception as e:
         print(f"❌ Discord failed: {e}")
@@ -636,12 +699,12 @@ def send_discord_notification(picks: List[Dict]):
 
 if __name__ == "__main__":
     
-    print("\n" + "="*70)
-    print("🤖 SUPABOT V3 - ENHANCED METRICS EDITION")
-    print("="*70)
-    print(f"Tracking: BB Position, ATR, Volume Trend, RSI")
-    print(f"Sectors: Healthcare/Tech only | Fresh: -5% to +5%")
-    print("="*70 + "\n")
+    print("\n" + "="*80)
+    print("🤖 SUPABOT V3 - ENHANCED METRICS + 52-WEEK POSITIONING")
+    print("="*80)
+    print(f"Tracking: BB, ATR, Volume Trend, RSI, 52w High/Low")
+    print(f"Sectors: Healthcare/Tech prioritized | Fresh: -5% to +5%")
+    print("="*80 + "\n")
     
     start_time = datetime.now()
     
@@ -654,15 +717,15 @@ if __name__ == "__main__":
     if picks:
         save_picks(picks)
     
-    print(f"{'='*70}")
+    print(f"{'='*80}")
     print("📤 SENDING DISCORD NOTIFICATION...")
-    print(f"{'='*70}")
+    print(f"{'='*80}")
     send_discord_notification(picks)
-    print(f"{'='*70}\n")
+    print(f"{'='*80}\n")
     
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
     
     if picks:
-        print(f"✅ V3 Complete - {len(picks)} picks with enhanced metrics!\n")
+        print(f"✅ V3 Complete - {len(picks)} picks with enhanced metrics + 52w positioning!\n")
     else:
         print(f"❌ No picks today\n")
