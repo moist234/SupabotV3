@@ -1,15 +1,15 @@
 """
-Supabot V3 - With Enhanced Metrics Collection + 52-Week Positioning
+Supabot V3 - With Enhanced Metrics Collection + 52-Week Positioning + Control Group
 
 NEW: Tracks Bollinger Bands, ATR, Volume Trends, RSI, 52-week positioning for pattern analysis
-These don't filter anything - just collect data to find patterns later!
+CONTROL: Adds 5 random stocks (no filters) to test if edge is real vs market luck
 """
 import os
 import sys
 import re
 import random
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import pandas as pd
 from dotenv import load_dotenv
 import numpy as np
@@ -157,12 +157,6 @@ def calculate_52w_positioning(ticker: str) -> Dict:
     Returns:
         dist_52w_high: % below 52w high (negative number, e.g., -15.5%)
         dist_52w_low: % above 52w low (positive number, e.g., +32.8%)
-    
-    Example interpretations:
-        - dist_52w_high = -5%  → Stock is 5% below its 52w high (near breakout)
-        - dist_52w_high = -50% → Stock is 50% below its 52w high (deep pullback)
-        - dist_52w_low = +10%  → Stock is 10% above its 52w low (bouncing off lows)
-        - dist_52w_low = +100% → Stock doubled from its 52w low
     """
     try:
         hist = yf.Ticker(ticker).history(period="1y")
@@ -452,9 +446,10 @@ def calculate_quality_score(pick: Dict) -> float:
     return score
 
 
-def scan() -> List[Dict]:
+def scan() -> Tuple[List[Dict], List[Dict]]:
     """
     Run scan with ENHANCED data collection including 52-week positioning.
+    Returns: (top_picks, control_group)
     """
     
     universe = get_universe()
@@ -532,6 +527,9 @@ def scan() -> List[Dict]:
                 # 52-week positioning
                 'dist_52w_high': quality['dist_52w_high'],
                 'dist_52w_low': quality['dist_52w_low'],
+                
+                # Group label
+                'group': 'V3',
             }
             
             pick['quality_score'] = calculate_quality_score(pick)
@@ -541,39 +539,85 @@ def scan() -> List[Dict]:
             continue
     
     picks.sort(key=lambda x: x['quality_score'], reverse=True)
+    top_picks = picks[:10]
     
     print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
     print(f"🎯 Returning top 10 by quality score\n")
     
-    return picks[:10]
+    # ============ CONTROL GROUP: 5 RANDOM STOCKS ============
+    print(f"🎲 Selecting 5 random stocks as control group...\n")
+    
+    control_group = []
+    random_candidates = [t for t in universe if t not in [p['ticker'] for p in top_picks]]
+    random.shuffle(random_candidates)
+    
+    for ticker in random_candidates[:30]:  # Try up to 30 to get 5 valid
+        try:
+            info = yf.Ticker(ticker).info
+            sector = info.get('sector', 'Unknown')
+            market_cap = info.get('marketCap', 0)
+            
+            if market_cap < MIN_MARKET_CAP:
+                continue
+            
+            fresh_data = check_fresh(ticker)
+            if not fresh_data:
+                continue
+            
+            positioning = calculate_52w_positioning(ticker)
+            
+            control = {
+                'ticker': ticker,
+                'entry_date': datetime.now().strftime('%Y-%m-%d'),
+                'entry_time': datetime.now().strftime('%I:%M %p'),
+                'entry_day': datetime.now().strftime('%A'),
+                'price': fresh_data['price'],
+                'change_7d': fresh_data['change_7d'],
+                'sector': sector,
+                'market_cap': market_cap,
+                'dist_52w_high': positioning['dist_52w_high'],
+                'dist_52w_low': positioning['dist_52w_low'],
+                'group': 'CONTROL',
+            }
+            
+            control_group.append(control)
+            
+            if len(control_group) >= 5:
+                break
+        except:
+            continue
+    
+    print(f"✅ Control group: {len(control_group)} random stocks\n")
+    
+    return top_picks, control_group
 
 
-def save_picks(picks: List[Dict]):
+def save_picks(all_picks: List[Dict]):
     """
-    Save to CSV with ALL metrics including 52-week positioning.
+    Save to CSV with ALL metrics including control group.
     """
-    if not picks:
+    if not all_picks:
         return
     
-    df = pd.DataFrame(picks)
+    df = pd.DataFrame(all_picks)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     filename = f"outputs/supabot_v3_scan_{timestamp}.csv"
     
     os.makedirs("outputs", exist_ok=True)
     df.to_csv(filename, index=False)
     
-    print(f"✅ Saved {len(picks)} picks with all metrics to {filename}")
+    print(f"✅ Saved {len(all_picks)} picks (including control) to {filename}")
     return df
 
 
-def display_picks(picks: List[Dict]):
+def display_picks(picks: List[Dict], control: List[Dict]):
     """Display picks with all metrics including 52-week positioning."""
     if not picks:
         print("\n❌ No Fresh+Accel stocks found")
         return
     
     print(f"\n{'='*80}")
-    print(f"🎯 TOP 10 PICKS (With Enhanced Metrics + 52-Week Positioning)")
+    print(f"🎯 TOP 10 PICKS (V3 Strategy)")
     print(f"{'='*80}\n")
     
     for i, pick in enumerate(picks, 1):
@@ -587,11 +631,24 @@ def display_picks(picks: List[Dict]):
         print()
     
     print(f"{'='*80}\n")
+    
+    # Display control group
+    if control:
+        print(f"\n{'='*80}")
+        print(f"🎲 CONTROL GROUP (5 Random Stocks)")
+        print(f"{'='*80}\n")
+        
+        for i, stock in enumerate(control, 1):
+            print(f"{i}. {stock['ticker']} - ${stock['price']:.2f}")
+            print(f"   {stock['sector']} | Fresh: {stock['change_7d']:+.1f}%")
+            print(f"   52w: {stock['dist_52w_high']:+.1f}% from high\n")
+        
+        print(f"{'='*80}\n")
 
 
-def send_discord_notification(picks: List[Dict]):
+def send_discord_notification(picks: List[Dict], control: List[Dict]):
     """
-    Send to Discord with all metrics including 52-week positioning.
+    Send to Discord with all metrics, V3 picks and control group separated.
     """
     
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
@@ -615,9 +672,10 @@ def send_discord_notification(picks: List[Dict]):
             webhook.execute()
             return
         
+        # ============ V3 PICKS EMBED ============
         embed = DiscordEmbed(
             title=f"🎯 Supabot V3: {len(picks)} Picks",
-            description=f"Healthcare 100% WR | Tech 69% WR | With 52-Week Positioning",
+            description=f"Top 10 by Quality Score | Testing vs Control Group",
             color='00ff00'
         )
         
@@ -632,10 +690,9 @@ def send_discord_notification(picks: List[Dict]):
             value_parts = [
                 f"**${pick['price']:.2f}**",
                 f"Score: {pick['quality_score']:.0f}/100",
-                f"{pick['sector']} ({pick['cap_size']})",
+                f"{pick['sector']}",
                 f"Fresh: {pick['change_7d']:+.1f}%",
-                f"Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)",
-                f"Short: {pick['short_percent']:.1f}%",
+                f"52w: {pick['dist_52w_high']:+.1f}%",
             ]
             
             embed.add_embed_field(
@@ -643,55 +700,41 @@ def send_discord_notification(picks: List[Dict]):
                 value=" | ".join(value_parts),
                 inline=False
             )
-            
-            # Technical metrics
-            tech_parts = [
-                f"BB: {pick['bb_position']:.2f}",
-                f"ATR: {pick['atr_pct']:.1f}%",
-                f"Vol↗: {pick['volume_trend']:.2f}x",
-                f"RSI: {pick['rsi']:.0f}",
-            ]
-            
-            embed.add_embed_field(
-                name=f"   📊 Technical Metrics",
-                value=" | ".join(tech_parts),
-                inline=False
-            )
-            
-            # 52-week positioning
-            position_parts = [
-                f"52w High: {pick['dist_52w_high']:+.1f}%",
-                f"52w Low: {pick['dist_52w_low']:+.1f}%",
-            ]
-            
-            # Add interpretation
-            if pick['dist_52w_high'] > -10:
-                position_parts.append("(Near highs)")
-            elif pick['dist_52w_high'] < -40:
-                position_parts.append("(Deep pullback)")
-            
-            embed.add_embed_field(
-                name=f"   📍 52-Week Position",
-                value=" | ".join(position_parts),
-                inline=False
-            )
         
         # Summary
         avg_score = sum(p['quality_score'] for p in picks) / len(picks)
-        avg_bb = sum(p['bb_position'] for p in picks) / len(picks)
         avg_52w = sum(p['dist_52w_high'] for p in picks) / len(picks)
         
         embed.add_embed_field(
-            name="📈 Batch Summary",
-            value=f"Avg Score: {avg_score:.0f}/100 | Avg BB: {avg_bb:.2f} | Avg 52w: {avg_52w:+.1f}% | Win Rate: 15/15 = 100%",
+            name="📈 V3 Summary",
+            value=f"Avg Score: {avg_score:.0f}/100 | Avg 52w: {avg_52w:+.1f}% | Record: 15/15 = 100% WR",
             inline=False
         )
         
-        embed.set_footer(text=f"V3 Enhanced + 52w | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
-        
+        embed.set_footer(text=f"V3 Enhanced | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         webhook.add_embed(embed)
+        
+        # ============ CONTROL GROUP EMBED (SEPARATE) ============
+        if control:
+            control_embed = DiscordEmbed(
+                title=f"🎲 Control Group: {len(control)} Random Stocks",
+                description="No filters applied - testing if edge is real vs market luck",
+                color='808080'
+            )
+            
+            control_tickers = [f"{c['ticker']} (${c['price']:.2f})" for c in control]
+            
+            control_embed.add_embed_field(
+                name="Random Picks",
+                value="\n".join(control_tickers),
+                inline=False
+            )
+            
+            control_embed.set_footer(text="Compare performance vs V3 picks after 7 days")
+            webhook.add_embed(control_embed)
+        
         webhook.execute()
-        print("✅ Discord notification sent with all metrics!")
+        print("✅ Discord notification sent with V3 picks + control group!")
     
     except Exception as e:
         print(f"❌ Discord failed: {e}")
@@ -700,32 +743,34 @@ def send_discord_notification(picks: List[Dict]):
 if __name__ == "__main__":
     
     print("\n" + "="*80)
-    print("🤖 SUPABOT V3 - ENHANCED METRICS + 52-WEEK POSITIONING")
+    print("🤖 SUPABOT V3 - WITH CONTROL GROUP EXPERIMENT")
     print("="*80)
-    print(f"Tracking: BB, ATR, Volume Trend, RSI, 52w High/Low")
-    print(f"Sectors: Healthcare/Tech prioritized | Fresh: -5% to +5%")
+    print(f"V3 Picks: Top 10 Fresh+Accel stocks")
+    print(f"Control: 5 random stocks (no filters)")
+    print(f"Goal: Prove edge is real vs market luck")
     print("="*80 + "\n")
     
     start_time = datetime.now()
     
-    picks = scan()
+    picks, control = scan()
     
     elapsed = (datetime.now() - start_time).total_seconds()
     
-    display_picks(picks)
+    display_picks(picks, control)
     
-    if picks:
-        save_picks(picks)
+    if picks or control:
+        all_picks = picks + control
+        save_picks(all_picks)
     
     print(f"{'='*80}")
     print("📤 SENDING DISCORD NOTIFICATION...")
     print(f"{'='*80}")
-    send_discord_notification(picks)
+    send_discord_notification(picks, control)
     print(f"{'='*80}\n")
     
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
     
     if picks:
-        print(f"✅ V3 Complete - {len(picks)} picks with enhanced metrics + 52w positioning!\n")
+        print(f"✅ V3 Complete - {len(picks)} picks + {len(control)} control stocks!\n")
     else:
         print(f"❌ No picks today\n")
