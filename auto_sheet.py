@@ -45,16 +45,47 @@ def fill_sheet(sheet, csv_path):
     v3_picks = df[df['group'] == 'V3'].copy()
     control_picks = df[df['group'] == 'CONTROL'].copy()
     
-    # Find next empty row
+    # Find next empty row (2 rows down from last data)
     all_values = sheet.get_all_values()
-    next_row = len(all_values) + 1
+    last_data_row = len(all_values)
+    
+    # Find last non-empty row
+    for i in range(len(all_values) - 1, -1, -1):
+        if any(cell.strip() for cell in all_values[i]):
+            last_data_row = i + 1
+            break
+    
+    next_row = last_data_row + 2  # 2 rows down
     
     # Get today's date
     today = datetime.now().strftime('%Y-%m-%d')
     
     print(f"\n✍️  Writing {len(v3_picks)} V3 picks + {len(control_picks)} control stocks...")
+    print(f"📍 Starting at row {next_row}")
     
-    # Determine how many rows to write (max of V3 or control)
+    # WRITE HEADERS FIRST (bolded)
+    headers = [
+        "Date", "Ticker", "Score", "Entry Price", "Buzz", "Twitter", "Reddit",
+        "Market Cap", "Short Interest", "Past week 7d%", "Sector", "BB", "ATR",
+        "Vol Trend", "RSI", "52w from high", "Exit Price (7d)", "7d %",
+        "Exit Price (30d)", "30d %", "7d Win Rate %", "7d Average Return %",
+        "S&P 7d %", "", "Control Group", "Entry Price", "Exit Price (7d)", "7d %"
+    ]
+    
+    # Write headers in bold
+    sheet.update(f'A{next_row}:AB{next_row}', [headers])
+    
+    # Format headers as bold
+    sheet.format(f'A{next_row}:AB{next_row}', {
+        "textFormat": {"bold": True}
+    })
+    
+    print(f"✅ Headers added at row {next_row}")
+    
+    # Start data at next row
+    data_start_row = next_row + 1
+    
+    # Determine how many rows to write
     max_rows = max(len(v3_picks), len(control_picks))
     
     for i in range(max_rows):
@@ -63,15 +94,23 @@ def fill_sheet(sheet, csv_path):
         # V3 Pick data (Columns A-T)
         if i < len(v3_picks):
             pick = v3_picks.iloc[i]
+            
+            # Extract market cap size only (remove parentheses text)
+            cap_text = pick.get('cap_size', 'N/A')
+            if '(' in cap_text:
+                cap_size = cap_text.split('(')[0].strip().upper()  # Get "MID", "SMALL", etc.
+            else:
+                cap_size = cap_text.upper()
+            
             row_data = [
                 today,                                      # A: Date
                 pick['ticker'],                             # B: Ticker
                 int(pick.get('quality_score', 0)),          # C: Score
                 f"${pick['price']:.2f}",                    # D: Entry Price
-                pick.get('buzz_level', 'N/A'),              # E: Buzz
+                pick.get('buzz_level', 'N/A').upper(),      # E: Buzz (ALL CAPS)
                 int(pick.get('twitter_mentions', 0)),       # F: Twitter
                 int(pick.get('reddit_mentions', 0)),        # G: Reddit
-                pick.get('cap_size', 'N/A'),                # H: Market Cap
+                cap_size,                                    # H: Market Cap (ALL CAPS, word only)
                 f"{pick.get('short_percent', 0):.1f}%",     # I: Short Interest
                 f"{pick.get('change_7d', 0):+.1f}%",        # J: Past week 7d%
                 pick.get('sector', 'N/A'),                  # K: Sector
@@ -80,17 +119,16 @@ def fill_sheet(sheet, csv_path):
                 f"{pick.get('volume_trend', 0):.2f}",       # N: Vol Trend
                 int(pick.get('rsi', 0)),                    # O: RSI
                 f"{pick.get('dist_52w_high', 0):+.1f}%",    # P: 52w from high
-                "",                                          # Q: Exit Price (7d) - empty
-                "",                                          # R: 7d % - empty
-                "",                                          # S: Exit Price (30d) - empty
-                "",                                          # T: 30d % - empty
+                "",                                          # Q: Exit Price (7d)
+                "",                                          # R: 7d %
+                "",                                          # S: Exit Price (30d)
+                "",                                          # T: 30d %
             ]
         else:
-            # Empty V3 columns if no more V3 picks
             row_data = [""] * 20
         
-        # Summary columns (U-W) - leave empty for manual calculation
-        row_data.extend(["", "", ""])  # U: 7d Win Rate %, V: 7d Avg Return %, W: S&P 7d %
+        # Summary columns (U-W)
+        row_data.extend(["", "", ""])
         
         # X: Blank
         row_data.append("")
@@ -100,16 +138,15 @@ def fill_sheet(sheet, csv_path):
             control = control_picks.iloc[i]
             row_data.extend([
                 control['ticker'],                           # Y: Control Group Ticker
-                f"${control['price']:.2f}",                  # Z: Entry Price (control)
-                "",                                           # AA: Exit Price (7d) (control) - empty
-                "",                                           # AB: 7d % (control) - empty
+                f"${control['price']:.2f}",                  # Z: Entry Price
+                "",                                           # AA: Exit Price (7d)
+                "",                                           # AB: 7d %
             ])
         else:
-            # Empty control columns if no more control picks
             row_data.extend(["", "", "", ""])
         
-        # Write row (A through AB = 28 columns)
-        sheet.update(f'A{next_row + i}:AB{next_row + i}', [row_data])
+        # Write row
+        sheet.update(f'A{data_start_row + i}:AB{data_start_row + i}', [row_data])
         
         ticker_name = ""
         if i < len(v3_picks):
@@ -119,14 +156,10 @@ def fill_sheet(sheet, csv_path):
         elif i < len(control_picks):
             ticker_name = f"{control_picks.iloc[i]['ticker']} (control only)"
         
-        print(f"  ✅ Row {next_row + i}: {ticker_name}")
+        print(f"  ✅ Row {data_start_row + i}: {ticker_name}")
     
-    # Add 3 empty rows after last ticker
-    empty_start = next_row + max_rows
-    print(f"\n📝 Added 3 empty separator rows starting at row {empty_start}")
-    
-    print(f"\n🎉 Done! Added to sheet starting at row {next_row}")
-    print(f"📝 Note: Columns U-W (Win Rate/Avg Return/S&P %) left empty for your formulas")
+    print(f"\n🎉 Done! Added headers at row {next_row}, data starts at row {data_start_row}")
+    print(f"📝 Note: Columns U-W left empty for formulas")
 
 if __name__ == "__main__":
     print("\n" + "="*60)
