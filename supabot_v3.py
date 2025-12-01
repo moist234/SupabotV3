@@ -687,10 +687,10 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             signal_str = " ".join(signals)
             
             # Main info line
-            main_line = f"**${pick['price']:.2f}** | Score: {pick['quality_score']:.0f}/100 | {pick['sector']}"
+            main_line = f"**${pick['price']:.2f}** | Score: {pick['quality_score']:.0f}/100 | {pick['sector']} | {pick['cap_size']}"
             
             # Price + Social line
-            price_line = f"Fresh: {pick['change_7d']:+.1f}% | Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)"
+            price_line = f"Fresh: {pick['change_7d']:+.1f}% | Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖) | Short: {pick['short_percent']:.1f}%"
             
             # Technical metrics line
             tech_line = f"52w: {pick['dist_52w_high']:+.1f}% | BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}"
