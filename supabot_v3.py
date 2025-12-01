@@ -689,11 +689,11 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             # Main info line
             main_line = f"**${pick['price']:.2f}** | Score: {pick['quality_score']:.0f}/100 | {pick['sector']}"
             
-            # Price metrics line
-            price_line = f"Fresh: {pick['change_7d']:+.1f}% | 52w: {pick['dist_52w_high']:+.1f}% from high"
+            # Price + Social line
+            price_line = f"Fresh: {pick['change_7d']:+.1f}% | Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖)"
             
             # Technical metrics line
-            tech_line = f"BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}"
+            tech_line = f"52w: {pick['dist_52w_high']:+.1f}% | BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}"
             
             # Combine all lines
             value = f"{main_line}\n{price_line}\n{tech_line}"
