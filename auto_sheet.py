@@ -11,7 +11,7 @@ import os
 # Google Sheets setup
 SHEET_NAME = "SupabotV3"  # Your sheet name
 TAB_NAME = "Sheet1"  # Change if different
-SERVICE_ACCOUNT_FILE = "caramel-granite-479920-g0-d3843370b463.json"
+SERVICE_ACCOUNT_FILE = "service_account.json"
 
 def connect_to_sheet():
     """Connect to Google Sheets."""
