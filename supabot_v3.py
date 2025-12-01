@@ -686,28 +686,32 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             
             signal_str = " ".join(signals)
             
-            # Main info
-            value_parts = [
-                f"**${pick['price']:.2f}**",
-                f"Score: {pick['quality_score']:.0f}/100",
-                f"{pick['sector']}",
-                f"Fresh: {pick['change_7d']:+.1f}%",
-                f"52w: {pick['dist_52w_high']:+.1f}%",
-            ]
+            # Main info line
+            main_line = f"**${pick['price']:.2f}** | Score: {pick['quality_score']:.0f}/100 | {pick['sector']}"
+            
+            # Price metrics line
+            price_line = f"Fresh: {pick['change_7d']:+.1f}% | 52w: {pick['dist_52w_high']:+.1f}% from high"
+            
+            # Technical metrics line
+            tech_line = f"BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}"
+            
+            # Combine all lines
+            value = f"{main_line}\n{price_line}\n{tech_line}"
             
             embed.add_embed_field(
                 name=f"#{i}. {pick['ticker']} {signal_str}",
-                value=" | ".join(value_parts),
+                value=value,
                 inline=False
             )
         
         # Summary
         avg_score = sum(p['quality_score'] for p in picks) / len(picks)
         avg_52w = sum(p['dist_52w_high'] for p in picks) / len(picks)
+        avg_bb = sum(p['bb_position'] for p in picks) / len(picks)
         
         embed.add_embed_field(
             name="📈 V3 Summary",
-            value=f"Avg Score: {avg_score:.0f}/100 | Avg 52w: {avg_52w:+.1f}% | Record: 15/15 = 100% WR",
+            value=f"Avg Score: {avg_score:.0f}/100 | Avg BB: {avg_bb:.2f} | Avg 52w: {avg_52w:+.1f}% | Record: 15/15 = 100% WR",
             inline=False
         )
         
@@ -722,11 +726,13 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
                 color='808080'
             )
             
-            control_tickers = [f"{c['ticker']} (${c['price']:.2f})" for c in control]
+            control_lines = []
+            for c in control:
+                control_lines.append(f"**{c['ticker']}** (${c['price']:.2f}) | {c['sector']} | Fresh: {c['change_7d']:+.1f}%")
             
             control_embed.add_embed_field(
                 name="Random Picks",
-                value="\n".join(control_tickers),
+                value="\n".join(control_lines),
                 inline=False
             )
             
