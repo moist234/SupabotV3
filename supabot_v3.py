@@ -38,7 +38,7 @@ MIN_TWITTER_BUZZ = 15
 MIN_REDDIT_BUZZ = 5
 SCAN_LIMIT = 100
 
-BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities']
+BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities', 'Financial Services']
 
 
 # ============ METRIC CALCULATORS ============
