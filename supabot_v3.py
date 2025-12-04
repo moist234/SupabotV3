@@ -253,7 +253,7 @@ def check_fresh(ticker: str) -> Dict:
 
 
 def check_reddit_confirmation(ticker: str) -> int:
-    """Get Reddit mentions."""
+    """Get Reddit mentions - STRICT MODE."""
     try:
         reddit = praw.Reddit(
             client_id=REDDIT_CLIENT_ID,
@@ -263,10 +263,6 @@ def check_reddit_confirmation(ticker: str) -> int:
         
         count = 0
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
-        
-        COMMON_WORDS = ['GOOD', 'BAD', 'BEST', 'ALL', 'NOW', 'AT', 'IT', 'GO', 'SO', 'ON', 'BE', 'TO', 'IN', 'UP', 'OR', 'BY', 'FOR', 'ARE', 'WAS', 'CAN', 'ANY', 'NEW', 'HAS']
-        is_strict = len(ticker) <= 2 or ticker.upper() in COMMON_WORDS
-        
         for sub_name in ['wallstreetbets', 'stocks', 'options']:
             try:
                 subreddit = reddit.subreddit(sub_name)
@@ -278,16 +274,12 @@ def check_reddit_confirmation(ticker: str) -> int:
                     text = f"{post.title} {post.selftext}"
                     text_upper = text.upper()
                     
+                    # ONLY count if has $ symbol (strict)
                     if f"${ticker}" in text_upper:
                         count += 1
-                        continue
-                    
-                    if not is_strict:
-                        pattern = r'\b' + re.escape(ticker) + r'\b'
-                        if re.search(pattern, text, re.IGNORECASE):
-                            count += 1
             except:
                 continue
+        
         return count
     except:
         return 0
