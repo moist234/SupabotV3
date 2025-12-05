@@ -47,7 +47,8 @@ jobs:
           REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
           DISCORD_WEBHOOK_V3: ${{ secrets.DISCORD_WEBHOOK_V3 }}
-        
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}          # NEW
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}    # NEW
         run: |
           echo "🚀 Starting V3 optimized scan at $(date)"
           python3 supabot_v3.py
