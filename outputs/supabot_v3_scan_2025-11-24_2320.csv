@@ -1,0 +1,6 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze,quality_score
+NEA,2025-11-24,11:19 PM,Monday,11.34000015258789,-1.41,8.72,3390573568,Mid ($2-10B),Financial Services,1.87,True,28,Moderate,0,0.16,True,True,False,75
+META,2025-11-24,11:17 PM,Monday,613.0499877929688,0.52,-12.89,1545209380864,Mega (>$50B),Communication Services,1.44,False,20,Moderate,8,1.28,True,True,False,73
+INTU,2025-11-24,11:18 PM,Monday,653.22998046875,0.48,-13.05,182123773952,Mega (>$50B),Technology,1.69,True,23,Moderate,0,1.85,True,True,False,70
+PONY,2025-11-24,11:19 PM,Monday,12.59000015258789,-1.41,-3.23,5973495296,Mid ($2-10B),Technology,1.24,False,22,Moderate,0,12.42,True,True,False,68
+STAA,2025-11-24,11:19 PM,Monday,26.540000915527344,1.96,52.88,1310172416,Small (<$2B),Healthcare,1.11,False,23,Moderate,0,13.65,True,True,False,68

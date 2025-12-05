@@ -1,0 +1,6 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,quality_score
+NEA,2025-11-28,11:43 PM,Friday,11.579999923706055,0.52,11.75,3462331904,Mid ($2-10B),Financial Services,0.6,False,27,Moderate,0,0.11,True,True,False,0.759,0.84,1.02,60.9,65
+MRP,2025-11-28,11:41 PM,Friday,30.459999084472656,2.63,-0.39,5056466432,Mid ($2-10B),Real Estate,1.29,False,20,Moderate,0,7.21,True,True,False,0.361,3.3,2.6,41.4,63
+CAE,2025-11-28,11:44 PM,Friday,26.860000610351562,4.39,-6.38,8643663872,Mid ($2-10B),Industrials,1.45,False,25,Moderate,0,0.0,True,True,False,0.553,2.87,1.19,45.7,63
+BOX,2025-11-28,11:42 PM,Friday,29.540000915527344,-0.3,-10.54,4279926784,Mid ($2-10B),Technology,0.7,False,24,Moderate,0,16.93,True,True,False,0.198,2.89,0.96,35.1,60
+FLO,2025-11-28,11:42 PM,Friday,10.729999542236328,-0.44,-32.01,2265942272,Mid ($2-10B),Consumer Defensive,0.7,False,24,Moderate,0,10.81,True,True,False,0.366,2.96,1.3,33.2,60

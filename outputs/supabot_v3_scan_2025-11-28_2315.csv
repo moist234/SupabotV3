@@ -1,0 +1,6 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,quality_score
+TLK,2025-11-28,11:13 PM,Friday,21.549999237060547,1.17,22.65,21347905536,Large ($10-50B),Communication Services,0.8,False,23,Moderate,0,0.62,True,True,False,0.696,2.42,0.79,59.4,65
+STAG,2025-11-28,11:13 PM,Friday,39.279998779296875,1.79,9.64,7492637184,Mid ($2-10B),Real Estate,0.52,False,20,Moderate,0,5.99,True,True,False,0.826,1.38,0.9,53.8,65
+NEA,2025-11-28,11:14 PM,Friday,11.579999923706055,0.52,11.75,3462331904,Mid ($2-10B),Financial Services,0.6,False,28,Moderate,0,0.11,True,True,False,0.759,0.84,1.02,60.9,65
+PNR,2025-11-28,11:12 PM,Friday,105.23999786376953,3.06,1.78,17252126720,Large ($10-50B),Industrials,0.46,False,27,Moderate,0,2.61,True,True,False,0.454,2.24,1.45,44.0,55
+POST,2025-11-28,11:12 PM,Friday,104.02999877929688,-2.96,-3.23,5425664000,Mid ($2-10B),Consumer Defensive,0.62,False,26,Moderate,4,8.39,True,True,False,0.434,2.79,2.32,44.2,55

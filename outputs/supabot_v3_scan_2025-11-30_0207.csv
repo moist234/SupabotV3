@@ -1,0 +1,6 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,quality_score
+PLYM,2025-11-30,02:06 AM,Sunday,21.940000534057617,-1.39,40.74,988208192,Small (<$2B),Real Estate,20,0,Moderate,2.44,True,3.08,True,True,False,0.174,1.23,3.1,42.5,-3.5,77.29,70
+ORC,2025-11-30,02:06 AM,Sunday,7.230000019073486,1.81,7.18,1212919936,Small (<$2B),Real Estate,20,0,Moderate,1.02,False,6.67,True,True,False,0.746,1.5,1.33,46.8,-5.36,45.48,68
+HYT,2025-11-30,02:05 AM,Sunday,9.479999542236328,1.5,0.58,1518407680,Small (<$2B),Financial Services,21,0,Moderate,0.57,False,0.16,True,True,False,0.947,0.92,0.85,60.2,-0.85,29.1,60
+DE,2025-11-30,02:05 AM,Sunday,464.489990234375,-1.98,-9.52,125565304832,Mega (>$50B),Industrials,21,0,Moderate,1.17,False,1.59,True,True,False,0.202,2.41,2.2,48.0,-12.4,16.43,58
+NEOG,2025-11-30,02:07 AM,Sunday,5.980000019073486,1.01,18.18,1299445760,Small (<$2B),Healthcare,17,0,Moderate,1.13,False,12.82,True,True,False,0.398,5.77,1.39,40.1,-58.27,54.52,58

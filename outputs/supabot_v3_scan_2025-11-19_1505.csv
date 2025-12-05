@@ -1,0 +1,6 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,volume_ratio,volume_spike,twitter_mentions,buzz_level,reddit_mentions,short_percent,is_fresh,is_accelerating,has_squeeze,quality_score
+INTA,2025-11-19,03:01 PM,Wednesday,40.400001525878906,0.52,-4.94,3309829888,Mid ($2-10B),Technology,0.44,False,26,Moderate,0,3.89,True,True,False,65
+GOOD,2025-11-19,03:05 PM,Wednesday,10.805000305175781,-0.71,-18.17,527579552,Small (<$2B),Real Estate,0.46,False,18,Moderate,7,4.98,True,True,False,65
+NAD,2025-11-19,03:05 PM,Wednesday,11.944999694824219,0.3,8.54,2788018432,Mid ($2-10B),Financial Services,0.72,False,21,Moderate,0,0.12,True,True,False,65
+SHC,2025-11-19,03:01 PM,Wednesday,15.6899995803833,-0.32,37.87,4457433600,Mid ($2-10B),Healthcare,0.64,False,27,Moderate,0,4.63,True,True,False,60
+RDNT,2025-11-19,03:02 PM,Wednesday,80.01000213623047,-1.04,44.27,6172478976,Mid ($2-10B),Healthcare,0.65,False,23,Moderate,0,10.39,True,True,False,60

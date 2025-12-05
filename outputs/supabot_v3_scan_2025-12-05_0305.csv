@@ -1,0 +1,16 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,group,quality_score
+ROKU,2025-12-05,03:03 AM,Friday,94.54000091552734,1.03,4.6,13968452608,Large ($10-50B),Communication Services,25.0,0.0,Moderate,1.08,False,5.3,True,True,False,0.327,4.31,0.98,38.4,-18.96,80.32,V3,73.0
+IQV,2025-12-05,03:03 AM,Friday,224.9199981689453,-1.43,15.61,38303875072,Large ($10-50B),Healthcare,16.0,0.0,Moderate,2.23,True,3.42,True,True,False,0.611,2.63,1.1,52.0,-4.0,67.04,V3,65.0
+FIS,2025-12-05,03:03 AM,Friday,65.55999755859375,1.79,-19.21,34247139328,Large ($10-50B),Technology,20.0,0.0,Moderate,0.47,False,2.82,True,True,False,0.614,2.33,0.87,46.5,-22.37,10.17,V3,65.0
+GMED,2025-12-05,03:05 AM,Friday,88.73999786376953,0.9,64.21,11984979968,Large ($10-50B),Healthcare,20.0,0.0,Moderate,0.58,False,4.86,True,True,False,0.638,2.7,0.5,64.2,-6.52,71.35,V3,65.0
+PSO,2025-12-05,03:02 AM,Friday,13.270000457763672,1.07,-5.84,8427701248,Mid ($2-10B),Communication Services,15.0,0.0,Moderate,1.2,False,0.37,True,True,False,0.829,1.29,0.9,48.8,-24.42,3.27,V3,63.0
+IRON,2025-12-05,03:02 AM,Friday,93.79000091552734,-0.34,56.84,3540587520,Mid ($2-10B),Healthcare,27.0,0.0,Moderate,0.53,False,8.83,True,True,False,0.795,4.24,0.67,67.4,-3.42,204.32,V3,60.0
+RBRK,2025-12-05,03:03 AM,Friday,70.43000030517578,4.51,-21.06,13907015680,Large ($10-50B),Technology,19.0,0.0,Moderate,1.73,True,9.03,True,True,False,0.499,4.14,1.71,49.8,-31.62,48.74,V3,60.0
+LIN,2025-12-05,03:04 AM,Friday,403.7300109863281,-0.6,-13.79,189312860160,Mega (>$50B),Basic Materials,22.0,0.0,Moderate,1.26,False,1.42,True,True,False,0.184,1.54,0.72,23.5,-16.42,0.45,V3,58.0
+PAYO,2025-12-05,03:03 AM,Friday,5.71999979019165,3.81,-13.46,2061004928,Mid ($2-10B),Technology,27.0,0.0,Moderate,0.83,False,3.16,True,True,False,0.719,3.04,0.83,57.7,-48.88,16.38,V3,55.0
+MRK,2025-12-05,03:04 AM,Friday,100.88999938964844,0.49,23.3,252001353728,Mega (>$50B),Healthcare,23.0,0.0,Moderate,0.67,False,1.24,True,True,False,0.683,3.13,0.69,67.0,-4.68,40.37,V3,55.0
+BIIB,2025-12-05,03:05 AM,Friday,181.97999572753906,2.92,,26696878080,,Healthcare,,,,,,,,,,,,,,-1.72,65.38,CONTROL,
+VCEL,2025-12-05,03:05 AM,Friday,36.790000915527344,-5.38,,1860618368,,Healthcare,,,,,,,,,,,,,,-41.6,25.82,CONTROL,
+HUBS,2025-12-05,03:05 AM,Friday,377.0400085449219,5.76,,19867410432,,Technology,,,,,,,,,,,,,,-57.21,9.47,CONTROL,
+UNIT,2025-12-05,03:05 AM,Friday,6.570000171661377,10.42,,1617479040,,Real Estate,,,,,,,,,,,,,,-37.32,23.96,CONTROL,
+TERN,2025-12-05,03:05 AM,Friday,27.1299991607666,-3.25,,2443864576,,Healthcare,,,,,,,,,,,,,,-8.07,1354.69,CONTROL,

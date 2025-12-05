@@ -1,0 +1,16 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,group,quality_score
+OKTA,2025-12-01,06:22 PM,Monday,80.63999938964844,0.69,-17.62,14215694336,Large ($10-50B),Technology,30.0,2.0,Moderate,1.81,True,4.11,True,True,False,0.324,2.84,1.4,28.3,-36.79,5.62,V3,90.0
+DSL,2025-12-01,06:21 PM,Monday,11.329999923706055,1.52,-2.22,1294014464,Small (<$2B),Financial Services,21.0,0.0,Moderate,1.6,True,0.07,True,True,False,0.443,0.92,0.95,44.2,-8.06,15.22,V3,75.0
+NEA,2025-12-01,06:20 PM,Monday,11.489999771118164,-0.26,10.57,3435422464,Mid ($2-10B),Financial Services,25.0,0.0,Moderate,1.2,False,0.11,True,True,False,0.406,0.88,1.12,51.1,-1.38,20.96,V3,68.0
+NYT,2025-12-01,06:21 PM,Monday,64.77999877929688,1.62,22.98,10547402752,Large ($10-50B),Communication Services,24.0,0.0,Moderate,0.83,False,6.73,True,True,False,0.716,1.8,0.65,64.1,-0.84,45.44,V3,65.0
+SIRI,2025-12-01,06:23 PM,Monday,20.809999465942383,0.43,-11.7,7007568384,Mid ($2-10B),Communication Services,21.0,1.0,Moderate,0.89,False,13.42,True,True,False,0.294,2.69,0.85,38.0,-25.16,15.62,V3,65.0
+RYTM,2025-12-01,06:23 PM,Monday,105.04000091552734,1.83,20.36,7009955328,Mid ($2-10B),Healthcare,19.0,0.0,Moderate,1.35,False,10.56,True,True,False,0.633,4.26,0.92,61.8,-9.45,128.82,V3,63.0
+UNFI,2025-12-01,06:21 PM,Monday,34.36000061035156,-2.91,24.85,2093612160,Mid ($2-10B),Consumer Defensive,23.0,0.0,Moderate,1.98,True,8.06,True,True,False,0.111,4.41,1.27,29.3,-20.63,65.35,V3,60.0
+PSN,2025-12-01,06:24 PM,Monday,82.69000244140625,-0.72,9.45,8830782464,Mid ($2-10B),Technology,22.0,0.0,Moderate,0.64,False,10.9,True,True,False,0.419,2.91,0.68,38.9,-18.87,51.56,V3,60.0
+BRSP,2025-12-01,06:21 PM,Monday,5.639999866485596,3.68,16.37,733165760,Small (<$2B),Real Estate,23.0,0.0,Moderate,1.34,False,3.2,True,True,False,0.916,2.06,0.74,64.4,-3.22,43.98,V3,58.0
+STWD,2025-12-01,06:20 PM,Monday,18.3700008392334,4.49,-4.74,6979338752,Mid ($2-10B),Real Estate,22.0,0.0,Moderate,0.96,False,3.59,True,True,False,0.777,1.37,0.84,63.5,-10.58,16.2,V3,55.0
+ORGO,2025-12-01,06:24 PM,Monday,5.079999923706055,-0.97,,644713664,,Healthcare,,,,,,,,,,,,,,-28.22,94.64,CONTROL,
+ORIC,2025-12-01,06:24 PM,Monday,11.149999618530273,-2.87,,1085890432,,Healthcare,,,,,,,,,,,,,,-25.32,186.26,CONTROL,
+SIGI,2025-12-01,06:24 PM,Monday,79.04000091552734,2.65,,4809608192,,Financial Services,,,,,,,,,,,,,,-20.95,11.3,CONTROL,
+RTO,2025-12-01,06:24 PM,Monday,27.8700008392334,6.62,,14105281536,,Industrials,,,,,,,,,,,,,,-7.41,43.76,CONTROL,
+QXO,2025-12-01,06:24 PM,Monday,18.329999923706055,12.45,,12361606144,,Industrials,,,,,,,,,,,,,,-25.76,54.68,CONTROL,

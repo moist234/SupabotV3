@@ -1,0 +1,46 @@
+name: Supabot V3 Scanner
+
+on:
+  schedule:
+    # Run once daily at 1:00 PM EST = 5:00 PM UTC (different time than V2)
+    - cron: '0 17 * * 1-5'
+  
+  workflow_dispatch:
+
+jobs:
+  scan-v3:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Supabot V3
+        env:
+          # API Keys
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+        run: python3 supabot_v3.py
+      
+      - name: Upload V3 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-scan-results-${{ github.run_number }}
+          path: outputs/supabot_v3*.csv
+          retention-days: 30
+A
+^X
+B

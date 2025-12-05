@@ -1,0 +1,4 @@
+ticker,price,market_cap,sector,change_7d,is_fresh,is_accelerating,x_mentions,reddit_mentions,composite_score,rating,conviction,position_size,stop_loss,hold_period
+ADSK,301.38,64478609408.0,Technology,3.23,True,True,14,0,3.0,HOLD,MEDIUM,half,277.2696,7 days
+AGNC,10.56,11327967232.0,Real Estate,4.55,True,True,15,0,3.0,HOLD,MEDIUM,half,9.715200000000001,7 days
+CINF,168.48,26346297344.0,Financial Services,4.36,True,True,11,0,3.0,HOLD,MEDIUM,half,155.0016,7 days
