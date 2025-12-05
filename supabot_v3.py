@@ -9,7 +9,10 @@ import sys
 import re
 import random
 import json
-import alpaca_trade_api as tradeapi
+try:
+    import alpaca_trade_api as tradeapi
+except:
+    tradeapi = None  # Skip if broken
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 import pandas as pd
