@@ -8,6 +8,8 @@ import os
 import sys
 import re
 import random
+import json
+import alpaca_trade_api as tradeapi
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 import pandas as pd
@@ -26,6 +28,10 @@ REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "supabot/3.0")
 TWITTER_API_KEY = os.getenv("TWITTERAPI_IO_KEY")
+ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
+ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+ALPACA_BASE_URL = "https://paper-api.alpaca.markets"
+POSITIONS_FILE = "alpaca_positions.json"
 
 # Settings
 FRESH_MIN = -5.0
@@ -437,6 +443,178 @@ def calculate_quality_score(pick: Dict) -> float:
     
     return score
 
+def save_entry_dates(orders):
+    """Save entry dates for 7-day tracking."""
+    try:
+        with open(POSITIONS_FILE, 'r') as f:
+            data = json.load(f)
+    except:
+        data = {}
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    for order in orders:
+        data[order['ticker']] = {
+            'entry_date': today,
+            'shares': order['shares'],
+            'entry_price': order['entry_price']
+        }
+    
+    with open(POSITIONS_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    print(f"💾 Saved entry dates for {len(orders)} positions")
+
+
+def sell_seven_day_positions():
+    """Sell positions that are 7+ days old."""
+    
+    if not ALPACA_API_KEY or not ALPACA_SECRET_KEY:
+        print("⚠️  Alpaca not configured - skipping auto-sell")
+        return []
+    
+    try:
+        # Load position tracker
+        try:
+            with open(POSITIONS_FILE, 'r') as f:
+                tracked_positions = json.load(f)
+        except:
+            print("📝 No tracked positions yet")
+            return []
+        
+        api = tradeapi.REST(ALPACA_API_KEY, ALPACA_SECRET_KEY, base_url=ALPACA_BASE_URL)
+        
+        today = datetime.now().date()
+        positions = api.list_positions()
+        sells = []
+        
+        print("\n🔄 Checking positions for 7-day exit...")
+        
+        for position in positions:
+            ticker = position.symbol
+            
+            if ticker not in tracked_positions:
+                print(f"  ⚠️  {ticker}: Not in tracker (manual position?)")
+                continue
+            
+            entry_date = datetime.strptime(tracked_positions[ticker]['entry_date'], '%Y-%m-%d').date()
+            days_held = (today - entry_date).days
+            
+            if days_held >= 7:
+                qty = int(position.qty)
+                current_price = float(position.current_price)
+                entry_price = tracked_positions[ticker]['entry_price']
+                
+                try:
+                    order = api.submit_order(
+                        symbol=ticker,
+                        qty=qty,
+                        side='sell',
+                        type='market',
+                        time_in_force='day'
+                    )
+                    
+                    return_pct = ((current_price - entry_price) / entry_price) * 100
+                    profit = (current_price - entry_price) * qty
+                    
+                    sells.append({
+                        'ticker': ticker,
+                        'days_held': days_held,
+                        'return_pct': return_pct,
+                        'profit': profit
+                    })
+                    
+                    print(f"  ✅ SELL {qty} {ticker} (Day {days_held}) @ ${current_price:.2f} ({return_pct:+.2f}%) | P&L: ${profit:+,.2f}")
+                    
+                    # Remove from tracker
+                    del tracked_positions[ticker]
+                
+                except Exception as e:
+                    print(f"  ❌ {ticker} sell failed: {e}")
+            else:
+                print(f"  📅 {ticker}: Day {days_held}/7 (hold)")
+        
+        # Save updated tracker
+        with open(POSITIONS_FILE, 'w') as f:
+            json.dump(tracked_positions, f, indent=2)
+        
+        if sells:
+            total_profit = sum(s['profit'] for s in sells)
+            avg_return = sum(s['return_pct'] for s in sells) / len(sells)
+            print(f"\n✅ Closed {len(sells)} positions | Avg: {avg_return:+.2f}% | Total P&L: ${total_profit:+,.2f}")
+        else:
+            print("\n📝 No positions ready to exit")
+        
+        return sells
+    
+    except Exception as e:
+        print(f"❌ Alpaca sell failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+
+def place_paper_trades(picks: List[Dict]):
+    """Place paper trades on Alpaca ($500 per stock)."""
+    
+    if not ALPACA_API_KEY or not ALPACA_SECRET_KEY:
+        print("⚠️  Alpaca credentials not set")
+        return []
+    
+    try:
+        api = tradeapi.REST(ALPACA_API_KEY, ALPACA_SECRET_KEY, base_url=ALPACA_BASE_URL)
+        
+        account = api.get_account()
+        print(f"\n💰 Alpaca: ${float(account.cash):,.2f} cash, ${float(account.portfolio_value):,.2f} portfolio")
+        
+        position_value = 500.0  # $500 per stock
+        orders_placed = []
+        
+        for pick in picks:
+            ticker = pick['ticker']
+            price = pick['price']
+            shares = int(position_value / price)
+            
+            if shares < 1:
+                shares = 1
+            
+            try:
+                order = api.submit_order(
+                    symbol=ticker,
+                    qty=shares,
+                    side='buy',
+                    type='market',
+                    time_in_force='day'
+                )
+                
+                cost = shares * price
+                
+                orders_placed.append({
+                    'ticker': ticker,
+                    'shares': shares,
+                    'entry_price': price,
+                    'estimated_value': cost
+                })
+                
+                print(f"  ✅ BUY {shares} {ticker} @ ${price:.2f} (${cost:.2f})")
+            
+            except Exception as e:
+                print(f"  ❌ {ticker}: {e}")
+        
+        total = sum(o['estimated_value'] for o in orders_placed)
+        print(f"\n✅ Placed {len(orders_placed)} orders (${total:,.2f} total)")
+        
+        # Save entry dates for 7-day tracking
+        if orders_placed:
+            save_entry_dates(orders_placed)
+        
+        return orders_placed
+    
+    except Exception as e:
+        print(f"❌ Alpaca failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return []
 
 def scan() -> Tuple[List[Dict], List[Dict]]:
     """
@@ -741,14 +919,17 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
 if __name__ == "__main__":
     
     print("\n" + "="*80)
-    print("🤖 SUPABOT V3 - WITH CONTROL GROUP EXPERIMENT")
+    print("🤖 SUPABOT V3 - ALPACA PAPER TRADING ($500/stock)")
     print("="*80)
-    print(f"V3 Picks: Top 10 Fresh+Accel stocks")
-    print(f"Control: 5 random stocks (no filters)")
-    print(f"Goal: Prove edge is real vs market luck")
-    print("="*80 + "\n")
     
     start_time = datetime.now()
+    
+    # SELL OLD POSITIONS FIRST (7+ days)
+    print(f"{'='*80}")
+    print("📤 CHECKING FOR 7-DAY EXITS...")
+    print(f"{'='*80}")
+    sell_seven_day_positions()
+    print(f"{'='*80}\n")
     
     picks, control = scan()
     
@@ -766,9 +947,12 @@ if __name__ == "__main__":
     send_discord_notification(picks, control)
     print(f"{'='*80}\n")
     
-    print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
+    # PLACE NEW TRADES
+    print(f"{'='*80}")
+    print("📈 PLACING ALPACA PAPER TRADES ($500/stock)...")
+    print(f"{'='*80}")
+    place_paper_trades(picks)
+    print(f"{'='*80}\n")
     
-    if picks:
-        print(f"✅ V3 Complete - {len(picks)} picks + {len(control)} control stocks!\n")
-    else:
-        print(f"❌ No picks today\n")
+    print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
+    print(f"✅ Complete - {len(picks)} V3 picks + {len(control)} control + Alpaca trades!\n")
