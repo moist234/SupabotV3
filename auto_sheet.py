@@ -1,6 +1,7 @@
 """
 Auto-fill Google Sheets from Supabot V3 CSV output
 With automatic exit price filling and batch summary calculations
+Now displays V4 Score instead of V3 Score
 """
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -214,7 +215,7 @@ def fill_sheet(sheet, csv_path):
             row_data = [
                 today,                                      # A: Date
                 pick['ticker'],                             # B: Ticker
-                int(pick.get('quality_score', 0)),          # C: Score
+                int(pick.get('v4_score', 0)),               # C: Score (V4) ← CHANGED
                 f"${pick['price']:.2f}",                    # D: Entry Price
                 pick.get('buzz_level', 'N/A').upper(),      # E: Buzz
                 int(pick.get('twitter_mentions', 0)),       # F: Twitter
@@ -269,6 +270,7 @@ def fill_sheet(sheet, csv_path):
     
     print(f"\n🎉 Done! Added headers at row {next_row}, data starts at row {data_start_row}")
     print(f"📝 Note: Columns U-W will be auto-filled when exits complete")
+    print(f"📊 V4 Scores now displayed in Score column")
 
 def update_exit_prices(sheet):
     """Auto-fill exit prices for V3 picks AND control group using close on day 7."""
@@ -295,10 +297,15 @@ def update_exit_prices(sheet):
     return_col = headers.index("7d %")
     
     # Find column indices for Control Group
-    control_ticker_col = headers.index("Control Group")
-    control_entry_col = 25  # Column Z (0-indexed: A=0, B=1... Z=25)
-    control_exit_col = 26   # Column AA
-    control_return_col = 27  # Column AB
+    try:
+        control_ticker_col = headers.index("Control Group")
+        control_entry_col = 25  # Column Z (0-indexed: A=0, B=1... Z=25)
+        control_exit_col = 26   # Column AA
+        control_return_col = 27  # Column AB
+        has_control_group = True
+    except ValueError:
+        has_control_group = False
+        print("  ⚠️  No Control Group columns (old format)")
     
     today = datetime.now().date()
     v3_updates = []
@@ -372,7 +379,7 @@ def update_exit_prices(sheet):
                 print(f"  ⚠️  {ticker}: Error - {e}")
         
         # ============ PROCESS CONTROL GROUP ============
-        if len(row) > control_ticker_col and row[control_ticker_col]:
+        if has_control_group and len(row) > control_ticker_col and row[control_ticker_col]:
             control_exit_value = row[control_exit_col] if len(row) > control_exit_col else ""
             
             if not control_exit_value:
@@ -455,6 +462,7 @@ def update_exit_prices(sheet):
 if __name__ == "__main__":
     print("\n" + "="*60)
     print("🤖 SUPABOT V3 → GOOGLE SHEETS AUTO-FILL")
+    print("📊 Now Showing V4 Scores")
     print("="*60 + "\n")
     
     # Get latest CSV
