@@ -647,7 +647,20 @@ def place_paper_trades(picks: List[Dict]):
         for pick in picks:
             ticker = pick['ticker']
             price = pick['price']
-            shares = int(position_value / price)
+            
+            # Calculate shares to get closest to $500
+            shares_floor = int(position_value / price)
+            shares_ceil = shares_floor + 1
+            
+            # Calculate how close each option is to $500
+            cost_floor = shares_floor * price
+            cost_ceil = shares_ceil * price
+            
+            # Pick whichever is closer to $500
+            if abs(cost_ceil - position_value) < abs(cost_floor - position_value):
+                shares = shares_ceil
+            else:
+                shares = shares_floor
             
             if shares < 1:
                 shares = 1
