@@ -175,7 +175,7 @@ def fill_sheet(sheet, csv_path):
     
     # WRITE HEADERS FIRST (bolded)
     headers = [
-        "Date", "Ticker", "Score", "Entry Price", "Buzz", "Twitter", "Reddit",
+        "Date", "Ticker", "V4Score", "Entry Price", "Buzz", "Twitter", "Reddit",
         "Market Cap", "Short Interest", "Past week 7d%", "Sector", "BB", "ATR",
         "Vol Trend", "RSI", "52w from high", "Exit Price (7d)", "7d %",
         "Exit Price (30d)", "30d %", "7d Win Rate %", "7d Average Return %",
