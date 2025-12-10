@@ -225,94 +225,87 @@ def calculate_quality_score(pick: Dict) -> float:
 def calculate_quality_score_v4(pick: Dict) -> float:
     """
     V4 scoring - FOR DISPLAY/TRACKING.
-    Based on 50-trade validated patterns.
+    Based on 60-trade validated patterns + correlation analysis.
+    Optimized to avoid overfitting, focus on proven factors.
     """
     score = 0
     
-    # 1. SECTOR + CAP COMBO (0-50 points) - BIGGEST PREDICTOR
+    # 1. SECTOR (0-40 points) - VALIDATED
     sector = pick['sector']
     cap_size = pick['cap_size']
     
     if sector == 'Healthcare':
-        if 'Mid' in cap_size:
-            score += 50  # Golden combo (100% WR in sample)
-        elif 'Small' in cap_size:
-            score += 35  # High variance, can explode
-        else:
-            score += 25  # Large-cap healthcare weak
+        score += 40 if 'Mid' in cap_size else 25
     elif sector == 'Industrials':
-        score += 35  # Strong (9 trades, 8 wins)
+        score += 35
     elif sector == 'Real Estate':
-        score += 25  # Consistent (100% WR, modest returns)
+        score += 30
+    elif sector == 'Basic Materials':
+        score += 25
     elif sector == 'Communication Services':
         score += 20
-    elif sector == 'Basic Materials':
-        score += 20
     elif sector == 'Technology':
-        score += 15  # Volatile (71% WR)
-    elif sector == 'Consumer Defensive':
-        score += 10
-    # Financial Services = 0 (banned)
+        score += 15
+    # Financial Services & Consumer Defensive = 0 (banned/toxic)
     
-    # 2. SHORT INTEREST (0-25 points) - SECOND BIGGEST
-    si = pick.get('short_percent', 0)
-    if 10.0 <= si <= 15.0:
-        score += 25  # Explosive potential
-    elif 5.0 <= si < 10.0:
-        score += 22  # Golden zone (91.7% WR)
-    elif 2.0 <= si < 5.0:
-        score += 12  # Decent
-    else:  # <2% or >15%
-        score += 0   # Weak (72% WR for <2%)
-    
-    # 3. FRESH POSITION (0-20 points)
-    fresh = pick['change_7d']
-    if -3.0 <= fresh <= -1.0:
-        score += 20  # Sweet spot
-    elif -5.0 <= fresh < -3.0:
-        score += 18
-    elif -1.0 <= fresh <= 0:
-        score += 16
-    elif 0 < fresh <= 1.0:
-        score += 12
-    else:  # +1% to +5%
-        score += 5   # Weak zone
-    
-    # 4. 52-WEEK POSITIONING (0-15 points)
-    dist_52w = pick.get('dist_52w_high', 0)
-    if -30.0 <= dist_52w <= -10.0:
-        score += 15  # Optimal pullback (87.5% WR)
-    elif -40.0 <= dist_52w < -30.0:
-        score += 12
-    elif -10.0 < dist_52w <= -5.0:
-        score += 8
-    else:  # Within 5% of highs
-        score += 0   # Danger (42.9% WR)
-    
-    # 5. MARKET CAP (0-10 points)
+    # 2. MARKET CAP (0-25 points) - VALIDATED (87.5% WR for Mid)
     if 'Mid' in cap_size:
-        score += 10  # 89.5% WR
+        score += 25
     elif 'Small' in cap_size:
-        score += 7
+        score += 15
     elif 'Large' in cap_size:
-        score += 4
+        score += 8
     # Mega = 0
     
-    # 6. BUZZ (0-10 points) - downweighted
-    twitter = pick.get('twitter_mentions', 0)
-    reddit = pick.get('reddit_mentions', 0)
-    total_buzz = twitter + (reddit * 2)
+    # 3. SHORT INTEREST (0-25 points) - STRONGEST PREDICTOR (r=0.454)
+    si = pick.get('short_percent', 0)
+    if 5.0 <= si <= 10.0:
+        score += 25  # Golden zone (92.3% WR, Sharpe 1.20)
+    elif 2.0 <= si < 5.0:
+        score += 20  # Solid zone (81.8% WR)
+    elif 10.0 < si <= 15.0:
+        score += 10  # Spicy zone (71% WR, high volatility)
+    # 0-2% and >15% = 0
     
-    if total_buzz >= 50:
-        score += 10
-    elif total_buzz >= 30:
+    # 4. FRESH % (0-20 points) - VALIDATED (non-linear optimal range)
+    fresh = pick['change_7d']
+    if fresh < 0:
+        score += 20  # Best (90% WR)
+    elif 0 <= fresh <= 2:
+        score += 18  # Good (80% WR)
+    elif 2 < fresh <= 4:
+        score += 12  # Okay (74% WR)
+    # >4% = 0 (64% WR - already moved)
+    
+    # 5. 52W POSITION (0-15 points) - PROMISING (100% WR in sample but N=11)
+    dist = pick.get('dist_52w_high', 0)
+    if -40 <= dist <= -10:
+        score += 15  # Pullback zone (100% WR in 11 trades)
+    elif -50 <= dist < -40:
         score += 8
-    elif total_buzz >= 20:
-        score += 6
-    else:
-        score += 4
+    # Near highs (<-5) or deep value (<-50) = 0
+    
+    # 6. VOLUME TREND (0-15 points) - PROMISING (100% WR for >1.0x but N=5)
+    vol = pick.get('volume_trend', 1.0)
+    if vol >= 1.0:
+        score += 15  # Accelerating (100% WR in 5 trades)
+    elif vol >= 0.7:
+        score += 10  # Normal (83% WR)
+    # <0.7 = 0 (0% WR - red flag)
+    
+    # 7. TWITTER (0-5 points) - WEAK (r=-0.061, minimal predictive value)
+    twitter = pick.get('twitter_mentions', 0)
+    if twitter >= 25:
+        score += 5
+    elif twitter >= 20:
+        score += 3
+    # Reddit ignored (r=-0.015, pure noise)
     
     return score
+
+# MAX POSSIBLE: 145 points
+# Expected high-quality picks: 100-130 points
+# Expected low-quality picks: 40-70 points
 
 
 # ============ UNIVERSE & SIGNAL FUNCTIONS ============
