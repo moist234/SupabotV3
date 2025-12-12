@@ -10,7 +10,10 @@ on:
 jobs:
   scan-v3:
     runs-on: ubuntu-latest
-    timeout-minutes: 10  # V3 is faster
+    timeout-minutes: 10
+    
+    permissions:
+      contents: write  # IMPORTANT: Allows pushing back to repo
     
     steps:
       - name: 📥 Checkout code
@@ -41,19 +44,17 @@ jobs:
       
       - name: 🚀 Run Supabot V3 (Optimized)
         env:
-          # API Keys (V3 only needs these)
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
           REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
           DISCORD_WEBHOOK_V3: ${{ secrets.DISCORD_WEBHOOK_V3 }}
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}          # NEW
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}    # NEW
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
         run: |
           echo "🚀 Starting V3 optimized scan at $(date)"
           python3 supabot_v3.py
           echo "✅ V3 scan completed at $(date)"
-        
         continue-on-error: true
       
       - name: 📊 Auto-fill Google Sheet
@@ -63,6 +64,15 @@ jobs:
           python3 auto_sheet.py
           echo "✅ Sheet updated at $(date)"
         continue-on-error: true
+      
+      - name: 💾 Commit position tracking
+        if: success()
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add alpaca_positions.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update Alpaca positions [skip ci]"
+          git push
       
       - name: 📊 Upload V3 results
         if: always()
