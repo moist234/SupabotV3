@@ -1,1 +1,52 @@
-{}
+{
+  "AL": {
+    "entry_date": "2025-12-15",
+    "shares": 8,
+    "entry_price": 64.2750015258789
+  },
+  "VICI": {
+    "entry_date": "2025-12-15",
+    "shares": 18,
+    "entry_price": 28.454999923706055
+  },
+  "DAY": {
+    "entry_date": "2025-12-15",
+    "shares": 7,
+    "entry_price": 69.38500213623047
+  },
+  "ASAN": {
+    "entry_date": "2025-12-15",
+    "shares": 35,
+    "entry_price": 14.185600280761719
+  },
+  "MAS": {
+    "entry_date": "2025-12-15",
+    "shares": 8,
+    "entry_price": 64.52999877929688
+  },
+  "TWI": {
+    "entry_date": "2025-12-15",
+    "shares": 60,
+    "entry_price": 8.380000114440918
+  },
+  "BCE": {
+    "entry_date": "2025-12-15",
+    "shares": 21,
+    "entry_price": 23.735000610351562
+  },
+  "IR": {
+    "entry_date": "2025-12-15",
+    "shares": 6,
+    "entry_price": 81.4800033569336
+  },
+  "HLN": {
+    "entry_date": "2025-12-15",
+    "shares": 51,
+    "entry_price": 9.78499984741211
+  },
+  "CRVS": {
+    "entry_date": "2025-12-15",
+    "shares": 60,
+    "entry_price": 8.399999618530273
+  }
+}
