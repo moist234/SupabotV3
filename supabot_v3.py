@@ -267,15 +267,21 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 10  # Spicy zone (71% WR, high volatility)
     # 0-2% and >15% = 0
     
-    # 4. FRESH % (0-20 points) - VALIDATED (non-linear optimal range)
+    # 4. FRESH % (0-25 points) - VALIDATED (U-shaped pattern discovered!)
     fresh = pick['change_7d']
-    if fresh < 0:
-        score += 20  # Best (90% WR)
-    elif 0 <= fresh <= 2:
-        score += 18  # Good (80% WR)
-    elif 2 < fresh <= 4:
-        score += 12  # Okay (74% WR)
-    # >4% = 0 (64% WR - already moved)
+    if 1.0 <= fresh <= 2.0:
+        score += 25  # BEST: 100% WR (26 trades validated!)
+    elif 3.0 <= fresh <= 5.0:
+        score += 23  # BEST: 100% WR (13 trades validated!)
+    elif -1.0 <= fresh < 0:
+        score += 20  # GOOD: 93% WR (15 trades validated)
+    elif 2.0 < fresh < 3.0:
+        score += 20  # GOOD: 100% WR (5 trades, small sample)
+    elif fresh < -1.0:
+        score += 15  # OKAY: 67% WR (6 trades)
+    elif fresh > 5.0:
+        score += 10  # OKAY: Still valid
+    # 0 to 1% = 0 points (DEAD ZONE: 61% WR, 41 trades validated!)
     
     # 5. 52W POSITION (0-15 points) - PROMISING (100% WR in sample but N=11)
     dist = pick.get('dist_52w_high', 0)
