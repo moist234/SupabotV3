@@ -707,10 +707,35 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     Run scan.
     - V3 scoring for SELECTION (internal)
     - V4 scoring for DISPLAY (external)
+    - Prevents same stock being picked twice in same week
     """
     
     universe = get_universe()
     picks = []
+    
+    # Track this week's picks to avoid repeats
+    this_week_file = "this_week_picks.json"
+    try:
+        with open(this_week_file, 'r') as f:
+            week_data = json.load(f)
+            # Check if it's a new week (reset on Monday)
+            today = datetime.now()
+            last_week = week_data.get('week_number', 0)
+            current_week = today.isocalendar()[1]  # ISO week number
+            
+            if current_week != last_week:
+                # New week - reset picks
+                this_week_picks = set()
+                print(f"📅 New week detected (Week {current_week}) - Reset weekly tracker")
+            else:
+                # Same week - load existing picks
+                this_week_picks = set(week_data.get('tickers', []))
+                print(f"📅 Same week (Week {current_week}) - Loaded {len(this_week_picks)} already-picked tickers")
+    except:
+        # File doesn't exist - first run
+        this_week_picks = set()
+        current_week = datetime.now().isocalendar()[1]
+        print(f"📅 First run of week {current_week}")
     
     print(f"\n🔍 Scanning {len(universe)} stocks...\n")
     
@@ -738,6 +763,11 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             
             squeeze_data = check_squeeze(ticker)
             if squeeze_data['has_squeeze']:
+                continue
+            
+            # Skip if already picked this week
+            if ticker in this_week_picks:
+                print(f"  ⏭️  Skipping {ticker} (already picked this week)")
                 continue
             
             pick = {
@@ -784,9 +814,23 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     picks.sort(key=lambda x: x['quality_score'], reverse=True)
     top_picks = picks[:10]
     
+    # Save this week's picks to tracker
+    for pick in top_picks:
+        this_week_picks.add(pick['ticker'])
+    
+    # Write to file
+    week_data = {
+        'week_number': current_week,
+        'tickers': list(this_week_picks),
+        'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M')
+    }
+    with open(this_week_file, 'w') as f:
+        json.dump(week_data, f, indent=2)
+    
     print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
     print(f"🎯 Returning top 10 by V3 quality score")
-    print(f"📈 Displaying V4 scores for tracking\n")
+    print(f"📈 Displaying V4 scores for tracking")
+    print(f"🔒 Weekly tracker: {len(this_week_picks)} unique tickers this week\n")
     
     # Control group
     print(f"🎲 Selecting 5 random stocks as control group...\n")
@@ -834,7 +878,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     print(f"✅ Control group: {len(control_group)} random stocks\n")
     
     return top_picks, control_group
-
 
 def save_picks(all_picks: List[Dict]):
     """Save to CSV."""
