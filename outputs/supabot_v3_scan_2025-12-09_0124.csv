@@ -1,0 +1,16 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,group,quality_score,v4_score
+EXAS,2025-12-09,01:22 AM,Tuesday,100.95999908447266,-0.48,115.04,19158757376,Large ($10-50B),Healthcare,22.0,0.0,Moderate,1.77,True,4.44,True,True,False,0.69,3.11,0.71,98.5,-0.89,160.14,V3,75.0,63.0
+ZTO,2025-12-09,01:23 AM,Tuesday,21.049999237060547,0.86,6.91,16563620864,Large ($10-50B),Industrials,20.0,0.0,Moderate,1.34,False,3.46,True,True,False,0.805,2.54,1.17,74.7,-3.79,31.4,V3,73.0,69.0
+ATI,2025-12-09,01:23 AM,Tuesday,99.63999938964844,-0.66,29.5,13733593088,Large ($10-50B),Industrials,22.0,0.0,Moderate,1.16,False,2.72,True,True,False,0.667,3.17,1.01,52.9,-3.86,153.99,V3,68.0,73.0
+SKM,2025-12-09,01:21 AM,Tuesday,20.299999237060547,0.35,-8.52,7790161920,Mid ($2-10B),Communication Services,20.0,0.0,Moderate,0.65,False,0.47,True,True,False,0.657,1.22,0.73,55.9,-14.71,3.98,V3,65.0,63.0
+GMAB,2025-12-09,01:24 AM,Tuesday,31.940000534057617,0.06,47.39,19800702976,Large ($10-50B),Healthcare,24.0,0.0,Moderate,0.7,False,1.86,True,True,False,0.784,2.19,0.84,64.2,-5.08,85.32,V3,65.0,55.0
+PPG,2025-12-09,01:22 AM,Tuesday,100.37000274658203,0.48,-3.52,22653509632,Large ($10-50B),Basic Materials,19.0,0.0,Moderate,1.09,False,2.46,True,True,False,0.74,2.06,0.96,69.0,-20.78,13.51,V3,63.0,67.0
+EXPD,2025-12-09,01:23 AM,Tuesday,148.0500030517578,1.0,28.04,20093128704,Large ($10-50B),Industrials,19.0,0.0,Moderate,1.1,False,5.23,True,True,False,0.756,2.03,0.95,64.5,-2.39,49.15,V3,63.0,77.0
+MTA,2025-12-09,01:22 AM,Tuesday,7.360000133514404,1.38,85.86,681251776,Small (<$2B),Basic Materials,25.0,0.0,Moderate,0.85,False,0.0,True,True,False,0.724,4.46,0.95,61.5,-4.79,199.92,V3,60.0,38.0
+CVLT,2025-12-09,01:24 AM,Tuesday,121.45999908447266,-1.46,-36.06,5400070144,Mid ($2-10B),Technology,22.0,0.0,Moderate,0.82,False,6.79,True,True,False,0.352,3.42,1.13,40.8,-39.48,6.11,V3,60.0,85.0
+HLN,2025-12-09,01:24 AM,Tuesday,9.399999618530273,-3.69,0.29,41857830912,Large ($10-50B),Healthcare,24.0,0.0,Moderate,1.58,True,0.23,True,True,False,0.036,1.79,1.35,40.1,-17.18,7.97,V3,60.0,68.0
+IAC,2025-12-09,01:24 AM,Tuesday,36.709999084472656,6.04,,2942573312,,Communication Services,,,,,,,,,,,,,,-12.3,24.19,CONTROL,,
+CAPR,2025-12-09,01:24 AM,Tuesday,28.559999465942383,450.29,,1305719680,,Healthcare,,,,,,,,,,,,,,-29.25,564.19,CONTROL,,
+AU,2025-12-09,01:24 AM,Tuesday,78.80999755859375,-10.44,,39790243840,,Basic Materials,,,,,,,,,,,,,,-10.72,268.79,CONTROL,,
+ACLX,2025-12-09,01:24 AM,Tuesday,74.08000183105469,1.13,,4283518464,,Healthcare,,,,,,,,,,,,,,-21.25,54.78,CONTROL,,
+ATEN,2025-12-09,01:24 AM,Tuesday,17.780000686645508,4.71,,1282873600,,Technology,,,,,,,,,,,,,,-17.97,30.08,CONTROL,,
