@@ -5,9 +5,9 @@
     "entry_price": 64.2750015258789
   },
   "VICI": {
-    "entry_date": "2025-12-15",
+    "entry_date": "2025-12-16",
     "shares": 18,
-    "entry_price": 28.454999923706055
+    "entry_price": 28.325000762939453
   },
   "DAY": {
     "entry_date": "2025-12-15",
@@ -48,5 +48,50 @@
     "entry_date": "2025-12-15",
     "shares": 60,
     "entry_price": 8.399999618530273
+  },
+  "GEN": {
+    "entry_date": "2025-12-16",
+    "shares": 18,
+    "entry_price": 27.209999084472656
+  },
+  "EL": {
+    "entry_date": "2025-12-16",
+    "shares": 5,
+    "entry_price": 103.9800033569336
+  },
+  "PECO": {
+    "entry_date": "2025-12-16",
+    "shares": 14,
+    "entry_price": 35.20500183105469
+  },
+  "ZIM": {
+    "entry_date": "2025-12-16",
+    "shares": 25,
+    "entry_price": 20.229999542236328
+  },
+  "ERO": {
+    "entry_date": "2025-12-16",
+    "shares": 20,
+    "entry_price": 25.059999465942383
+  },
+  "DOW": {
+    "entry_date": "2025-12-16",
+    "shares": 22,
+    "entry_price": 22.540000915527344
+  },
+  "SSL": {
+    "entry_date": "2025-12-16",
+    "shares": 82,
+    "entry_price": 6.099999904632568
+  },
+  "LIVN": {
+    "entry_date": "2025-12-16",
+    "shares": 8,
+    "entry_price": 62.77000045776367
+  },
+  "FLO": {
+    "entry_date": "2025-12-16",
+    "shares": 45,
+    "entry_price": 11.015000343322754
   }
 }
