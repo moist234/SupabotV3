@@ -40,9 +40,9 @@
     "entry_price": 81.4800033569336
   },
   "HLN": {
-    "entry_date": "2025-12-15",
+    "entry_date": "2025-12-17",
     "shares": 51,
-    "entry_price": 9.78499984741211
+    "entry_price": 9.84000015258789
   },
   "CRVS": {
     "entry_date": "2025-12-15",
@@ -93,5 +93,50 @@
     "entry_date": "2025-12-16",
     "shares": 45,
     "entry_price": 11.015000343322754
+  },
+  "HUBS": {
+    "entry_date": "2025-12-17",
+    "shares": 1,
+    "entry_price": 383.75
+  },
+  "IVR": {
+    "entry_date": "2025-12-17",
+    "shares": 60,
+    "entry_price": 8.274999618530273
+  },
+  "BRSP": {
+    "entry_date": "2025-12-17",
+    "shares": 85,
+    "entry_price": 5.894999980926514
+  },
+  "EXR": {
+    "entry_date": "2025-12-17",
+    "shares": 4,
+    "entry_price": 131.0500030517578
+  },
+  "EPAM": {
+    "entry_date": "2025-12-17",
+    "shares": 2,
+    "entry_price": 205.3350067138672
+  },
+  "KMT": {
+    "entry_date": "2025-12-17",
+    "shares": 18,
+    "entry_price": 28.55500030517578
+  },
+  "VOD": {
+    "entry_date": "2025-12-17",
+    "shares": 39,
+    "entry_price": 12.805500030517578
+  },
+  "BR": {
+    "entry_date": "2025-12-17",
+    "shares": 2,
+    "entry_price": 228.3699951171875
+  },
+  "DOLE": {
+    "entry_date": "2025-12-17",
+    "shares": 32,
+    "entry_price": 15.390000343322754
   }
 }
