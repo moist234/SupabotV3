@@ -138,5 +138,55 @@
     "entry_date": "2025-12-17",
     "shares": 32,
     "entry_price": 15.390000343322754
+  },
+  "REG": {
+    "entry_date": "2025-12-18",
+    "shares": 7,
+    "entry_price": 67.6500015258789
+  },
+  "ROP": {
+    "entry_date": "2025-12-18",
+    "shares": 1,
+    "entry_price": 449.0249938964844
+  },
+  "ANGX": {
+    "entry_date": "2025-12-18",
+    "shares": 95,
+    "entry_price": 5.289999961853027
+  },
+  "COMP": {
+    "entry_date": "2025-12-18",
+    "shares": 46,
+    "entry_price": 10.829999923706055
+  },
+  "MOH": {
+    "entry_date": "2025-12-18",
+    "shares": 3,
+    "entry_price": 162.42999267578125
+  },
+  "DAL": {
+    "entry_date": "2025-12-18",
+    "shares": 7,
+    "entry_price": 70.19000244140625
+  },
+  "TDS": {
+    "entry_date": "2025-12-18",
+    "shares": 13,
+    "entry_price": 39.130001068115234
+  },
+  "CUZ": {
+    "entry_date": "2025-12-18",
+    "shares": 20,
+    "entry_price": 25.045000076293945
+  },
+  "OKTA": {
+    "entry_date": "2025-12-18",
+    "shares": 6,
+    "entry_price": 90.08560180664062
+  },
+  "CERT": {
+    "entry_date": "2025-12-18",
+    "shares": 56,
+    "entry_price": 8.994999885559082
   }
 }
