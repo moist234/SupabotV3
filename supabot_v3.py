@@ -224,95 +224,94 @@ def calculate_quality_score(pick: Dict) -> float:
 
 def calculate_quality_score_v4(pick: Dict) -> float:
     """
-    V4 scoring - FOR DISPLAY/TRACKING.
-    Based on 60-trade validated patterns + correlation analysis.
-    Optimized to avoid overfitting, focus on proven factors.
+    V4 scoring - FOR DISPLAY/TRACKING ONLY
+    Based on CORRECT 121-trade data (71.9% WR)
+    
+    Key findings from winner_pattern_discovery.py:
+    - Fresh 0-3% = sweet spot (78-100% WR on 40 trades)
+    - SI 3-7% = golden zone (80.9% WR on 38 trades)
+    - SI 1-2% = dead zone (60% WR)
+    - Large-cap > Mid-cap (78.9% vs 72.4% WR)
+    - Basic Materials = best sector (90.9% WR, 10-1)
+    
+    STILL TRACKING ONLY - NOT USED FOR SELECTION
     """
     score = 0
     
-    # 1. SECTOR (0-40 points) - VALIDATED
-    sector = pick['sector']
-    cap_size = pick['cap_size']
-    
-    if sector == 'Healthcare':
-        score += 40 if 'Mid' in cap_size else 25
-    elif sector == 'Industrials':
-        score += 35
-    elif sector == 'Real Estate':
-        score += 30
-    elif sector == 'Basic Materials':
-        score += 25
-    elif sector == 'Communication Services':
-        score += 20
-    elif sector == 'Technology':
-        score += 15
-    # Financial Services & Consumer Defensive = 0 (banned/toxic)
-    
-    # 2. MARKET CAP (0-25 points) - VALIDATED (87.5% WR for Mid)
-    if 'Mid' in cap_size:
-        score += 25
-    elif 'Small' in cap_size:
-        score += 15
-    elif 'Large' in cap_size:
-        score += 8
-    # Mega = 0
-    
-    # 3. SHORT INTEREST (0-25 points) - STRONGEST PREDICTOR (r=0.454)
-    si = pick.get('short_percent', 0)
-    if 5.0 <= si <= 10.0:
-        score += 25  # Golden zone (92.3% WR, Sharpe 1.20)
-    elif 2.0 <= si < 5.0:
-        score += 20  # Solid zone (81.8% WR)
-    elif 10.0 < si <= 15.0:
-        score += 10  # Spicy zone (71% WR, high volatility)
-    # 0-2% and >15% = 0
-    
-    # 4. FRESH % (0-25 points) - VALIDATED (U-shaped pattern discovered!)
+    # 1. FRESH % SWEET SPOT (0-50 points)
+    # Fresh 0-3% validated on 40 trades with 78-100% WR
     fresh = pick['change_7d']
     if 1.0 <= fresh <= 2.0:
-        score += 25  # BEST: 100% WR (26 trades validated!)
-    elif 3.0 <= fresh <= 5.0:
-        score += 23  # BEST: 100% WR (13 trades validated!)
-    elif -1.0 <= fresh < 0:
-        score += 20  # GOOD: 93% WR (15 trades validated)
-    elif 2.0 < fresh < 3.0:
-        score += 20  # GOOD: 100% WR (5 trades, small sample)
-    elif fresh < -1.0:
-        score += 15  # OKAY: 67% WR (6 trades)
-    elif fresh > 5.0:
-        score += 10  # OKAY: Still valid
-    # 0 to 1% = 0 points (DEAD ZONE: 61% WR, 41 trades validated!)
+        score += 50  # 80.6% WR (25-6 validated)
+    elif 0 <= fresh < 1.0:
+        score += 45  # 76.5% WR (26-8 validated)
+    elif 2.0 < fresh <= 3.0:
+        score += 45  # 100% WR (7-0, small sample)
+    elif -2.0 <= fresh < 0:
+        score += 20  # 58.6% WR (17-12, weak)
+    elif fresh > 3.0:
+        score += 15  # 57.9% WR (11-8, weak)
+    else:  # fresh < -2.0
+        score += 10
     
-    # 5. 52W POSITION (0-15 points) - PROMISING (100% WR in sample but N=11)
-    dist = pick.get('dist_52w_high', 0)
-    if -40 <= dist <= -10:
-        score += 15  # Pullback zone (100% WR in 11 trades)
-    elif -50 <= dist < -40:
-        score += 8
-    # Near highs (<-5) or deep value (<-50) = 0
+    # 2. SHORT INTEREST ZONES (0-40 points)
+    # SI 3-7% validated as golden zone (80.9% WR on 38 trades)
+    si = pick.get('short_percent', 0)
+    if 3.0 <= si <= 7.0:
+        score += 40  # 80.9% WR combined (3-5%: 80.6%, 5-7%: 81.2%)
+    elif 0 <= si < 1.0:
+        score += 35  # 75.0% WR (15-5)
+    elif 7.0 < si < 10.0:
+        score += 30  # 75.0% WR (9-3)
+    elif 2.0 <= si < 3.0:
+        score += 25  # 66.7% WR (8-4)
+    elif 1.0 <= si < 2.0:
+        score += 15  # 60.0% WR (6-4) - DEAD ZONE!
+    elif 10.0 <= si < 15.0:
+        score += 10  # 53.3% WR (8-7) - HIGH RISK!
+    # SI ≥15% gets 0 (60% WR, very high risk)
     
-    # 6. VOLUME TREND (0-15 points) - PROMISING (100% WR for >1.0x but N=5)
-    vol = pick.get('volume_trend', 1.0)
-    if vol >= 1.0:
-        score += 15  # Accelerating (100% WR in 5 trades)
-    elif vol >= 0.7:
-        score += 10  # Normal (83% WR)
-    # <0.7 = 0 (0% WR - red flag)
+    # 3. MARKET CAP (0-30 points)
+    # Large-cap outperforms! (78.9% vs 72.4% for Mid)
+    cap_size = pick['cap_size']
+    if 'LARGE' in cap_size.upper():
+        score += 30  # 78.9% WR (30-8 validated)
+    elif 'MID' in cap_size.upper():
+        score += 25  # 72.4% WR (42-16 validated)
+    elif 'SMALL' in cap_size.upper():
+        score += 15  # 63.2% WR (12-7)
+    # MEGA gets 0 (50% WR, 3-3)
     
-    # 7. TWITTER (0-5 points) - WEAK (r=-0.061, minimal predictive value)
-    twitter = pick.get('twitter_mentions', 0)
-    if twitter >= 25:
-        score += 5
-    elif twitter >= 20:
-        score += 3
-    # Reddit ignored (r=-0.015, pure noise)
+    # 4. SECTOR PERFORMANCE (0-20 points)
+    sector = pick['sector']
+    if sector == 'Basic Materials':
+        score += 20  # 90.9% WR (10-1) - BEST!
+    elif sector == 'Communication Services':
+        score += 15  # 77.8% WR (7-2)
+    elif sector == 'Technology':
+        score += 10  # 73.3% WR (11-4)
+    elif sector == 'Healthcare':
+        score += 10  # 72.7% WR (16-6)
+    # Real Estate, Financial Services, Industrials get 0 (66.7% WR)
+    # Consumer Defensive = 0 (50% WR, BANNED!)
+    
+    # 5. COMBINATION BONUSES (0-10 points)
+    # Top validated combinations
+    if 1.0 <= fresh <= 3.0 and 2.0 <= si <= 5.0:
+        score += 10  # Fresh 1-3% + SI 2-5% = 90.9% WR (10-1)
+    elif 1.0 <= fresh <= 3.0 and 5.0 <= si <= 10.0:
+        score += 8   # Fresh 1-3% + SI 5-10% = 83.3% WR (10-2)
     
     return score
 
-# MAX POSSIBLE: 145 points
-# Expected high-quality picks: 100-130 points
-# Expected low-quality picks: 40-70 points
-
+# MAX POSSIBLE: 155 points
+# Expected quality picks: 110-145 points
+# Expected weak picks: 40-90 points
+#
+# NOTES:
+# - Still for TRACKING only, not selection
+# - Based on 121 trades with 71.9% WR
+# - Will validate through Dec 30 before using for selection
 
 # ============ UNIVERSE & SIGNAL FUNCTIONS ============
 
