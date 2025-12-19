@@ -188,5 +188,55 @@
     "entry_date": "2025-12-18",
     "shares": 56,
     "entry_price": 8.994999885559082
+  },
+  "SA": {
+    "entry_date": "2025-12-19",
+    "shares": 17,
+    "entry_price": 29.3700008392334
+  },
+  "EQR": {
+    "entry_date": "2025-12-19",
+    "shares": 8,
+    "entry_price": 61.689998626708984
+  },
+  "GTM": {
+    "entry_date": "2025-12-19",
+    "shares": 49,
+    "entry_price": 10.140000343322754
+  },
+  "SLG": {
+    "entry_date": "2025-12-19",
+    "shares": 11,
+    "entry_price": 44.53499984741211
+  },
+  "NVST": {
+    "entry_date": "2025-12-19",
+    "shares": 22,
+    "entry_price": 22.270000457763672
+  },
+  "RYN": {
+    "entry_date": "2025-12-19",
+    "shares": 23,
+    "entry_price": 21.940000534057617
+  },
+  "DD": {
+    "entry_date": "2025-12-19",
+    "shares": 12,
+    "entry_price": 41.05500030517578
+  },
+  "PHYS": {
+    "entry_date": "2025-12-19",
+    "shares": 15,
+    "entry_price": 33.2401008605957
+  },
+  "DRD": {
+    "entry_date": "2025-12-19",
+    "shares": 16,
+    "entry_price": 31.020000457763672
+  },
+  "ROKU": {
+    "entry_date": "2025-12-19",
+    "shares": 5,
+    "entry_price": 110.33000183105469
   }
 }
