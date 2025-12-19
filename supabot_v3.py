@@ -234,6 +234,10 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     - Large-cap > Mid-cap (78.9% vs 72.4% WR)
     - Basic Materials = best sector (90.9% WR, 10-1)
     
+    Backtest results: 19.3 point gap (p=0.0001)
+    - Winners avg: 101.5
+    - Losers avg: 82.2
+    
     STILL TRACKING ONLY - NOT USED FOR SELECTION
     """
     score = 0
@@ -293,7 +297,7 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     elif sector == 'Healthcare':
         score += 10  # 72.7% WR (16-6)
     # Real Estate, Financial Services, Industrials get 0 (66.7% WR)
-    # Consumer Defensive = 0 (50% WR, BANNED!)
+    # Consumer Defensive = 0 (50% WR, should be banned!)
     
     # 5. COMBINATION BONUSES (0-10 points)
     # Top validated combinations
@@ -308,10 +312,11 @@ def calculate_quality_score_v4(pick: Dict) -> float:
 # Expected quality picks: 110-145 points
 # Expected weak picks: 40-90 points
 #
-# NOTES:
-# - Still for TRACKING only, not selection
-# - Based on 121 trades with 71.9% WR
-# - Will validate through Dec 30 before using for selection
+# Backtest validation (121 trades):
+# - Winners avg: 101.5, Losers avg: 82.2 (19.3 point gap)
+# - V4 ≥100: 81.7% WR (49-11)
+# - V4 <100: 62.3% WR (38-23)
+# - Correlation: r=0.088 (weak linear, but strong binary threshold)
 
 # ============ UNIVERSE & SIGNAL FUNCTIONS ============
 
