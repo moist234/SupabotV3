@@ -1,53 +1,13 @@
 {
-  "AL": {
-    "entry_date": "2025-12-15",
-    "shares": 8,
-    "entry_price": 64.2750015258789
-  },
   "VICI": {
     "entry_date": "2025-12-16",
     "shares": 18,
     "entry_price": 28.325000762939453
   },
-  "DAY": {
-    "entry_date": "2025-12-15",
-    "shares": 7,
-    "entry_price": 69.38500213623047
-  },
-  "ASAN": {
-    "entry_date": "2025-12-15",
-    "shares": 35,
-    "entry_price": 14.185600280761719
-  },
-  "MAS": {
-    "entry_date": "2025-12-15",
-    "shares": 8,
-    "entry_price": 64.52999877929688
-  },
-  "TWI": {
-    "entry_date": "2025-12-15",
-    "shares": 60,
-    "entry_price": 8.380000114440918
-  },
-  "BCE": {
-    "entry_date": "2025-12-15",
-    "shares": 21,
-    "entry_price": 23.735000610351562
-  },
-  "IR": {
-    "entry_date": "2025-12-15",
-    "shares": 6,
-    "entry_price": 81.4800033569336
-  },
   "HLN": {
     "entry_date": "2025-12-17",
     "shares": 51,
     "entry_price": 9.84000015258789
-  },
-  "CRVS": {
-    "entry_date": "2025-12-15",
-    "shares": 60,
-    "entry_price": 8.399999618530273
   },
   "GEN": {
     "entry_date": "2025-12-16",
@@ -238,5 +198,55 @@
     "entry_date": "2025-12-19",
     "shares": 5,
     "entry_price": 110.33000183105469
+  },
+  "USAS": {
+    "entry_date": "2025-12-22",
+    "shares": 85,
+    "entry_price": 5.855000019073486
+  },
+  "BOX": {
+    "entry_date": "2025-12-22",
+    "shares": 17,
+    "entry_price": 30.229999542236328
+  },
+  "ELF": {
+    "entry_date": "2025-12-22",
+    "shares": 6,
+    "entry_price": 78.62999725341797
+  },
+  "OMDA": {
+    "entry_date": "2025-12-22",
+    "shares": 33,
+    "entry_price": 15.345000267028809
+  },
+  "OLED": {
+    "entry_date": "2025-12-22",
+    "shares": 4,
+    "entry_price": 119.54000091552734
+  },
+  "ATRO": {
+    "entry_date": "2025-12-22",
+    "shares": 9,
+    "entry_price": 55.66999816894531
+  },
+  "META": {
+    "entry_date": "2025-12-22",
+    "shares": 1,
+    "entry_price": 660.4249877929688
+  },
+  "MOMO": {
+    "entry_date": "2025-12-22",
+    "shares": 76,
+    "entry_price": 6.590000152587891
+  },
+  "RAPT": {
+    "entry_date": "2025-12-22",
+    "shares": 14,
+    "entry_price": 36.43000030517578
+  },
+  "BUD": {
+    "entry_date": "2025-12-22",
+    "shares": 8,
+    "entry_price": 63.23500061035156
   }
 }
