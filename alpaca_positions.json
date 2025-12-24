@@ -1,53 +1,8 @@
 {
-  "HLN": {
-    "entry_date": "2025-12-17",
-    "shares": 51,
-    "entry_price": 9.84000015258789
-  },
-  "HUBS": {
-    "entry_date": "2025-12-17",
-    "shares": 1,
-    "entry_price": 383.75
-  },
-  "IVR": {
-    "entry_date": "2025-12-17",
-    "shares": 60,
-    "entry_price": 8.274999618530273
-  },
-  "BRSP": {
-    "entry_date": "2025-12-17",
-    "shares": 85,
-    "entry_price": 5.894999980926514
-  },
-  "EXR": {
-    "entry_date": "2025-12-17",
-    "shares": 4,
-    "entry_price": 131.0500030517578
-  },
-  "EPAM": {
-    "entry_date": "2025-12-17",
-    "shares": 2,
-    "entry_price": 205.3350067138672
-  },
-  "KMT": {
-    "entry_date": "2025-12-17",
-    "shares": 18,
-    "entry_price": 28.55500030517578
-  },
   "VOD": {
     "entry_date": "2025-12-23",
     "shares": 38,
     "entry_price": 13.055000305175781
-  },
-  "BR": {
-    "entry_date": "2025-12-17",
-    "shares": 2,
-    "entry_price": 228.3699951171875
-  },
-  "DOLE": {
-    "entry_date": "2025-12-17",
-    "shares": 32,
-    "entry_price": 15.390000343322754
   },
   "REG": {
     "entry_date": "2025-12-18",
@@ -115,9 +70,9 @@
     "entry_price": 10.140000343322754
   },
   "SLG": {
-    "entry_date": "2025-12-19",
+    "entry_date": "2025-12-24",
     "shares": 11,
-    "entry_price": 44.53499984741211
+    "entry_price": 45.5
   },
   "NVST": {
     "entry_date": "2025-12-19",
@@ -150,9 +105,9 @@
     "entry_price": 110.33000183105469
   },
   "USAS": {
-    "entry_date": "2025-12-22",
-    "shares": 85,
-    "entry_price": 5.855000019073486
+    "entry_date": "2025-12-24",
+    "shares": 86,
+    "entry_price": 5.800000190734863
   },
   "BOX": {
     "entry_date": "2025-12-22",
@@ -233,5 +188,45 @@
     "entry_date": "2025-12-23",
     "shares": 13,
     "entry_price": 38.150001525878906
+  },
+  "RITM": {
+    "entry_date": "2025-12-24",
+    "shares": 45,
+    "entry_price": 11.15999984741211
+  },
+  "FR": {
+    "entry_date": "2025-12-24",
+    "shares": 9,
+    "entry_price": 58.41999816894531
+  },
+  "YELP": {
+    "entry_date": "2025-12-24",
+    "shares": 16,
+    "entry_price": 30.770000457763672
+  },
+  "VNO": {
+    "entry_date": "2025-12-24",
+    "shares": 15,
+    "entry_price": 33.650001525878906
+  },
+  "VICI": {
+    "entry_date": "2025-12-24",
+    "shares": 18,
+    "entry_price": 27.959999084472656
+  },
+  "CIM": {
+    "entry_date": "2025-12-24",
+    "shares": 39,
+    "entry_price": 12.899999618530273
+  },
+  "TU": {
+    "entry_date": "2025-12-24",
+    "shares": 39,
+    "entry_price": 12.8100004196167
+  },
+  "DOCU": {
+    "entry_date": "2025-12-24",
+    "shares": 7,
+    "entry_price": 69.63999938964844
   }
 }
