@@ -4,55 +4,10 @@
     "shares": 38,
     "entry_price": 13.055000305175781
   },
-  "SA": {
-    "entry_date": "2025-12-19",
-    "shares": 17,
-    "entry_price": 29.3700008392334
-  },
-  "EQR": {
-    "entry_date": "2025-12-19",
-    "shares": 8,
-    "entry_price": 61.689998626708984
-  },
-  "GTM": {
-    "entry_date": "2025-12-19",
-    "shares": 49,
-    "entry_price": 10.140000343322754
-  },
   "SLG": {
     "entry_date": "2025-12-24",
     "shares": 11,
     "entry_price": 45.5
-  },
-  "NVST": {
-    "entry_date": "2025-12-19",
-    "shares": 22,
-    "entry_price": 22.270000457763672
-  },
-  "RYN": {
-    "entry_date": "2025-12-19",
-    "shares": 23,
-    "entry_price": 21.940000534057617
-  },
-  "DD": {
-    "entry_date": "2025-12-19",
-    "shares": 12,
-    "entry_price": 41.05500030517578
-  },
-  "PHYS": {
-    "entry_date": "2025-12-19",
-    "shares": 15,
-    "entry_price": 33.2401008605957
-  },
-  "DRD": {
-    "entry_date": "2025-12-19",
-    "shares": 16,
-    "entry_price": 31.020000457763672
-  },
-  "ROKU": {
-    "entry_date": "2025-12-19",
-    "shares": 5,
-    "entry_price": 110.33000183105469
   },
   "USAS": {
     "entry_date": "2025-12-25",
@@ -90,9 +45,9 @@
     "entry_price": 660.4249877929688
   },
   "MOMO": {
-    "entry_date": "2025-12-22",
-    "shares": 76,
-    "entry_price": 6.590000152587891
+    "entry_date": "2025-12-26",
+    "shares": 77,
+    "entry_price": 6.510000228881836
   },
   "RAPT": {
     "entry_date": "2025-12-22",
@@ -185,9 +140,9 @@
     "entry_price": 21.270000457763672
   },
   "SKM": {
-    "entry_date": "2025-12-25",
-    "shares": 25,
-    "entry_price": 20.309999465942383
+    "entry_date": "2025-12-26",
+    "shares": 24,
+    "entry_price": 20.440000534057617
   },
   "TARS": {
     "entry_date": "2025-12-25",
@@ -218,5 +173,45 @@
     "entry_date": "2025-12-25",
     "shares": 11,
     "entry_price": 43.779998779296875
+  },
+  "XRAY": {
+    "entry_date": "2025-12-26",
+    "shares": 44,
+    "entry_price": 11.364399909973145
+  },
+  "APPN": {
+    "entry_date": "2025-12-26",
+    "shares": 14,
+    "entry_price": 35.810001373291016
+  },
+  "WEAV": {
+    "entry_date": "2025-12-26",
+    "shares": 71,
+    "entry_price": 7.074999809265137
+  },
+  "TME": {
+    "entry_date": "2025-12-26",
+    "shares": 28,
+    "entry_price": 17.55500030517578
+  },
+  "CUBE": {
+    "entry_date": "2025-12-26",
+    "shares": 14,
+    "entry_price": 35.54499816894531
+  },
+  "TGT": {
+    "entry_date": "2025-12-26",
+    "shares": 5,
+    "entry_price": 98.83999633789062
+  },
+  "BILI": {
+    "entry_date": "2025-12-26",
+    "shares": 20,
+    "entry_price": 24.950000762939453
+  },
+  "STWD": {
+    "entry_date": "2025-12-26",
+    "shares": 27,
+    "entry_price": 18.496999740600586
   }
 }
