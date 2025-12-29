@@ -14,45 +14,15 @@
     "shares": 86,
     "entry_price": 5.800000190734863
   },
-  "BOX": {
-    "entry_date": "2025-12-22",
-    "shares": 17,
-    "entry_price": 30.229999542236328
-  },
   "ELF": {
     "entry_date": "2025-12-23",
     "shares": 6,
     "entry_price": 78.93499755859375
   },
-  "OMDA": {
-    "entry_date": "2025-12-22",
-    "shares": 33,
-    "entry_price": 15.345000267028809
-  },
-  "OLED": {
-    "entry_date": "2025-12-22",
-    "shares": 4,
-    "entry_price": 119.54000091552734
-  },
-  "ATRO": {
-    "entry_date": "2025-12-22",
-    "shares": 9,
-    "entry_price": 55.66999816894531
-  },
-  "META": {
-    "entry_date": "2025-12-22",
-    "shares": 1,
-    "entry_price": 660.4249877929688
-  },
   "MOMO": {
     "entry_date": "2025-12-26",
     "shares": 77,
     "entry_price": 6.510000228881836
-  },
-  "RAPT": {
-    "entry_date": "2025-12-22",
-    "shares": 14,
-    "entry_price": 36.43000030517578
   },
   "BUD": {
     "entry_date": "2025-12-23",
@@ -70,9 +40,9 @@
     "entry_price": 6.480000019073486
   },
   "UNFI": {
-    "entry_date": "2025-12-23",
+    "entry_date": "2025-12-29",
     "shares": 15,
-    "entry_price": 33.9900016784668
+    "entry_price": 33.459999084472656
   },
   "ADC": {
     "entry_date": "2025-12-23",
@@ -170,9 +140,9 @@
     "entry_price": 52.560001373291016
   },
   "DOCS": {
-    "entry_date": "2025-12-25",
+    "entry_date": "2025-12-29",
     "shares": 11,
-    "entry_price": 43.779998779296875
+    "entry_price": 44.04499816894531
   },
   "XRAY": {
     "entry_date": "2025-12-26",
@@ -213,5 +183,45 @@
     "entry_date": "2025-12-26",
     "shares": 27,
     "entry_price": 18.496999740600586
+  },
+  "MT": {
+    "entry_date": "2025-12-29",
+    "shares": 11,
+    "entry_price": 45.55500030517578
+  },
+  "DOW": {
+    "entry_date": "2025-12-29",
+    "shares": 22,
+    "entry_price": 23.135000228881836
+  },
+  "COLD": {
+    "entry_date": "2025-12-29",
+    "shares": 39,
+    "entry_price": 12.755000114440918
+  },
+  "BOX": {
+    "entry_date": "2025-12-29",
+    "shares": 16,
+    "entry_price": 30.46500015258789
+  },
+  "AU": {
+    "entry_date": "2025-12-29",
+    "shares": 6,
+    "entry_price": 84.44999694824219
+  },
+  "SSRM": {
+    "entry_date": "2025-12-29",
+    "shares": 23,
+    "entry_price": 21.989999771118164
+  },
+  "ERIC": {
+    "entry_date": "2025-12-29",
+    "shares": 52,
+    "entry_price": 9.6850004196167
+  },
+  "COST": {
+    "entry_date": "2025-12-29",
+    "shares": 1,
+    "entry_price": 866.7000122070312
   }
 }
