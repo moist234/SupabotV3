@@ -1,9 +1,4 @@
 {
-  "VOD": {
-    "entry_date": "2025-12-23",
-    "shares": 38,
-    "entry_price": 13.055000305175781
-  },
   "SLG": {
     "entry_date": "2025-12-24",
     "shares": 11,
@@ -14,55 +9,15 @@
     "shares": 86,
     "entry_price": 5.800000190734863
   },
-  "ELF": {
-    "entry_date": "2025-12-23",
-    "shares": 6,
-    "entry_price": 78.93499755859375
-  },
   "MOMO": {
     "entry_date": "2025-12-26",
     "shares": 77,
     "entry_price": 6.510000228881836
   },
-  "BUD": {
-    "entry_date": "2025-12-23",
-    "shares": 8,
-    "entry_price": 63.959999084472656
-  },
-  "ELVN": {
-    "entry_date": "2025-12-23",
-    "shares": 30,
-    "entry_price": 16.639999389648438
-  },
-  "NAGE": {
-    "entry_date": "2025-12-23",
-    "shares": 77,
-    "entry_price": 6.480000019073486
-  },
   "UNFI": {
     "entry_date": "2025-12-29",
     "shares": 15,
     "entry_price": 33.459999084472656
-  },
-  "ADC": {
-    "entry_date": "2025-12-23",
-    "shares": 7,
-    "entry_price": 72.16500091552734
-  },
-  "FLYW": {
-    "entry_date": "2025-12-23",
-    "shares": 34,
-    "entry_price": 14.765000343322754
-  },
-  "ASPI": {
-    "entry_date": "2025-12-23",
-    "shares": 85,
-    "entry_price": 5.90500020980835
-  },
-  "IMAX": {
-    "entry_date": "2025-12-23",
-    "shares": 13,
-    "entry_price": 38.150001525878906
   },
   "RITM": {
     "entry_date": "2025-12-24",
@@ -95,9 +50,9 @@
     "entry_price": 12.899999618530273
   },
   "TU": {
-    "entry_date": "2025-12-24",
-    "shares": 39,
-    "entry_price": 12.8100004196167
+    "entry_date": "2025-12-30",
+    "shares": 38,
+    "entry_price": 13.080100059509277
   },
   "DOCU": {
     "entry_date": "2025-12-24",
@@ -140,9 +95,9 @@
     "entry_price": 52.560001373291016
   },
   "DOCS": {
-    "entry_date": "2025-12-29",
+    "entry_date": "2025-12-30",
     "shares": 11,
-    "entry_price": 44.04499816894531
+    "entry_price": 44.540000915527344
   },
   "XRAY": {
     "entry_date": "2025-12-26",
@@ -223,5 +178,45 @@
     "entry_date": "2025-12-29",
     "shares": 1,
     "entry_price": 866.7000122070312
+  },
+  "CAI": {
+    "entry_date": "2025-12-30",
+    "shares": 18,
+    "entry_price": 27.385000228881836
+  },
+  "PINS": {
+    "entry_date": "2025-12-30",
+    "shares": 19,
+    "entry_price": 26.11549949645996
+  },
+  "PECO": {
+    "entry_date": "2025-12-30",
+    "shares": 14,
+    "entry_price": 36.04999923706055
+  },
+  "ZYME": {
+    "entry_date": "2025-12-30",
+    "shares": 19,
+    "entry_price": 26.549999237060547
+  },
+  "MIDD": {
+    "entry_date": "2025-12-30",
+    "shares": 3,
+    "entry_price": 151.47999572753906
+  },
+  "TSN": {
+    "entry_date": "2025-12-30",
+    "shares": 8,
+    "entry_price": 59.15999984741211
+  },
+  "VIV": {
+    "entry_date": "2025-12-30",
+    "shares": 42,
+    "entry_price": 12.029999732971191
+  },
+  "PHYS": {
+    "entry_date": "2025-12-30",
+    "shares": 15,
+    "entry_price": 33.44390106201172
   }
 }
