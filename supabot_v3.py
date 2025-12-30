@@ -1,15 +1,3 @@
-"""
-Supabot V3 - With V4 Score Display
-
-SELECTION: V3 scoring (unchanged - proven to work)
-DISPLAY: V4 scoring (for tracking/validation)
-
-V4 scoring based on 50-trade validated patterns:
-- Sector + Market Cap combo (Healthcare Mid = best)
-- Short Interest 5-15% optimal
-- Fresh % negative preferred
-- 52w positioning -30% to -10% best
-"""
 import os
 import sys
 import re
@@ -708,10 +696,14 @@ def place_paper_trades(picks: List[Dict]):
 
 def scan() -> Tuple[List[Dict], List[Dict]]:
     """
-    Run scan.
-    - V3 scoring for SELECTION (internal)
-    - V4 scoring for DISPLAY (external)
-    - Prevents same stock being picked twice in same week
+    Run scan - V4 SELECTION DEPLOYED DEC 30, 2025
+    
+    Uses V4 ≥100 quality filter based on:
+    - 179 backtested trades: 18.7pt gap (p<0.0001)
+    - 80 forward trades: 20pt gap validated
+    
+    Expected: 6-7 quality picks/day with 78-80% WR
+    Will sit out if <3 quality picks available
     """
     
     universe = get_universe()
@@ -722,21 +714,17 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     try:
         with open(this_week_file, 'r') as f:
             week_data = json.load(f)
-            # Check if it's a new week (reset on Monday)
             today = datetime.now()
             last_week = week_data.get('week_number', 0)
-            current_week = today.isocalendar()[1]  # ISO week number
+            current_week = today.isocalendar()[1]
             
             if current_week != last_week:
-                # New week - reset picks
                 this_week_picks = set()
                 print(f"📅 New week detected (Week {current_week}) - Reset weekly tracker")
             else:
-                # Same week - load existing picks
                 this_week_picks = set(week_data.get('tickers', []))
                 print(f"📅 Same week (Week {current_week}) - Loaded {len(this_week_picks)} already-picked tickers")
     except:
-        # File doesn't exist - first run
         this_week_picks = set()
         current_week = datetime.now().isocalendar()[1]
         print(f"📅 First run of week {current_week}")
@@ -769,7 +757,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             if squeeze_data['has_squeeze']:
                 continue
             
-            # Skip if already picked this week
             if ticker in this_week_picks:
                 print(f"  ⏭️  Skipping {ticker} (already picked this week)")
                 continue
@@ -800,29 +787,43 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 'rsi': quality['rsi'],
                 'dist_52w_high': quality['dist_52w_high'],
                 'dist_52w_low': quality['dist_52w_low'],
-                'group': 'V3',
+                'group': 'V4',  # Changed from 'V3'
             }
             
-            # V3 score for SELECTION
-            pick['quality_score'] = calculate_quality_score(pick)
-            
-            # V4 score for DISPLAY
-            pick['v4_score'] = calculate_quality_score_v4(pick)
+            # Calculate both scores
+            pick['quality_score'] = calculate_quality_score(pick)  # V3 (legacy)
+            pick['v4_score'] = calculate_quality_score_v4(pick)    # V4 (active)
             
             picks.append(pick)
         
         except:
             continue
     
-    # Sort by V3 score (selection unchanged)
-    picks.sort(key=lambda x: x['quality_score'], reverse=True)
-    top_picks = picks[:10]
+    # V4 SELECTION (Deployed Dec 30, 2025)
+    picks.sort(key=lambda x: x['v4_score'], reverse=True)
     
-    # Save this week's picks to tracker
+    # Apply V4 ≥100 quality filter
+    quality_picks = [p for p in picks if p['v4_score'] >= 100]
+    
+    if len(quality_picks) >= 3:
+        top_picks = quality_picks[:10]
+        v4_min = min(p['v4_score'] for p in top_picks)
+        v4_max = max(p['v4_score'] for p in top_picks)
+        
+        print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
+        print(f"✅ Using {len(top_picks)} quality picks (V4 ≥100)")
+        print(f"   V4 Score range: {v4_min:.0f}-{v4_max:.0f}")
+        print(f"   Filtered out {len(picks) - len(quality_picks)} low-quality stocks\n")
+    else:
+        top_picks = []
+        print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
+        print(f"⚠️  Only {len(quality_picks)} quality picks (V4 ≥100)")
+        print(f"   Sitting out today - NO TRADES\n")
+    
+    # Save this week's picks
     for pick in top_picks:
         this_week_picks.add(pick['ticker'])
     
-    # Write to file
     week_data = {
         'week_number': current_week,
         'tickers': list(this_week_picks),
@@ -831,55 +832,55 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     with open(this_week_file, 'w') as f:
         json.dump(week_data, f, indent=2)
     
-    print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
-    print(f"🎯 Returning top 10 by V3 quality score")
-    print(f"📈 Displaying V4 scores for tracking")
-    print(f"🔒 Weekly tracker: {len(this_week_picks)} unique tickers this week\n")
-    
     # Control group
-    print(f"🎲 Selecting 5 random stocks as control group...\n")
-    
-    control_group = []
-    random_candidates = [t for t in universe if t not in [p['ticker'] for p in top_picks]]
-    random.shuffle(random_candidates)
-    
-    for ticker in random_candidates[:30]:
-        try:
-            info = yf.Ticker(ticker).info
-            sector = info.get('sector', 'Unknown')
-            market_cap = info.get('marketCap', 0)
-            
-            if market_cap < MIN_MARKET_CAP:
+    if top_picks:  # Only generate control if we have picks
+        print(f"🎲 Selecting 5 random stocks as control group...\n")
+        
+        control_group = []
+        random_candidates = [t for t in universe if t not in [p['ticker'] for p in top_picks]]
+        random.shuffle(random_candidates)
+        
+        for ticker in random_candidates[:30]:
+            try:
+                info = yf.Ticker(ticker).info
+                sector = info.get('sector', 'Unknown')
+                market_cap = info.get('marketCap', 0)
+                
+                if market_cap < MIN_MARKET_CAP:
+                    continue
+                
+                fresh_data = check_fresh(ticker)
+                if not fresh_data:
+                    continue
+                
+                positioning = calculate_52w_positioning(ticker)
+                
+                control = {
+                    'ticker': ticker,
+                    'entry_date': datetime.now().strftime('%Y-%m-%d'),
+                    'entry_time': datetime.now().strftime('%I:%M %p'),
+                    'entry_day': datetime.now().strftime('%A'),
+                    'price': fresh_data['price'],
+                    'change_7d': fresh_data['change_7d'],
+                    'sector': sector,
+                    'market_cap': market_cap,
+                    'dist_52w_high': positioning['dist_52w_high'],
+                    'dist_52w_low': positioning['dist_52w_low'],
+                    'group': 'CONTROL',
+                }
+                
+                control_group.append(control)
+                
+                if len(control_group) >= 5:
+                    break
+            except:
                 continue
-            
-            fresh_data = check_fresh(ticker)
-            if not fresh_data:
-                continue
-            
-            positioning = calculate_52w_positioning(ticker)
-            
-            control = {
-                'ticker': ticker,
-                'entry_date': datetime.now().strftime('%Y-%m-%d'),
-                'entry_time': datetime.now().strftime('%I:%M %p'),
-                'entry_day': datetime.now().strftime('%A'),
-                'price': fresh_data['price'],
-                'change_7d': fresh_data['change_7d'],
-                'sector': sector,
-                'market_cap': market_cap,
-                'dist_52w_high': positioning['dist_52w_high'],
-                'dist_52w_low': positioning['dist_52w_low'],
-                'group': 'CONTROL',
-            }
-            
-            control_group.append(control)
-            
-            if len(control_group) >= 5:
-                break
-        except:
-            continue
-    
-    print(f"✅ Control group: {len(control_group)} random stocks\n")
+        
+        print(f"✅ Control group: {len(control_group)} random stocks\n")
+    else:
+        # No picks = no control group
+        control_group = []
+        print(f"⏭️  No control group (no V4 picks today)\n")
     
     return top_picks, control_group
 
@@ -906,7 +907,7 @@ def display_picks(picks: List[Dict], control: List[Dict]):
         return
     
     print(f"\n{'='*80}")
-    print(f"🎯 TOP 10 PICKS (V3 Strategy)")
+    print(f"🎯 TOP {len(picks)} PICKS (V4 SELECTION - Quality Filter ≥100)")
     print(f"{'='*80}\n")
     
     for i, pick in enumerate(picks, 1):
@@ -948,8 +949,8 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
         
         if not picks:
             embed = DiscordEmbed(
-                title="📊 Supabot V3 Scan Complete",
-                description="No Fresh+Accel picks today",
+                title="📊 Supabot V4 Scan Complete",
+                description="No quality picks today (V4 <100) - Sitting out",
                 color='808080'
             )
             embed.set_footer(text=f"V3 + V4 Scoring | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
@@ -958,8 +959,8 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             return
         
         embed = DiscordEmbed(
-            title=f"🎯 Supabot V3: {len(picks)} Picks",
-            description=f"V4 Scores Shown (V3 selection) | Testing V4 Scoring System",
+            title=f"🎯 Supabot V4: {len(picks)} Picks",
+            description=f"V4 Selection Active | Quality Filter ≥100 | Validated on 179 trades",
             color='00ff00'
         )
         
@@ -992,7 +993,7 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             inline=False
         )
         
-        embed.set_footer(text=f"V3 Selection + V4 Display | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V4 Selection (≥100) | Deployed Dec 30, 2025 | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         webhook.add_embed(embed)
         
         if control:
@@ -1059,4 +1060,4 @@ if __name__ == "__main__":
     print(f"{'='*80}\n")
     
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
-    print(f"✅ Complete - {len(picks)} V3 picks + {len(control)} control + V4 scoring!\n")
+    print(f"✅ Complete - {len(picks)} V4 picks + {len(control)} control | V4 Selection Active!\n")
