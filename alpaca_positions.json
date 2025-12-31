@@ -1,9 +1,4 @@
 {
-  "SLG": {
-    "entry_date": "2025-12-24",
-    "shares": 11,
-    "entry_price": 45.5
-  },
   "USAS": {
     "entry_date": "2025-12-25",
     "shares": 86,
@@ -19,45 +14,10 @@
     "shares": 15,
     "entry_price": 33.459999084472656
   },
-  "RITM": {
-    "entry_date": "2025-12-24",
-    "shares": 45,
-    "entry_price": 11.15999984741211
-  },
-  "FR": {
-    "entry_date": "2025-12-24",
-    "shares": 9,
-    "entry_price": 58.41999816894531
-  },
-  "YELP": {
-    "entry_date": "2025-12-24",
-    "shares": 16,
-    "entry_price": 30.770000457763672
-  },
-  "VNO": {
-    "entry_date": "2025-12-24",
-    "shares": 15,
-    "entry_price": 33.650001525878906
-  },
-  "VICI": {
-    "entry_date": "2025-12-24",
-    "shares": 18,
-    "entry_price": 27.959999084472656
-  },
-  "CIM": {
-    "entry_date": "2025-12-24",
-    "shares": 39,
-    "entry_price": 12.899999618530273
-  },
   "TU": {
     "entry_date": "2025-12-30",
     "shares": 38,
     "entry_price": 13.080100059509277
-  },
-  "DOCU": {
-    "entry_date": "2025-12-24",
-    "shares": 7,
-    "entry_price": 69.63999938964844
   },
   "ZTO": {
     "entry_date": "2025-12-25",
@@ -218,5 +178,35 @@
     "entry_date": "2025-12-30",
     "shares": 15,
     "entry_price": 33.44390106201172
+  },
+  "SKE": {
+    "entry_date": "2025-12-31",
+    "shares": 21,
+    "entry_price": 23.795000076293945
+  },
+  "XENE": {
+    "entry_date": "2025-12-31",
+    "shares": 11,
+    "entry_price": 44.810001373291016
+  },
+  "AMRX": {
+    "entry_date": "2025-12-31",
+    "shares": 39,
+    "entry_price": 12.739999771118164
+  },
+  "LINE": {
+    "entry_date": "2025-12-31",
+    "shares": 14,
+    "entry_price": 35.11000061035156
+  },
+  "CEF": {
+    "entry_date": "2025-12-31",
+    "shares": 11,
+    "entry_price": 45.935001373291016
+  },
+  "CDE": {
+    "entry_date": "2025-12-31",
+    "shares": 28,
+    "entry_price": 17.924999237060547
   }
 }
