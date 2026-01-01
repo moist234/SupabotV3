@@ -152,7 +152,7 @@ def fill_sheet(sheet, csv_path):
     df = pd.read_csv(csv_path)
     
     # Separate V3 picks and control
-    v3_picks = df[df['group'] == 'V3'].copy()
+    v3_picks = df[df['group'].isin(['V3', 'V4'])].copy()
     control_picks = df[df['group'] == 'CONTROL'].copy()
     
     # Find next empty row (2 rows down from last data)
