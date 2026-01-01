@@ -1,9 +1,4 @@
 {
-  "USAS": {
-    "entry_date": "2025-12-25",
-    "shares": 86,
-    "entry_price": 5.800000190734863
-  },
   "MOMO": {
     "entry_date": "2025-12-26",
     "shares": 77,
@@ -19,40 +14,10 @@
     "shares": 38,
     "entry_price": 13.080100059509277
   },
-  "ZTO": {
-    "entry_date": "2025-12-25",
-    "shares": 24,
-    "entry_price": 21.270000457763672
-  },
   "SKM": {
     "entry_date": "2025-12-26",
     "shares": 24,
     "entry_price": 20.440000534057617
-  },
-  "TARS": {
-    "entry_date": "2025-12-25",
-    "shares": 6,
-    "entry_price": 82.51000213623047
-  },
-  "USFD": {
-    "entry_date": "2025-12-25",
-    "shares": 7,
-    "entry_price": 76.37000274658203
-  },
-  "MAA": {
-    "entry_date": "2025-12-25",
-    "shares": 4,
-    "entry_price": 137.44000244140625
-  },
-  "ARMN": {
-    "entry_date": "2025-12-25",
-    "shares": 31,
-    "entry_price": 16.31999969482422
-  },
-  "NVO": {
-    "entry_date": "2025-12-25",
-    "shares": 10,
-    "entry_price": 52.560001373291016
   },
   "DOCS": {
     "entry_date": "2025-12-30",
@@ -208,5 +173,30 @@
     "entry_date": "2025-12-31",
     "shares": 28,
     "entry_price": 17.924999237060547
+  },
+  "AUGO": {
+    "entry_date": "2026-01-01",
+    "shares": 10,
+    "entry_price": 50.415000915527344
+  },
+  "TWLO": {
+    "entry_date": "2026-01-01",
+    "shares": 4,
+    "entry_price": 142.24000549316406
+  },
+  "KTOS": {
+    "entry_date": "2026-01-01",
+    "shares": 7,
+    "entry_price": 75.91000366210938
+  },
+  "REG": {
+    "entry_date": "2026-01-01",
+    "shares": 7,
+    "entry_price": 69.02999877929688
+  },
+  "ROKU": {
+    "entry_date": "2026-01-01",
+    "shares": 5,
+    "entry_price": 108.48999786376953
   }
 }
