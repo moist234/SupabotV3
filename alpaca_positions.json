@@ -1,9 +1,4 @@
 {
-  "UNFI": {
-    "entry_date": "2025-12-29",
-    "shares": 15,
-    "entry_price": 33.459999084472656
-  },
   "TU": {
     "entry_date": "2025-12-30",
     "shares": 38,
@@ -14,45 +9,10 @@
     "shares": 11,
     "entry_price": 44.540000915527344
   },
-  "MT": {
-    "entry_date": "2025-12-29",
-    "shares": 11,
-    "entry_price": 45.55500030517578
-  },
   "DOW": {
     "entry_date": "2026-01-02",
     "shares": 21,
     "entry_price": 24.325000762939453
-  },
-  "COLD": {
-    "entry_date": "2025-12-29",
-    "shares": 39,
-    "entry_price": 12.755000114440918
-  },
-  "BOX": {
-    "entry_date": "2025-12-29",
-    "shares": 16,
-    "entry_price": 30.46500015258789
-  },
-  "AU": {
-    "entry_date": "2025-12-29",
-    "shares": 6,
-    "entry_price": 84.44999694824219
-  },
-  "SSRM": {
-    "entry_date": "2025-12-29",
-    "shares": 23,
-    "entry_price": 21.989999771118164
-  },
-  "ERIC": {
-    "entry_date": "2025-12-29",
-    "shares": 52,
-    "entry_price": 9.6850004196167
-  },
-  "COST": {
-    "entry_date": "2025-12-29",
-    "shares": 1,
-    "entry_price": 866.7000122070312
   },
   "CAI": {
     "entry_date": "2025-12-30",
@@ -168,5 +128,45 @@
     "entry_date": "2026-01-02",
     "shares": 12,
     "entry_price": 40.91999816894531
+  },
+  "AMH": {
+    "entry_date": "2026-01-05",
+    "shares": 16,
+    "entry_price": 31.90999984741211
+  },
+  "MAA": {
+    "entry_date": "2026-01-05",
+    "shares": 4,
+    "entry_price": 138.05999755859375
+  },
+  "CWK": {
+    "entry_date": "2026-01-05",
+    "shares": 30,
+    "entry_price": 16.6200008392334
+  },
+  "KMT": {
+    "entry_date": "2026-01-05",
+    "shares": 17,
+    "entry_price": 29.584999084472656
+  },
+  "KIM": {
+    "entry_date": "2026-01-05",
+    "shares": 25,
+    "entry_price": 20.260099411010742
+  },
+  "MAS": {
+    "entry_date": "2026-01-05",
+    "shares": 8,
+    "entry_price": 64.66000366210938
+  },
+  "TAL": {
+    "entry_date": "2026-01-05",
+    "shares": 44,
+    "entry_price": 11.425000190734863
+  },
+  "PAAS": {
+    "entry_date": "2026-01-05",
+    "shares": 9,
+    "entry_price": 53.300899505615234
   }
 }
