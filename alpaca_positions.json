@@ -54,36 +54,6 @@
     "shares": 15,
     "entry_price": 33.44390106201172
   },
-  "SKE": {
-    "entry_date": "2025-12-31",
-    "shares": 21,
-    "entry_price": 23.795000076293945
-  },
-  "XENE": {
-    "entry_date": "2025-12-31",
-    "shares": 11,
-    "entry_price": 44.810001373291016
-  },
-  "AMRX": {
-    "entry_date": "2025-12-31",
-    "shares": 39,
-    "entry_price": 12.739999771118164
-  },
-  "LINE": {
-    "entry_date": "2025-12-31",
-    "shares": 14,
-    "entry_price": 35.11000061035156
-  },
-  "CEF": {
-    "entry_date": "2025-12-31",
-    "shares": 11,
-    "entry_price": 45.935001373291016
-  },
-  "CDE": {
-    "entry_date": "2025-12-31",
-    "shares": 28,
-    "entry_price": 17.924999237060547
-  },
   "AUGO": {
     "entry_date": "2026-01-01",
     "shares": 10,
@@ -168,5 +138,55 @@
     "entry_date": "2026-01-05",
     "shares": 9,
     "entry_price": 53.300899505615234
+  },
+  "SA": {
+    "entry_date": "2026-01-07",
+    "shares": 16,
+    "entry_price": 31.489999771118164
+  },
+  "TEVA": {
+    "entry_date": "2026-01-07",
+    "shares": 15,
+    "entry_price": 32.375
+  },
+  "ASND": {
+    "entry_date": "2026-01-07",
+    "shares": 2,
+    "entry_price": 211.30499267578125
+  },
+  "ARMN": {
+    "entry_date": "2026-01-07",
+    "shares": 30,
+    "entry_price": 16.939899444580078
+  },
+  "QCOM": {
+    "entry_date": "2026-01-07",
+    "shares": 3,
+    "entry_price": 177.72999572753906
+  },
+  "GRAB": {
+    "entry_date": "2026-01-07",
+    "shares": 97,
+    "entry_price": 5.155399799346924
+  },
+  "WCC": {
+    "entry_date": "2026-01-07",
+    "shares": 2,
+    "entry_price": 265.4800109863281
+  },
+  "ECG": {
+    "entry_date": "2026-01-07",
+    "shares": 6,
+    "entry_price": 90.16999816894531
+  },
+  "IONS": {
+    "entry_date": "2026-01-07",
+    "shares": 6,
+    "entry_price": 83.44999694824219
+  },
+  "CE": {
+    "entry_date": "2026-01-07",
+    "shares": 12,
+    "entry_price": 42.790000915527344
   }
 }
