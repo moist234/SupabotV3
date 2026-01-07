@@ -135,6 +135,62 @@ def get_rsi(ticker: str) -> float:
         return round(float(rsi.iloc[-1]), 1)
     except:
         return 50.0
+    
+"""
+Earnings Proximity Filter for Supabot
+
+HARD FILTER: Skip stocks with earnings passed <30 days ago (61.6% WR)
+SCORE BOOST: +15 points for earnings 30-60 days away (88.9% WR)
+"""
+
+def check_earnings_proximity(ticker: str, entry_date: datetime) -> Dict:
+    """
+    Check earnings proximity and return timing info.
+    
+    Returns:
+    - days_to_earnings: Days from entry to next earnings (positive = future, negative = past)
+    - recent_earnings: True if earnings passed within last 30 days (FILTER OUT)
+    - earnings_sweet_spot: True if earnings 30-60 days away (BOOST SCORE)
+    """
+    try:
+        info = yf.Ticker(ticker).info
+        earnings_timestamp = info.get('earningsTimestamp')
+        
+        if not earnings_timestamp:
+            return {
+                'days_to_earnings': None,
+                'recent_earnings': False,
+                'earnings_sweet_spot': False,
+                'has_data': False
+            }
+        
+        # Convert timestamp to datetime
+        earnings_date = datetime.fromtimestamp(earnings_timestamp)
+        
+        # Calculate days difference (positive = earnings in future, negative = already passed)
+        days_diff = (earnings_date.date() - entry_date.date()).days
+        
+        # HARD FILTER: Earnings passed recently (<30 days ago)
+        # This means: days_diff is negative AND abs value < 30
+        recent_earnings = (days_diff < 0 and days_diff >= -30)
+        
+        # SCORE BOOST: Earnings 30-60 days away
+        earnings_sweet_spot = (days_diff >= 30 and days_diff <= 60)
+        
+        return {
+            'days_to_earnings': days_diff,
+            'recent_earnings': recent_earnings,
+            'earnings_sweet_spot': earnings_sweet_spot,
+            'has_data': True
+        }
+    
+    except Exception as e:
+        return {
+            'days_to_earnings': None,
+            'recent_earnings': False,
+            'earnings_sweet_spot': False,
+            'has_data': False
+        }
 
 
 def calculate_52w_positioning(ticker: str) -> Dict:
@@ -157,8 +213,7 @@ def calculate_52w_positioning(ticker: str) -> Dict:
         }
     except:
         return {'dist_52w_high': 0.0, 'dist_52w_low': 0.0}
-
-
+    
 # ============ SCORING FUNCTIONS ============
 
 def calculate_quality_score(pick: Dict) -> float:
@@ -198,6 +253,9 @@ def calculate_quality_score(pick: Dict) -> float:
         score += 15
     elif pick['volume_ratio'] > 1.0:
         score += 8
+
+    if pick.get('earnings_sweet_spot', False):
+        score += 15  # 30-60d window: 88.9% WR
     
     # Market cap (5-15 points)
     if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
@@ -289,14 +347,36 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 10  # Strong validated combo
     elif 1.0 <= fresh <= 3.0 and 5.0 <= si <= 10.0:
         score += 8
+     # Volume spike (0-15 points)
+    if pick.get('volume_spike'):
+        score += 15
+    elif pick['volume_ratio'] > 1.0:
+        score += 8
+
+    if pick.get('earnings_sweet_spot', False):
+        score += 15  # 30-60d window: 88.9% WR
+    
+    # Market cap (5-15 points)
+    if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
+        score += 15
+    elif 'Small' in pick['cap_size']:
+        score += 10
+    else:
+        score += 5
+        # 7. INSTITUTIONAL OWNERSHIP BOOST (0-10 points)
+    inst = pick.get('inst_ownership', 100)
+    cap_size = pick['cap_size']
+
+    if inst < 30:
+        if 'LARGE' in cap_size.upper() or 'MID' in cap_size.upper():
+            score += 10  # Low inst + quality cap = 84-89% WR
+        elif 'SMALL' in cap_size.upper():
+            score += 5   # Low inst + small cap = still risky
+        # MEGA gets 0 even with low inst
+    # Inst ≥30% gets 0 (neutral, no penalty)
+    
     
     return score
-
-# MAX POSSIBLE: 160 points (increased from 155 due to Large-cap boost)
-# Quality threshold: ≥120 (85.2% WR on 61 trades)
-# Expected quality picks: 120-160 points
-# Expected weak picks: 40-90 points
-#
 # Validation on 238 trades:
 # - Gap: 16.2 points (p<0.0001)
 # - V4 ≥120: 85.2% WR (52-9)
@@ -469,6 +549,8 @@ def get_quality_data(ticker: str) -> Dict:
         volume = info.get('volume', 0)
         avg_volume = info.get('averageVolume', 0)
         price = info.get('currentPrice', 0)
+        inst_pct = info.get('heldPercentInstitutions')
+        inst_ownership = inst_pct * 100 if inst_pct is not None else 100
         
         if market_cap < 2_000_000_000:
             cap_size = "Small (<$2B)"
@@ -503,6 +585,7 @@ def get_quality_data(ticker: str) -> Dict:
             'rsi': rsi,
             'dist_52w_high': positioning['dist_52w_high'],
             'dist_52w_low': positioning['dist_52w_low'],
+            'inst_ownership': inst_ownership,
         }
     except:
         return None
@@ -753,6 +836,20 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             squeeze_data = check_squeeze(ticker)
             if squeeze_data['has_squeeze']:
                 continue
+            # After Fresh, Accelerating, and Squeeze checks, add:
+
+            # Check earnings proximity
+            earnings_data = check_earnings_proximity(ticker, datetime.now())
+
+            # HARD FILTER: Skip if earnings recently passed
+            if earnings_data['recent_earnings']:
+                print(f"  ⏭️  Skipping {ticker} (earnings passed <30d ago - weak period)")
+                continue
+
+            # Store for V4 scoring
+            pick['earnings_sweet_spot'] = earnings_data['earnings_sweet_spot']
+            pick['days_to_earnings'] = earnings_data['days_to_earnings']
+
             
             if ticker in this_week_picks:
                 print(f"  ⏭️  Skipping {ticker} (already picked this week)")
@@ -785,6 +882,8 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 'dist_52w_high': quality['dist_52w_high'],
                 'dist_52w_low': quality['dist_52w_low'],
                 'group': 'V4',  # Changed from 'V3'
+                'earnings_sweet_spot': earnings_data['earnings_sweet_spot'],
+                'days_to_earnings': earnings_data['days_to_earnings'],
             }
             
             # Calculate both scores
