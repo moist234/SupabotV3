@@ -10,7 +10,7 @@ on:
 jobs:
   scan-v3:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     
     permissions:
       contents: write  # IMPORTANT: Allows pushing back to repo
