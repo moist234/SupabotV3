@@ -212,99 +212,96 @@ def calculate_quality_score(pick: Dict) -> float:
 
 def calculate_quality_score_v4(pick: Dict) -> float:
     """
-    V4 scoring - FOR DISPLAY/TRACKING ONLY
-    Based on CORRECT 121-trade data (71.9% WR)
+    V4 scoring - Updated Jan 7, 2025
+    Based on 238-trade validation (67.2% WR)
     
-    Key findings from winner_pattern_discovery.py:
-    - Fresh 0-3% = sweet spot (78-100% WR on 40 trades)
-    - SI 3-7% = golden zone (80.9% WR on 38 trades)
-    - SI 1-2% = dead zone (60% WR)
-    - Large-cap > Mid-cap (78.9% vs 72.4% WR)
-    - Basic Materials = best sector (90.9% WR, 10-1)
+    Changes from original V4:
+    1. Fresh 1-2% boosted (80.4% WR on 51 trades)
+    2. Fresh 4-5% separated (87.5% WR on 16 trades)
+    3. Small-cap penalized (46.2% WR, 18-21 record)
+    4. Large-cap boosted (77.1% WR, 64-19 record)
     
-    Backtest results: 19.3 point gap (p=0.0001)
-    - Winners avg: 101.5
-    - Losers avg: 82.2
-    
-    STILL TRACKING ONLY - NOT USED FOR SELECTION
+    Gap: 16.2 points (p<0.0001)
+    V4 ≥120: 85.2% WR on 61 trades
     """
     score = 0
     
-    # 1. FRESH % SWEET SPOT (0-50 points)
-    # Fresh 0-3% validated on 40 trades with 78-100% WR
+    # 1. FRESH % (0-50 points) - UPDATED WITH 4-5% SPLIT
     fresh = pick['change_7d']
     if 1.0 <= fresh <= 2.0:
-        score += 50  # 80.6% WR (25-6 validated)
+        score += 50  # 80.4% WR (41-10 on 51 trades) - VALIDATED!
+    elif 4.0 <= fresh <= 5.0:
+        score += 45  # 87.5% WR (14-2 on 16 trades) - STRONG!
     elif 0 <= fresh < 1.0:
-        score += 45  # 76.5% WR (26-8 validated)
+        score += 40  # 71.2% WR (47-19 on 66 trades)
     elif 2.0 < fresh <= 3.0:
-        score += 45  # 100% WR (7-0, small sample)
+        score += 35  # 71.4% WR (15-6 on 21 trades)
     elif -2.0 <= fresh < 0:
-        score += 20  # 58.6% WR (17-12, weak)
-    elif fresh > 3.0:
-        score += 15  # 57.9% WR (11-8, weak)
+        score += 20  # 59.5% WR (25-17 on 42 trades)
+    elif 3.0 < fresh < 4.0:
+        score += 5   # 38.1% WR (8-13 on 21 trades) - TOXIC!
+    elif fresh > 5.0:
+        score += 10
     else:  # fresh < -2.0
         score += 10
     
-    # 2. SHORT INTEREST ZONES (0-40 points)
-    # SI 3-7% validated as golden zone (80.9% WR on 38 trades)
+    # 2. SHORT INTEREST (0-40 points) - UNCHANGED
     si = pick.get('short_percent', 0)
     if 3.0 <= si <= 7.0:
-        score += 40  # 80.9% WR combined (3-5%: 80.6%, 5-7%: 81.2%)
+        score += 40  # 71.9-73.3% WR
     elif 0 <= si < 1.0:
-        score += 35  # 75.0% WR (15-5)
+        score += 35  # 78.9% WR (30-8 on 38 trades)
     elif 7.0 < si < 10.0:
-        score += 30  # 75.0% WR (9-3)
+        score += 30  # 72.0% WR
     elif 2.0 <= si < 3.0:
-        score += 25  # 66.7% WR (8-4)
+        score += 25  # 60.7% WR
     elif 1.0 <= si < 2.0:
-        score += 15  # 60.0% WR (6-4) - DEAD ZONE!
+        score += 15  # 61.1% WR
     elif 10.0 <= si < 15.0:
-        score += 10  # 53.3% WR (8-7) - HIGH RISK!
-    # SI ≥15% gets 0 (60% WR, very high risk)
+        score += 10  # 51.7% WR
+    # SI ≥15% gets 0
     
-    # 3. MARKET CAP (0-30 points)
-    # Large-cap outperforms! (78.9% vs 72.4% for Mid)
+    # 3. MARKET CAP (0-35 points) - UPDATED: LARGE BOOSTED, SMALL PENALIZED
     cap_size = pick['cap_size']
     if 'LARGE' in cap_size.upper():
-        score += 30  # 78.9% WR (30-8 validated)
+        score += 35  # 77.1% WR (64-19 on 83 trades) - DOMINANT!
     elif 'MID' in cap_size.upper():
-        score += 25  # 72.4% WR (42-16 validated)
-    elif 'SMALL' in cap_size.upper():
-        score += 15  # 63.2% WR (12-7)
-    # MEGA gets 0 (50% WR, 3-3)
+        score += 25  # 67.3% WR (70-34 on 104 trades)
+    elif 'MEGA' in cap_size.upper():
+        score += 15  # 66.7% WR (8-4 on 12 trades)
+    # SMALL gets 0 - 46.2% WR (18-21) LOSES MONEY!
     
-    # 4. SECTOR PERFORMANCE (0-20 points)
+    # 4. SECTOR PERFORMANCE (0-25 points) - UPDATED WEIGHTS
     sector = pick['sector']
     if sector == 'Basic Materials':
-        score += 20  # 90.9% WR (10-1) - BEST!
+        score += 25  # 81.5% WR (22-5 on 27 trades)
     elif sector == 'Communication Services':
-        score += 15  # 77.8% WR (7-2)
+        score += 20  # 76.0% WR (19-6 on 25 trades)
     elif sector == 'Technology':
-        score += 10  # 73.3% WR (11-4)
+        score += 10  # 65.6% WR (21-11)
     elif sector == 'Healthcare':
-        score += 10  # 72.7% WR (16-6)
-    # Real Estate, Financial Services, Industrials get 0 (66.7% WR)
-    # Consumer Defensive = 0 (50% WR, should be banned!)
+        score += 10  # 65.0% WR (26-14)
+    # Financial Services, Real Estate, Industrials get 0 (~60% WR)
+    # Consumer Defensive gets 0 (57% WR, should be banned)
     
-    # 5. COMBINATION BONUSES (0-10 points)
-    # Top validated combinations
+    # 5. COMBINATION BONUSES (0-10 points) - UNCHANGED
     if 1.0 <= fresh <= 3.0 and 2.0 <= si <= 5.0:
-        score += 10  # Fresh 1-3% + SI 2-5% = 90.9% WR (10-1)
+        score += 10  # Strong validated combo
     elif 1.0 <= fresh <= 3.0 and 5.0 <= si <= 10.0:
-        score += 8   # Fresh 1-3% + SI 5-10% = 83.3% WR (10-2)
+        score += 8
     
     return score
 
-# MAX POSSIBLE: 155 points
-# Expected quality picks: 110-145 points
+# MAX POSSIBLE: 160 points (increased from 155 due to Large-cap boost)
+# Quality threshold: ≥120 (85.2% WR on 61 trades)
+# Expected quality picks: 120-160 points
 # Expected weak picks: 40-90 points
 #
-# Backtest validation (121 trades):
-# - Winners avg: 101.5, Losers avg: 82.2 (19.3 point gap)
-# - V4 ≥100: 81.7% WR (49-11)
-# - V4 <100: 62.3% WR (38-23)
-# - Correlation: r=0.088 (weak linear, but strong binary threshold)
+# Validation on 238 trades:
+# - Gap: 16.2 points (p<0.0001)
+# - V4 ≥120: 85.2% WR (52-9)
+# - V4 ≥100: ~79% WR
+# - V4 <80: 46.4% WR (coin flip)
 
 # ============ UNIVERSE & SIGNAL FUNCTIONS ============
 
