@@ -1,0 +1,12 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,group,quality_score,v4_score
+SKE,2025-12-31,07:24 PM,Wednesday,23.795000076293945,0.78,55.62,2881415936,Mid ($2-10B),Basic Materials,21.0,0.0,Moderate,0.4,False,0.0,True,True,False,0.52,4.8,0.83,48.0,-8.66,178.96,V4,65.0,125.0
+XENE,2025-12-31,07:22 PM,Wednesday,44.810001373291016,1.61,15.37,3462693120,Mid ($2-10B),Healthcare,18.0,0.0,Moderate,1.04,False,8.25,True,True,False,0.699,2.9,0.66,58.2,-3.84,67.58,V4,63.0,123.0
+AMRX,2025-12-31,07:24 PM,Wednesday,12.739999771118164,1.35,32.85,4004983552,Mid ($2-10B),Healthcare,15.0,0.0,Moderate,0.48,False,2.64,True,True,False,0.702,1.98,0.47,65.1,-2.08,90.58,V4,55.0,120.0
+LINE,2025-12-31,07:25 PM,Wednesday,35.11000061035156,2.87,-11.64,8770380800,Mid ($2-10B),Real Estate,24.0,0.0,Moderate,0.58,False,3.9,True,True,False,0.456,3.31,1.13,37.0,-41.66,8.18,V4,55.0,120.0
+CEF,2025-12-31,07:22 PM,Wednesday,45.935001373291016,2.31,46.2,8896644096,Mid ($2-10B),Unknown,18.0,0.0,Moderate,1.06,False,0.0,True,True,False,0.661,2.86,1.63,62.4,-6.26,94.39,V4,53.0,105.0
+CDE,2025-12-31,07:24 PM,Wednesday,17.924999237060547,-1.78,48.51,11511523328,Large ($10-50B),Basic Materials,20.0,1.0,Moderate,0.54,False,9.75,True,True,False,0.624,6.44,0.81,64.9,-24.11,291.38,V4,60.0,100.0
+BTQ,2025-12-31,07:25 PM,Wednesday,5.018099784851074,-21.35,,702664128,,Technology,,,,,,,,,,,,,,0.0,0.0,CONTROL,,
+KW,2025-12-31,07:25 PM,Wednesday,9.699999809265137,-0.1,,1337672704,,Real Estate,,,,,,,,,,,,,,-2.9,67.46,CONTROL,,
+ODD,2025-12-31,07:25 PM,Wednesday,40.459999084472656,-3.16,,2323976704,,Consumer Defensive,,,,,,,,,,,,,,-48.9,14.62,CONTROL,,
+INMD,2025-12-31,07:26 PM,Wednesday,14.779999732971191,2.92,,1003100608,,Healthcare,,,,,,,,,,,,,,-25.28,12.48,CONTROL,,
+SKM,2025-12-31,07:26 PM,Wednesday,20.520000457763672,3.64,,7874588160,,Communication Services,,,,,,,,,,,,,,-13.78,5.11,CONTROL,,

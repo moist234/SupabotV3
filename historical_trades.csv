@@ -1,4 +1,4 @@
-Date,Ticker,V3Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,Exit Price (7d),7d %,Exit Price (30d),30d %,,,,,,,,,,,,,
+222222,Ticker,V3Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,Exit Price (7d),7d %,Exit Price (30d),30d %,,,,,,,,,,,,,
 2025-11-19,INTA,65,$40.40,MODERATE,26,0,MID,3.90%,0.50%,Technology,$42.60,5.45%,,,,,,,,,,,,,,,
 2025-11-19,GOOD,65,$10.81,MODERATE,18,1,SMALL,5.00%,-0.70%,Real Estate,$11.02,1.94%,,,,,,,,,,,,,,,
 2025-11-19,NAD,65,$11.94,MODERATE,21,0,MID,0.10%,0.30%,Financial Services,$11.96,0.17%,,,,,,,,,,,,,,,
@@ -106,3 +106,192 @@ Date,Ticker,V3Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Pa
 2025-12-08,OHI,60,$45.74,MODERATE,23,0,LARGE,4.8%,-0.2%,Real Estate,0.72,1.6%,0.76,70,-1.3%,$44.54,-2.62%,,,,,,,,,,
 2025-12-08,TWI,58,$8.45,MODERATE,24,0,SMALL,10.9%,+3.4%,Industrials,0.89,4.0%,0.86,69,-22.8%,$8.20,-2.96%,,,,,,,,,,
 2025-12-08,WPP,55,$19.97,MODERATE,18,0,MID,1.0%,+1.9%,Communication Services,0.67,3.7%,0.91,47,-63.0%,$22.26,11.46%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-09,PLYM,75,$21.85,MODERATE,18,0,SMALL,3.1%,-0.4%,Real Estate,0.21,1.1%,1.21,40,-3.9%,$21.85,0.00%,,,50.00%,0.77%,-0.59%,,EHC,$108.35,$108.01,-0.31%
+2025-12-09,WSO,60,$342.93,MODERATE,21,0,LARGE,11.2%,-1.0%,Industrials,0.52,3.4%,1.12,51,-34.6%,$341.89,-0.30%,,,,,,,ALKS,$28.93,$28.06,-3.01%
+2025-12-09,FLYW,85,$13.81,MODERATE,24,0,SMALL,5.1%,-1.2%,Technology,0.67,3.3%,0.86,55,-36.5%,$14.58,5.58%,,,,,,,OR,$34.33,$35.80,4.27%
+2025-12-09,NVCR,75,$12.72,MODERATE,22,0,SMALL,8.4%,-0.7%,Healthcare,0.87,5.0%,1.03,62,-62.8%,$12.93,1.65%,,,,,,,DAWN,$8.23,$8.25,0.24%
+2025-12-09,AG,125,$15.31,MODERATE,19,0,MID,0.0%,+0.5%,Basic Materials,0.79,6.2%,1.07,71,-6.0%,$16.40,7.12%,,,,,,,BTI,$57.24,$57.29,0.09%
+2025-12-09,DLB,110,$67.67,MODERATE,15,0,MID,6.5%,+0.9%,Industrials,0.89,2.2%,0.74,71,-23.1%,$66.80,-1.29%,,,,,,,,,,
+2025-12-09,OHI,90,$45.53,MODERATE,19,0,LARGE,4.8%,-0.8%,Real Estate,0.64,1.6%,0.79,56,-1.8%,$44.55,-2.15%,,,,,,,,,,
+2025-12-09,EPRT,55,$31.30,MODERATE,15,0,MID,10.3%,-1.1%,Real Estate,0.65,1.5%,0.83,55,-4.3%,$30.47,-2.65%,,,,,,,,,,
+2025-12-09,VIR,50,$6.69,MODERATE,21,0,SMALL,12.7%,+4.2%,Healthcare,0.87,7.1%,1.25,66,-53.7%,$6.67,-0.30%,,,,,,,,,,
+2025-12-09,MUX,60,$19.25,MODERATE,21,0,SMALL,14.6%,+3.4%,Basic Materials,0.93,5.2%,0.73,62,-22.6%,$19.25,0.00%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-10,EXAS,125,$101.47,MODERATE,24,0,LARGE,4.4%,+0.3%,Healthcare,0.66,1.4%,0.48,96,-0.5%,$101.71,0.24%,,,90.00%,2.15%,-1.19%,,ALGN,$163.08,$161.84,-0.76
+2025-12-10,TECK,135,$43.83,MODERATE,21,0,LARGE,0.0%,+1.2%,Basic Materials,0.68,3.4%,0.88,67,-5.7%,$45.16,3.03%,,,,,,,CNXC,$38.31,$40.54,5.82
+2025-12-10,CE,75,$41.65,MODERATE,22,0,MID,10.5%,-0.4%,Basic Materials,0.78,4.4%,0.84,72,-44.9%,$42.90,3.00%,,,,,,,HAFN,$5.64,$5.46,-3.19
+2025-12-10,MT,130,$44.62,MODERATE,21,0,LARGE,0.4%,+2.3%,Basic Materials,0.91,2.2%,0.92,72,-0.2%,$45.43,1.82%,,,,,,,ACLX,$70.78,$64.46,-8.93
+2025-12-10,TKO,133,$197.04,MODERATE,17,0,LARGE,9.9%,+1.6%,Communication Services,0.71,3.0%,0.84,59,-7.3%,$214.10,8.66%,,,,,,,CAMT,$119.78,$104.99,-12.34
+2025-12-10,LGN,123,$45.43,MODERATE,16,0,MID,5.1%,+1.4%,Industrials,0.61,7.0%,0.71,52,+0.0%,$43.74,-3.72%,,,,,,,,,,
+2025-12-10,NVST,80,$21.78,MODERATE,26,0,MID,7.2%,+4.9%,Healthcare,1.00,2.9%,1.28,75,-4.0%,$22.22,2.02%,,,,,,,,,,
+2025-12-10,ALC,125,$79.77,MODERATE,23,0,LARGE,0.0%,+2.0%,Healthcare,0.73,1.9%,0.63,64,-19.3%,$80.21,0.55%,,,,,,,,,,
+2025-12-10,FAST,100,$40.38,MODERATE,17,0,LARGE,2.8%,+0.6%,Industrials,0.50,1.9%,0.90,57,-19.8%,$42.20,4.51%,,,,,,,,,,
+2025-12-10,LOMA,90,$12.56,MODERATE,25,0,SMALL,4.4%,+3.1%,Basic Materials,0.86,4.8%,0.59,63,-11.3%,$12.74,1.43%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-11,SKT,123,$33.25,MODERATE,24,0,MID,5.4%,+1.1%,Real Estate,0.58,2.0%,1.33,54,-7.0%,$34.37,3.37%,,,50.00%,2.28%,-0.77%,,EWTX,$23.96,,
+2025-12-11,INSP,85,$135.37,MODERATE,23,0,MID,16.2%,+1.1%,Healthcare,0.69,7.3%,0.97,79,-37.3%,$118.27,-12.63%,,,,,,,AEVA,$17.01,,
+2025-12-11,CAI,120,$26.35,MODERATE,24,0,MID,4.7%,+0.9%,Healthcare,0.59,6.1%,0.97,63,+0.0%,$27.86,5.73%,,,,,,,STX,$307.97,,
+2025-12-11,BCE,125,$23.51,MODERATE,25,0,LARGE,0.0%,+0.6%,Communication Services,0.87,1.8%,0.90,62,-8.5%,$31.49,33.96%,,,,,,,TTMI,$79.61,,
+2025-12-11,POST,75,$96.94,MODERATE,22,0,MID,9.0%,-1.6%,Consumer Defensive,0.25,3.6%,0.79,32,-23.0%,$101.81,5.02%,,,,,,,UPBD,$18.62,,
+2025-12-11,WST,100,$270.83,MODERATE,24,0,LARGE,3.8%,-0.8%,Healthcare,0.51,3.0%,0.85,60,-22.1%,$268.66,-0.80%,,,,,,,,,,
+2025-12-11,DAR,110,$37.01,MODERATE,23,0,MID,6.9%,-0.0%,Consumer Defensive,0.79,3.4%,0.78,77,-12.2%,$34.63,-6.43%,,,,,,,,,,
+2025-12-11,CEF,75,$43.72,MODERATE,24,0,MID,0.0%,+4.1%,Unknown,0.96,1.9%,0.78,85,-0.5%,$44.42,1.60%,,,,,,,,,,
+2025-12-11,XRAY,80,$11.59,MODERATE,23,0,MID,7.9%,+4.3%,Healthcare,0.83,3.0%,0.94,80,-41.9%,$11.28,-2.67%,,,,,,,,,,
+2025-12-11,WRD,90,$8.95,MODERATE,21,0,MID,3.1%,+3.2%,Technology,0.72,5.4%,0.80,74,-79.7%,$8.56,-4.36%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),
+2025-12-12,SMG,133,$57.18,MODERATE,20,0,MID,7.1%,+1.1%,Basic Materials,0.87,3.0%,0.97,62,-24.4%,$58.66,2.59%,,,80.00%,1.09%,0.10%,,HWM,$198.41,$203.49,
+2025-12-12,BAX,123,$19.12,MODERATE,23,0,MID,9.7%,+1.2%,Healthcare,0.86,2.4%,1.08,61,-48.7%,$19.40,1.46%,,,,,,,QXO,$21.35,$21.67,
+2025-12-12,COKE,100,$165.91,MODERATE,21,0,LARGE,2.7%,+0.9%,Consumer Defensive,0.85,2.3%,1.03,59,-1.4%,$166.18,0.16%,,,,,,,HAFN,$5.59,$5.38,
+2025-12-12,TER,100,$192.40,MODERATE,26,0,LARGE,4.0%,-1.4%,Technology,0.65,3.9%,0.61,74,-6.2%,$197.50,2.65%,,,,,,,PAAS,$49.64,$52.23,
+2025-12-12,REXR,80,$41.44,MODERATE,27,0,LARGE,9.8%,-0.5%,Real Estate,0.70,1.8%,1.09,53,-6.6%,$41.17,-0.65%,,,,,,,AHR,$47.08,$48.00,
+2025-12-12,JBL,95,$222.64,MODERATE,22,0,LARGE,4.0%,+4.0%,Technology,0.73,3.6%,1.06,75,-6.1%,$225.80,1.42%,,,,,,,,,,
+2025-12-12,BA,60,$204.35,MODERATE,22,0,MEGA,1.9%,+0.9%,Industrials,0.79,2.8%,0.93,73,-15.8%,$214.82,5.13%,,,,,,,,,,
+2025-12-12,EXPD,125,$151.36,MODERATE,21,0,LARGE,4.8%,+2.2%,Industrials,0.79,1.9%,0.86,71,-2.0%,$152.87,1.00%,,,,,,,,,,
+2025-12-12,ZTO,85,$21.43,MODERATE,20,0,LARGE,3.5%,+3.8%,Industrials,0.80,2.4%,0.90,73,-2.1%,$21.68,1.17%,,,,,,,,,,
+2025-12-12,DNOW,110,$14.26,MODERATE,15,0,MID,4.3%,+0.5%,Industrials,0.72,2.6%,0.74,70,-22.7%,$13.69,-4.00%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-15,AL,95,$64.28,MODERATE,23,0,MID,2.5%,+0.7%,Industrials,1.00,0.3%,1.00,81,-0.2%,$64.22,-0.09%,,,30.00%,1.55%,0.91%,,VRRM,$21.68,$22.50,3.78%
+2025-12-15,VICI,100,$28.45,MODERATE,28,0,LARGE,2.7%,+0.6%,Real Estate,0.43,1.4%,1.00,42,-15.2%,$27.89,-1.97%,,,,,,,UTI,$25.81,$26.29,1.86%
+2025-12-15,DAY,125,$69.39,MODERATE,22,0,LARGE,6.8%,+0.4%,Technology,1.00,0.2%,1.00,75,-11.1%,$69.18,-0.30%,,,30d Win Rate %,30d Average Return %,S&P 30d %,,HL,$19.13,$20.55,7.43%
+2025-12-15,ASAN,55,$14.19,MODERATE,21,0,MID,17.6%,-1.7%,Technology,0.71,4.8%,1.00,70,-48.9%,$14.38,1.34%,,,,,,,JBI,$6.82,$6.82,0.00%
+2025-12-15,MAS,90,$64.53,MODERATE,29,0,LARGE,4.0%,-0.1%,Industrials,0.73,2.6%,1.00,59,-20.0%,$64.26,-0.42%,,,,,,,PSTG,$70.49,$67.32,-4.50%
+2025-12-15,TWI,75,$8.38,MODERATE,25,0,SMALL,10.8%,+1.2%,Industrials,0.73,3.9%,1.00,62,-23.4%,$7.62,-9.07%,,,,,,,,,,
+2025-12-15,BCE,125,$23.74,MODERATE,25,0,LARGE,0.0%,+2.4%,Communication Services,1.00,1.8%,1.00,63,-7.6%,$31.25,31.65%,,,,,,,,,,
+2025-12-15,IR,123,$81.48,MODERATE,23,0,LARGE,5.7%,+2.2%,Industrials,0.77,2.0%,1.00,60,-19.3%,$81.12,-0.44%,,,,,,,,,,
+2025-12-15,HLN,120,$9.78,MODERATE,28,0,LARGE,0.3%,+2.9%,Healthcare,0.77,1.8%,1.00,47,-13.8%,$9.97,1.94%,,,,,,,,,,
+2025-12-15,CRVS,45,$8.40,MODERATE,17,0,SMALL,16.6%,-0.5%,Healthcare,0.25,6.5%,1.00,47,-12.5%,$7.80,-7.14%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-16,GEN,125,$27.21,MODERATE,22,0,LARGE,4.2%,+0.6%,Technology,0.72,1.9%,0.87,63,-14.8%,$27.77,2.06%,,,80.00%,2.34%,1.61%,,FAST,$42.24,$41.89,-0.83%
+2025-12-16,EL,115,$103.98,MODERATE,26,0,LARGE,4.1%,+0.1%,Consumer Defensive,0.74,3.2%,0.98,67,-5.2%,$107.82,3.69%,,,,,,,FTNT,$82.40,$80.66,-2.11%
+2025-12-16,PECO,110,$35.21,MODERATE,21,0,MID,2.6%,+1.2%,Real Estate,0.71,1.3%,1.42,46,-8.1%,$35.52,0.88%,,,30d Win Rate %,30d Average Return %,S&P 30d %,,RBRK,$78.14,$78.75,0.78%
+2025-12-16,ZIM,75,$20.23,MODERATE,27,0,MID,18.8%,+1.0%,Industrials,0.70,4.6%,0.60,55,-3.7%,$21.03,3.95%,,,,,,,EXLS,$41.99,$43.32,3.17%
+2025-12-16,ERO,125,$25.06,MODERATE,20,0,MID,0.0%,+0.2%,Basic Materials,0.65,4.6%,0.90,62,-6.4%,$27.54,9.90%,,,,,,,ENVX,$7.56,$8.34,10.32%
+2025-12-16,DOW,110,$22.54,MODERATE,23,0,LARGE,5.5%,-1.8%,Basic Materials,0.40,3.9%,1.01,47,-42.6%,$22.90,1.60%,,,,,,,,,,
+2025-12-16,SSL,100,$6.10,MODERATE,20,0,MID,0.6%,-0.7%,Basic Materials,0.25,3.1%,0.85,36,-17.5%,$6.38,4.59%,,,,,,,,,,
+2025-12-16,LIVN,95,$62.77,MODERATE,24,0,MID,4.9%,-0.9%,Healthcare,0.59,2.5%,0.82,46,-4.3%,$63.25,0.76%,,,,,,,,,,
+2025-12-16,FLO,50,$11.02,MODERATE,21,0,MID,11.8%,+3.1%,Consumer Defensive,0.84,2.8%,0.82,68,-44.5%,$10.78,-2.18%,,,,,,,,,,
+2025-12-16,VICI,110,$28.33,MODERATE,20,0,LARGE,2.7%,+2.1%,Real Estate,0.42,1.5%,0.76,42,-15.6%,$27.80,-1.87%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-17,HUBS,85,$383.75,MODERATE,20,0,LARGE,2.5%,-0.4%,Technology,0.75,3.2%,1.09,64,-56.5%,$397.60,3.61%,,,80.00%,1.47%,3.13%,,TAL,$10.98,$10.96,-0.18%
+2025-12-17,IVR,90,$8.27,MODERATE,21,0,SMALL,9.7%,+0.4%,Real Estate,0.73,1.6%,0.87,57,-1.5%,$8.63,4.35%,,,,,,,PMT,$12.80,$13.04,1.88%
+2025-12-17,BRSP,115,$5.89,MODERATE,18,0,SMALL,3.4%,+1.6%,Real Estate,0.75,1.8%,1.11,71,-1.8%,$5.89,0.00%,,,30d Win Rate %,30d Average Return %,S&P 30d %,,ORLA,$13.62,$14.53,6.68%
+2025-12-17,EXR,85,$131.05,MODERATE,25,0,LARGE,3.4%,+3.2%,Real Estate,0.64,1.9%,1.21,48,-15.8%,$130.26,-0.60%,,,,,,,EQR,$61.92,$62.73,1.31%
+2025-12-17,HLN,90,$9.84,MODERATE,28,0,LARGE,0.3%,+4.7%,Healthcare,0.79,1.8%,1.00,53,-13.3%,$10.10,2.64%,,,,,,,DX,$13.71,$13.95,1.75%
+2025-12-17,EPAM,125,$205.34,MODERATE,15,0,LARGE,6.1%,+0.8%,Technology,0.68,3.0%,0.75,76,-23.7%,$209.08,1.82%,,,,,,,,,,
+2025-12-17,KMT,108,$28.56,MODERATE,21,0,MID,7.5%,+2.5%,Industrials,0.69,2.1%,1.17,59,-4.3%,$29.26,2.45%,,,,,,,,,,
+2025-12-17,VOD,125,$12.81,MODERATE,27,0,LARGE,0.5%,+2.4%,Communication Services,0.81,1.6%,0.65,61,-0.4%,$13.10,2.26%,,,,,,,,,,
+2025-12-17,BR,110,$228.37,MODERATE,16,0,LARGE,2.1%,+0.8%,Technology,0.61,1.7%,0.84,53,-15.3%,$228.38,0.01%,,,,,,,,,,
+2025-12-17,DOLE,45,$15.39,MODERATE,22,0,SMALL,1.6%,+3.8%,Consumer Defensive,0.82,1.8%,0.89,71,-2.2%,$15.11,-1.82%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-18,REG,115,$67.65,MODERATE,20,0,LARGE,4.1%,+0.9%,Real Estate,0.34,1.5%,1.06,33,-9.9%,$69.55,2.81%,,,60.00%,0.49%,4.72%,,DUOL,$181.53,,
+2025-12-18,ROP,105,$449.02,MODERATE,24,0,LARGE,1.3%,+1.9%,Technology,0.85,1.5%,1.95,54,-24.2%,$451.18,0.48%,,,,,,,HPE,$23.80,,
+2025-12-18,ANGX,85,$5.29,MODERATE,29,0,SMALL,0.0%,-0.6%,Communication Services,0.77,7.9%,1.05,57,+0.0%,$5.15,-2.65%,,,30d Win Rate %,30d Average Return %,S&P 30d %,,VSTM,$7.84,,
+2025-12-18,COMP,55,$10.83,MODERATE,23,0,MID,12.1%,-0.1%,Real Estate,0.74,4.2%,0.87,56,-2.2%,$10.68,-1.38%,,,,,,,BRSP,$5.95,,
+2025-12-18,MOH,60,$162.43,MODERATE,25,0,MID,11.4%,+4.5%,Healthcare,0.79,3.2%,0.73,71,-54.9%,$164.84,1.48%,,,,,,,MMS,$88.10,,
+2025-12-18,DAL,85,$70.19,MODERATE,24,0,LARGE,3.2%,+4.1%,Industrials,0.73,2.7%,0.90,76,-3.0%,$70.96,1.10%,,,,,,,,,,
+2025-12-18,TDS,123,$39.13,MODERATE,26,0,MID,8.2%,+2.9%,Communication Services,0.65,2.2%,1.23,45,-8.3%,$40.25,2.86%,,,,,,,,,,
+2025-12-18,CUZ,70,$25.05,MODERATE,24,0,MID,7.5%,+3.3%,Real Estate,0.42,2.0%,1.00,37,-17.5%,$25.73,2.71%,,,,,,,,,,
+2025-12-18,OKTA,135,$90.09,MODERATE,28,0,LARGE,4.2%,+2.6%,Technology,0.78,3.6%,0.82,74,-29.4%,$88.61,-1.64%,,,,,,,,,,
+2025-12-18,CERT,45,$8.99,MODERATE,25,0,SMALL,16.8%,-1.9%,Healthcare,0.51,4.6%,1.55,47,-42.7%,$8.91,-0.89%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-19,SA,143,$29.37,MODERATE,26,0,MID,5.8%,+1.2%,Basic Materials,0.63,5.1%,0.87,55,-6.3%,$31.14,6.03%,,,70.00%,2.37%,2.29%,,SWIM,$6.32,,
+2025-12-19,EQR,115,$61.69,MODERATE,21,0,LARGE,2.2%,+1.7%,Real Estate,0.70,1.5%,1.11,52,-16.2%,$63.09,2.27%,,,,,,,HON,$200.66,,
+2025-12-19,GTM,90,$10.14,MODERATE,26,0,MID,10.6%,+0.1%,Technology,0.76,3.3%,0.90,50,-19.7%,$10.14,0.00%,,,30d Win Rate %,30d Average Return %,S&P 30d %,,AGRO,$7.59,,
+2025-12-19,SLG,80,$44.53,MODERATE,21,0,MID,14.9%,+0.7%,Real Estate,0.45,4.1%,0.70,40,-33.3%,$45.99,3.28%,,,,,,,NG,$9.91,,
+2025-12-19,NVST,110,$22.27,MODERATE,20,0,MID,7.2%,+0.8%,Healthcare,0.84,2.9%,1.19,66,-1.8%,$21.99,-1.26%,,,,,,,NOW,$155.11,,
+2025-12-19,RYN,85,$21.94,MODERATE,21,0,MID,4.1%,-1.6%,Real Estate,0.67,2.6%,1.30,56,-14.9%,$21.78,-0.73%,,,,,,,,,,
+2025-12-19,DD,135,$41.06,MODERATE,18,0,LARGE,5.3%,+0.2%,Basic Materials,0.77,1.9%,1.06,63,-1.9%,$41.26,0.49%,,,,,,,,,,
+2025-12-19,PHYS,110,$33.24,MODERATE,23,0,LARGE,0.0%,+2.7%,Unknown,0.88,1.3%,1.15,72,-0.6%,$34.75,4.54%,,,,,,,,,,
+2025-12-19,DRD,145,$31.02,MODERATE,15,0,MID,3.7%,+1.7%,Basic Materials,0.77,4.8%,0.99,55,-6.9%,$33.40,7.67%,,,,,,,,,,
+2025-12-19,ROKU,100,$110.33,MODERATE,29,0,LARGE,6.8%,+4.7%,Communication Services,0.83,4.3%,1.09,71,-5.4%,$112.08,1.59%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,,,,,,,,,,
+2025-12-22,USAS,120,$5.86,MODERATE,26,0,SMALL,2.3%,+1.5%,Basic Materials,0.85,6.1%,1.11,78,-2.0%,$6.32,7.85%,,,,,,,,,,
+2025-12-22,BOX,80,$30.23,MODERATE,21,0,MID,15.2%,+0.1%,Technology,0.44,2.9%,0.79,50,-22.1%,$30.63,1.32%,,,,,,,,,,
+2025-12-22,ELF,80,$78.63,MODERATE,22,0,MID,14.4%,+0.8%,Consumer Defensive,0.61,4.7%,0.80,59,-47.9%,$79.43,1.02%,,,,,,,,,,
+2025-12-22,OMDA,75,$15.35,MODERATE,20,0,SMALL,7.4%,-0.4%,Healthcare,0.35,6.2%,0.54,30,+0.0%,$16.13,5.08%,,,,,,,,,,
+2025-12-22,OLED,95,$119.54,MODERATE,27,0,MID,4.3%,-0.7%,Technology,0.59,2.3%,1.25,48,-26.3%,$119.24,-0.25%,,,,,,,,,,
+2025-12-22,ATRO,75,$55.67,MODERATE,21,0,SMALL,11.0%,+1.6%,Industrials,0.95,4.6%,1.59,56,-1.9%,$54.98,-1.24%,,,,,,,,,,
+2025-12-22,META,80,$660.42,MODERATE,23,0,MEGA,1.5%,+1.3%,Communication Services,0.69,3.1%,1.34,55,-16.9%,$658.69,-0.26%,,,,,,,,,,
+2025-12-22,MOMO,75,$6.59,MODERATE,26,0,SMALL,2.6%,-1.4%,Communication Services,0.23,3.2%,1.70,34,-28.5%,$6.50,-1.37%,,,,,,,,,,
+2025-12-22,RAPT,80,$36.43,MODERATE,22,0,SMALL,4.0%,+3.3%,Healthcare,0.83,7.2%,1.43,62,-14.1%,$35.84,-1.62%,,,,,,,,,,
+2025-12-22,BUD,55,$63.24,MODERATE,23,0,MEGA,0.9%,-0.2%,Consumer Defensive,0.59,1.8%,1.16,58,-12.3%,$64.31,1.69%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,,,,,,,,,,
+2025-12-23,ELVN,45,$16.64,MODERATE,21,0,SMALL,19.2%,-1.3%,Healthcare,0.20,8.8%,1.08,31,-34.4%,$15.55,-6.55%,,,,,,,,,,
+2025-12-23,NAGE,55,$6.48,MODERATE,23,0,SMALL,10.5%,-0.6%,Healthcare,0.38,3.7%,1.07,48,-55.9%,$6.48,0.00%,,,,,,,,,,
+2025-12-23,ELF,50,$78.93,MODERATE,21,0,MID,14.4%,+3.4%,Consumer Defensive,0.61,4.3%,0.79,46,-47.7%,$76.80,-2.70%,,,,,,,,,,
+2025-12-23,BUD,80,$63.96,MODERATE,20,0,MEGA,0.9%,+0.3%,Consumer Defensive,0.70,1.7%,0.80,62,-11.3%,$64.61,1.02%,,,,,,,,,,
+2025-12-23,VOD,95,$13.06,MODERATE,26,0,LARGE,0.5%,+3.7%,Communication Services,1.00,1.3%,0.78,76,-0.1%,$13.23,1.30%,,,,,,,,,,
+2025-12-23,UNFI,70,$33.99,MODERATE,27,0,MID,8.3%,+3.6%,Consumer Defensive,0.47,3.8%,0.82,53,-21.5%,$33.51,-1.41%,,,,,,,,,,
+2025-12-23,ADC,80,$72.17,MODERATE,19,0,MID,11.8%,+0.6%,Real Estate,0.37,1.5%,1.69,32,-6.8%,$72.84,0.93%,,,,,,,,,,
+2025-12-23,FLYW,85,$14.77,MODERATE,26,0,SMALL,3.8%,-0.0%,Technology,0.82,3.2%,0.80,63,-30.7%,$14.15,-4.20%,,,,,,,,,,
+2025-12-23,ASPI,55,$5.91,MODERATE,22,0,SMALL,19.8%,-0.6%,Basic Materials,0.42,8.8%,1.10,52,-59.2%,$5.42,-8.29%,,,,,,,,,,
+2025-12-23,IMAX,70,$38.15,MODERATE,18,0,MID,14.3%,-0.1%,Communication Services,0.69,4.2%,0.76,72,-4.6%,$37.24,-2.38%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,,,,,,,,,,
+2025-12-24,RITM,70,$11.16,MODERATE,22,0,MID,2.3%,-0.3%,Real Estate,0.39,1.6%,1.23,42,-10.4%,$10.93,-2.06%,,,,,,,,,,
+2025-12-24,FR,110,$58.42,MODERATE,23,0,MID,3.3%,+0.1%,Real Estate,0.72,1.7%,0.88,60,-1.7%,$57.27,-1.97%,,,,,,,,,,
+2025-12-24,USAS,105,$5.80,MODERATE,24,0,SMALL,2.3%,+0.0%,Basic Materials,0.78,6.2%,1.24,77,-3.0%,$5.11,-11.90%,,,,,,,,,,
+2025-12-24,YELP,85,$30.77,MODERATE,23,0,SMALL,14.4%,+0.4%,Communication Services,0.71,2.1%,0.98,60,-26.2%,$30.79,0.07%,,,,,,,,,,
+2025-12-24,VNO,85,$33.65,MODERATE,23,0,MID,6.5%,-1.1%,Real Estate,0.33,2.8%,1.13,40,-24.2%,$33.28,-1.10%,,,,,,,,,,
+2025-12-24,VICI,75,$27.96,MODERATE,21,0,LARGE,2.7%,-0.7%,Real Estate,0.57,1.5%,0.91,55,-15.3%,$28.18,0.79%,,,,,,,,,,
+2025-12-24,CIM,100,$12.90,MODERATE,23,0,SMALL,2.9%,+1.1%,Real Estate,0.66,1.9%,1.23,51,-10.9%,$12.43,-3.64%,,,,,,,,,,
+2025-12-24,SLG,55,$45.50,MODERATE,22,0,MID,14.9%,-0.2%,Real Estate,0.61,3.7%,0.79,58,-31.4%,$45.87,0.81%,,,,,,,,,,
+2025-12-24,TU,125,$12.81,MODERATE,16,0,LARGE,0.0%,+0.2%,Communication Services,0.36,1.7%,0.79,29,-23.5%,$13.17,2.81%,,,,,,,,,,
+2025-12-24,DOCU,135,$69.64,MODERATE,27,0,LARGE,3.0%,+2.1%,Technology,0.60,3.7%,0.96,46,-29.9%,$68.40,-1.78%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-25,ZTO,130,$21.27,MODERATE,24,0,LARGE,3.5%,+1.1%,Industrials,0.67,2.2%,1.16,53,-2.8%,$21.50,1.08%,,,40.00%,-1.76%,-1.25%,,HL,$19.83,,
+2025-12-25,SKM,95,$20.31,MODERATE,21,0,MID,0.6%,-0.1%,Communication Services,0.69,1.2%,1.11,50,-14.7%,$20.55,1.18%,,,,,,,STUB,$13.58,,
+2025-12-25,USAS,95,$5.80,MODERATE,25,0,SMALL,1.9%,+0.0%,Basic Materials,0.78,6.2%,1.25,77,-3.0%,$5.11,-11.90%,,,,,,,TMC,$7.62,,
+2025-12-25,TARS,80,$82.51,MODERATE,20,0,MID,16.6%,+2.5%,Healthcare,0.80,3.5%,1.84,52,-3.2%,$80.77,-2.11%,,,,,,,HYMC,$24.96,,
+2025-12-25,USFD,115,$76.37,MODERATE,18,0,LARGE,5.5%,+0.2%,Consumer Defensive,0.44,1.7%,1.19,51,-10.3%,$74.64,-2.27%,,,,,,,APGE,$78.09,,
+2025-12-25,HLN,120,$10.10,MODERATE,26,0,LARGE,0.3%,+2.8%,Healthcare,0.93,1.5%,0.85,73,-11.0%,$10.00,-0.99%,,,,,,,,,,
+2025-12-25,MAA,85,$137.44,MODERATE,22,0,LARGE,3.8%,+3.6%,Real Estate,0.88,1.6%,1.37,63,-18.2%,$139.13,1.23%,,,,,,,,,,
+2025-12-25,ARMN,95,$16.32,MODERATE,20,0,MID,0.0%,+3.6%,Basic Materials,0.85,3.8%,1.28,77,-3.9%,$15.81,-3.13%,,,,,,,,,,
+2025-12-25,NVO,60,$52.56,MODERATE,22,0,MEGA,0.8%,+4.3%,Healthcare,1.00,3.1%,1.76,66,-42.4%,$52.79,0.44%,,,,,,,,,,
+2025-12-25,DOCS,95,$43.78,MODERATE,19,0,MID,6.0%,-1.9%,Healthcare,0.30,3.9%,0.96,20,-48.6%,$43.29,-1.12%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-26,XRAY,95,$11.36,MODERATE,26,0,MID,6.8%,-0.1%,Healthcare,0.59,2.8%,0.93,53,-43.0%,$12.04,5.99%,,,90.00%,2.50%,-0.10%,,TMC,$6.66,,
+2025-12-26,APPN,85,$35.81,MODERATE,21,0,MID,7.8%,-1.7%,Technology,0.19,4.0%,0.58,27,-22.2%,$33.57,-5.98%,,,,,,,DX,$13.87,,
+2025-12-26,WEAV,123,$7.07,MODERATE,21,0,SMALL,7.0%,+1.4%,Healthcare,0.80,3.9%,0.75,66,-59.9%,$7.16,1.27%,,,,,,,ELVN,$16.33,,
+2025-12-26,TME,90,$17.56,MODERATE,20,0,LARGE,2.9%,-1.2%,Communication Services,0.15,2.1%,1.37,20,-34.2%,$18.12,3.19%,,,,,,,MDXG,$6.87,,
+2025-12-26,CUBE,85,$35.54,MODERATE,24,0,MID,3.4%,-0.7%,Real Estate,0.19,1.8%,1.22,39,-17.5%,$35.66,0.34%,,,,,,,ASTS,$72.07,,
+2025-12-26,TGT,130,$98.84,MODERATE,17,0,LARGE,4.5%,+1.2%,Consumer Defensive,0.83,2.8%,1.34,70,-28.9%,$103.93,5.15%,,,,,,,,,,
+2025-12-26,MOMO,75,$6.51,MODERATE,22,0,SMALL,2.5%,-0.5%,Communication Services,0.23,3.1%,0.78,28,-29.4%,$6.86,5.38%,,,,,,,,,,
+2025-12-26,SKM,90,$20.44,MODERATE,21,0,MID,0.6%,+3.3%,Communication Services,0.79,1.1%,0.95,49,-14.1%,$20.56,0.59%,,,,,,,,,,
+2025-12-26,BILI,138,$24.95,MODERATE,26,0,LARGE,5.1%,+2.3%,Communication Services,0.40,2.4%,0.73,37,-23.2%,$27.44,9.98%,,,,,,,,,,
+2025-12-26,STWD,125,$18.50,MODERATE,16,0,MID,3.1%,+1.4%,Real Estate,0.69,1.2%,0.91,57,-10.0%,$18.52,0.11%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-29,MT,130,$45.56,MODERATE,30,0,LARGE,0.7%,+0.8%,Basic Materials,0.69,1.8%,0.52,63,-2.2%,$48.29,6.00%,,,90.00%,3.35%,0.73%,,GRFS,$9.10,,
+2025-12-29,UNFI,113,$33.46,MODERATE,25,0,MID,8.4%,+1.0%,Consumer Defensive,0.46,3.6%,0.57,43,-22.7%,$33.69,0.69%,,,,,,,OMDA,$16.09,,
+2025-12-29,DOCS,120,$44.04,MODERATE,22,0,MID,6.0%,+0.8%,Healthcare,0.36,2.9%,0.63,39,-48.3%,$46.56,5.72%,,,,,,,ZBRA,$243.72,,
+2025-12-29,DOW,135,$23.14,MODERATE,20,0,LARGE,4.8%,+0.3%,Basic Materials,0.38,3.1%,0.58,52,-41.0%,$24.87,7.48%,,,,,,,RWT,$5.53,,
+2025-12-29,COLD,80,$12.76,MODERATE,25,0,MID,11.7%,+1.0%,Real Estate,0.74,3.6%,0.52,78,-43.4%,$13.03,2.12%,,,,,,,SMCI,$30.36,,
+2025-12-29,BOX,90,$30.47,MODERATE,20,0,MID,14.2%,+0.9%,Technology,0.50,1.9%,0.50,39,-21.5%,$29.70,-2.53%,,,,,,,,,,
+2025-12-29,AU,85,$84.45,MODERATE,27,0,LARGE,1.0%,-0.1%,Basic Materials,0.46,4.1%,0.55,60,-7.9%,$91.87,8.79%,,,,,,,,,,
+2025-12-29,SSRM,105,$21.99,MODERATE,15,0,MID,5.1%,-0.5%,Basic Materials,0.46,5.1%,0.72,58,-15.4%,$22.07,0.36%,,,,,,,,,,
+2025-12-29,ERIC,105,$9.69,MODERATE,15,0,LARGE,1.1%,+1.5%,Technology,0.75,1.2%,0.52,57,-6.4%,$9.91,2.27%,,,,,,,,,,
+2025-12-29,COST,60,$866.70,MODERATE,21,0,MEGA,1.5%,+0.5%,Consumer Defensive,0.36,1.7%,0.49,38,-19.3%,$889.38,2.62%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2025-12-30,CAI,95,$27.39,MODERATE,20,0,MID,3.7%,-1.7%,Healthcare,0.43,3.6%,0.30,52,+0.0%,$28.54,4.20%,,,70.00%,0.29%,0.36%,,EVLV,$7.12,,
+2025-12-30,PINS,105,$26.12,MODERATE,22,0,LARGE,4.5%,-0.5%,Communication Services,0.35,2.6%,0.37,38,-36.1%,$27.16,3.98%,,,,,,,AXSM,$149.43,,
+2025-12-30,PECO,85,$36.05,MODERATE,21,0,MID,3.0%,-0.9%,Real Estate,0.78,1.3%,0.59,69,-1.4%,$35.02,-2.86%,,,,,,,GNL,$8.60,,
+2025-12-30,ZYME,110,$26.55,MODERATE,16,0,MID,7.7%,+0.6%,Healthcare,0.60,3.8%,0.61,56,-6.8%,$24.85,-6.40%,,,,,,,KYIV,$12.82,,
+2025-12-30,TU,95,$13.08,MODERATE,26,0,LARGE,0.0%,+3.5%,Communication Services,0.60,1.5%,0.57,40,-21.9%,$13.15,0.54%,,,,,,,URGN,$23.01,,
+2025-12-30,DOCS,128,$44.54,MODERATE,25,0,MID,6.0%,+2.4%,Healthcare,0.42,2.9%,0.53,46,-47.7%,$46.49,4.38%,,,,,,,,,,
+2025-12-30,MIDD,118,$151.48,MODERATE,24,0,MID,5.8%,+2.2%,Industrials,0.72,2.8%,0.50,85,-17.1%,$153.77,1.51%,,,,,,,,,,
+2025-12-30,TSN,130,$59.16,MODERATE,15,0,LARGE,3.5%,+1.6%,Consumer Defensive,0.74,1.7%,0.38,68,-5.6%,$56.16,-5.07%,,,,,,,,,,
+2025-12-30,VIV,125,$12.03,MODERATE,19,0,LARGE,0.0%,+0.4%,Communication Services,0.41,2.2%,0.44,45,-9.6%,$12.14,0.91%,,,,,,,,,,
+2025-12-30,PHYS,110,$33.44,MODERATE,17,0,LARGE,0.0%,+0.9%,Unknown,0.63,1.8%,1.25,63,-4.0%,$34.00,1.68%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2026-12-31,SKE,125,$23.80,MODERATE,21,0,MID,0.0%,+0.8%,Basic Materials,0.52,4.8%,0.83,48,-8.7%,$25.11,5.50%,,,80.00%,3.23%,1.10%,,BTQ,$5.02,,
+2026-12-31,XENE,123,$44.81,MODERATE,18,0,MID,8.2%,+1.6%,Healthcare,0.70,2.9%,0.66,58,-3.8%,$42.12,-6.00%,,,,,,,KW,$9.70,,
+2026-12-31,AMRX,120,$12.74,MODERATE,15,0,MID,2.6%,+1.4%,Healthcare,0.70,2.0%,0.47,65,-2.1%,$13.60,6.76%,,,,,,,ODD,$40.46,,
+2026-12-31,LINE,120,$35.11,MODERATE,24,0,MID,3.9%,+2.9%,Real Estate,0.46,3.3%,1.13,37,-41.7%,$35.11,0.00%,,,,,,,INMD,$14.78,,
+2026-12-31,CEF,105,$45.94,MODERATE,18,0,MID,0.0%,+2.3%,Unknown,0.66,2.9%,1.63,62,-6.3%,$48.50,5.57%,,,,,,,SKM,$20.52,,
+2026-12-31,CDE,100,$17.92,MODERATE,20,1,LARGE,9.8%,-1.8%,Basic Materials,0.62,6.4%,0.81,64,-24.1%,$19.27,7.53%,,,,,,,,,,
+Date,Ticker,V4Score,Entry Price,Buzz,Twitter,Reddit,Market Cap,Short Interest,Past week 7d%,Sector,BB,ATR,Vol Trend,RSI,52w from high,Exit Price (7d),7d %,Exit Price (30d),30d %,7d Win Rate %,7d Average Return %,S&P 7d %,,Control Group,Entry Price,Exit Price (7d),7d %
+2026-01-01,AUGO,125,$50.42,MODERATE,15,0,MID,0.0%,+0.8%,Basic Materials,0.69,4.5%,0.77,70,+0.0%,$51.20,1.55%,,,80.00%,7.57%,0.92%,,INOD,$50.95,,
+2026-01-01,TWLO,125,$142.24,MODERATE,20,0,LARGE,3.3%,+0.3%,Technology,0.76,2.6%,0.51,69,-6.4%,$137.43,-3.38%,,,,,,,CMRE,$15.79,,
+2026-01-01,KTOS,115,$75.91,MODERATE,17,0,LARGE,5.4%,+0.7%,Industrials,0.46,4.7%,0.70,48,-32.6%,$104.04,37.06%,,,,,,,CSGP,$67.24,,
+2026-01-01,REG,115,$69.03,MODERATE,20,0,LARGE,4.0%,+0.7%,Real Estate,0.68,1.3%,0.44,68,-8.1%,$70.61,2.29%,,,,,,,KSPI,$78.13,,
+2026-01-01,ROKU,105,$108.49,MODERATE,28,0,LARGE,6.3%,-0.3%,Communication Services,0.58,3.6%,0.49,57,-7.0%,$108.86,0.34%,,,,,,,AAON,$76.25,,

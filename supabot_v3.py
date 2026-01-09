@@ -135,13 +135,7 @@ def get_rsi(ticker: str) -> float:
         return round(float(rsi.iloc[-1]), 1)
     except:
         return 50.0
-    
-"""
-Earnings Proximity Filter for Supabot
 
-HARD FILTER: Skip stocks with earnings passed <30 days ago (61.6% WR)
-SCORE BOOST: +15 points for earnings 30-60 days away (88.9% WR)
-"""
 
 def check_earnings_proximity(ticker: str, entry_date: datetime) -> Dict:
     """
@@ -171,7 +165,6 @@ def check_earnings_proximity(ticker: str, entry_date: datetime) -> Dict:
         days_diff = (earnings_date.date() - entry_date.date()).days
         
         # HARD FILTER: Earnings passed recently (<30 days ago)
-        # This means: days_diff is negative AND abs value < 30
         recent_earnings = (days_diff < 0 and days_diff >= -30)
         
         # SCORE BOOST: Earnings 30-60 days away
@@ -213,12 +206,13 @@ def calculate_52w_positioning(ticker: str) -> Dict:
         }
     except:
         return {'dist_52w_high': 0.0, 'dist_52w_low': 0.0}
-    
+
+
 # ============ SCORING FUNCTIONS ============
 
 def calculate_quality_score(pick: Dict) -> float:
     """
-    V3 scoring - FOR SELECTION ONLY (internal use).
+    V3 scoring - FOR TRACKING ONLY (not used for selection).
     Based on buzz, fresh, volume, cap.
     """
     score = 0
@@ -253,9 +247,6 @@ def calculate_quality_score(pick: Dict) -> float:
         score += 15
     elif pick['volume_ratio'] > 1.0:
         score += 8
-
-    if pick.get('earnings_sweet_spot', False):
-        score += 15  # 30-60d window: 88.9% WR
     
     # Market cap (5-15 points)
     if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
@@ -273,23 +264,25 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     V4 scoring - Updated Jan 7, 2025
     Based on 238-trade validation (67.2% WR)
     
-    Changes from original V4:
-    1. Fresh 1-2% boosted (80.4% WR on 51 trades)
-    2. Fresh 4-5% separated (87.5% WR on 16 trades)
-    3. Small-cap penalized (46.2% WR, 18-21 record)
-    4. Large-cap boosted (77.1% WR, 64-19 record)
+    Includes:
+    - Fresh % sweet spots (1-2%: 80.4% WR)
+    - Short interest zones (3-7%: 71.9% WR)
+    - Market cap weighting (Large: 77.1% WR, Small: 46.2% WR)
+    - Sector performance (Basic Materials: 81.5% WR)
+    - Earnings proximity filter & boost
+    - Institutional ownership boost
     
     Gap: 16.2 points (p<0.0001)
-    V4 ≥120: 85.2% WR on 61 trades
+    V4 ≥120: 85.2% WR | V4 ≥100: ~78% WR
     """
     score = 0
     
-    # 1. FRESH % (0-50 points) - UPDATED WITH 4-5% SPLIT
+    # 1. FRESH % (0-50 points)
     fresh = pick['change_7d']
     if 1.0 <= fresh <= 2.0:
-        score += 50  # 80.4% WR (41-10 on 51 trades) - VALIDATED!
+        score += 50  # 80.4% WR (41-10 on 51 trades)
     elif 4.0 <= fresh <= 5.0:
-        score += 45  # 87.5% WR (14-2 on 16 trades) - STRONG!
+        score += 45  # 87.5% WR (14-2 on 16 trades)
     elif 0 <= fresh < 1.0:
         score += 40  # 71.2% WR (47-19 on 66 trades)
     elif 2.0 < fresh <= 3.0:
@@ -303,7 +296,7 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     else:  # fresh < -2.0
         score += 10
     
-    # 2. SHORT INTEREST (0-40 points) - UNCHANGED
+    # 2. SHORT INTEREST (0-40 points)
     si = pick.get('short_percent', 0)
     if 3.0 <= si <= 7.0:
         score += 40  # 71.9-73.3% WR
@@ -319,17 +312,17 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 10  # 51.7% WR
     # SI ≥15% gets 0
     
-    # 3. MARKET CAP (0-35 points) - UPDATED: LARGE BOOSTED, SMALL PENALIZED
+    # 3. MARKET CAP (0-35 points)
     cap_size = pick['cap_size']
     if 'LARGE' in cap_size.upper():
-        score += 35  # 77.1% WR (64-19 on 83 trades) - DOMINANT!
+        score += 35  # 77.1% WR (64-19 on 83 trades)
     elif 'MID' in cap_size.upper():
         score += 25  # 67.3% WR (70-34 on 104 trades)
     elif 'MEGA' in cap_size.upper():
         score += 15  # 66.7% WR (8-4 on 12 trades)
     # SMALL gets 0 - 46.2% WR (18-21) LOSES MONEY!
     
-    # 4. SECTOR PERFORMANCE (0-25 points) - UPDATED WEIGHTS
+    # 4. SECTOR PERFORMANCE (0-25 points)
     sector = pick['sector']
     if sector == 'Basic Materials':
         score += 25  # 81.5% WR (22-5 on 27 trades)
@@ -339,49 +332,36 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 10  # 65.6% WR (21-11)
     elif sector == 'Healthcare':
         score += 10  # 65.0% WR (26-14)
-    # Financial Services, Real Estate, Industrials get 0 (~60% WR)
-    # Consumer Defensive gets 0 (57% WR, should be banned)
+    # Other sectors get 0
     
-    # 5. COMBINATION BONUSES (0-10 points) - UNCHANGED
+    # 5. COMBINATION BONUSES (0-10 points)
     if 1.0 <= fresh <= 3.0 and 2.0 <= si <= 5.0:
         score += 10  # Strong validated combo
     elif 1.0 <= fresh <= 3.0 and 5.0 <= si <= 10.0:
         score += 8
-     # Volume spike (0-15 points)
+    
+    # 6. VOLUME SPIKE (0-15 points)
     if pick.get('volume_spike'):
         score += 15
     elif pick['volume_ratio'] > 1.0:
         score += 8
-
-    if pick.get('earnings_sweet_spot', False):
-        score += 15  # 30-60d window: 88.9% WR
     
-    # Market cap (5-15 points)
-    if 'Mid' in pick['cap_size'] or 'Large' in pick['cap_size']:
-        score += 15
-    elif 'Small' in pick['cap_size']:
-        score += 10
-    else:
-        score += 5
-        # 7. INSTITUTIONAL OWNERSHIP BOOST (0-10 points)
+    # 7. EARNINGS PROXIMITY (0-15 points)
+    if pick.get('earnings_sweet_spot', False):
+        score += 15  # 88.9% WR for 30-60d window
+    
+    # 8. INSTITUTIONAL OWNERSHIP (0-10 points)
     inst = pick.get('inst_ownership', 100)
-    cap_size = pick['cap_size']
-
+    
     if inst < 30:
         if 'LARGE' in cap_size.upper() or 'MID' in cap_size.upper():
-            score += 10  # Low inst + quality cap = 84-89% WR
+            score += 10  # 84-89% WR
         elif 'SMALL' in cap_size.upper():
-            score += 5   # Low inst + small cap = still risky
-        # MEGA gets 0 even with low inst
-    # Inst ≥30% gets 0 (neutral, no penalty)
-    
+            score += 5
+    # Inst ≥30% gets 0 (neutral)
     
     return score
-# Validation on 238 trades:
-# - Gap: 16.2 points (p<0.0001)
-# - V4 ≥120: 85.2% WR (52-9)
-# - V4 ≥100: ~79% WR
-# - V4 <80: 46.4% WR (coin flip)
+
 
 # ============ UNIVERSE & SIGNAL FUNCTIONS ============
 
@@ -779,11 +759,9 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     Run scan - V4 SELECTION DEPLOYED DEC 30, 2025
     
     Uses V4 ≥100 quality filter based on:
-    - 179 backtested trades: 18.7pt gap (p<0.0001)
-    - 80 forward trades: 20pt gap validated
-    
-    Expected: 6-7 quality picks/day with 78-80% WR
-    Will sit out if <3 quality picks available
+    - 238 backtested trades: 16.2pt gap (p<0.0001)
+    - Expected: 6-7 quality picks/day with 78-80% WR
+    - Will sit out if <3 quality picks available
     """
     
     universe = get_universe()
@@ -811,6 +789,9 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     
     print(f"\n🔍 Scanning {len(universe)} stocks...\n")
     
+    # Debug counters
+    earnings_filtered = 0
+    
     for ticker in universe:
         try:
             quality = get_quality_data(ticker)
@@ -836,21 +817,17 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             squeeze_data = check_squeeze(ticker)
             if squeeze_data['has_squeeze']:
                 continue
-            # After Fresh, Accelerating, and Squeeze checks, add:
-
+            
             # Check earnings proximity
             earnings_data = check_earnings_proximity(ticker, datetime.now())
-
+            
             # HARD FILTER: Skip if earnings recently passed
             if earnings_data['recent_earnings']:
+                earnings_filtered += 1
                 print(f"  ⏭️  Skipping {ticker} (earnings passed <30d ago - weak period)")
                 continue
-
-            # Store for V4 scoring
-            pick['earnings_sweet_spot'] = earnings_data['earnings_sweet_spot']
-            pick['days_to_earnings'] = earnings_data['days_to_earnings']
-
             
+            # Check weekly repeat
             if ticker in this_week_picks:
                 print(f"  ⏭️  Skipping {ticker} (already picked this week)")
                 continue
@@ -881,22 +858,36 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 'rsi': quality['rsi'],
                 'dist_52w_high': quality['dist_52w_high'],
                 'dist_52w_low': quality['dist_52w_low'],
-                'group': 'V4',  # Changed from 'V3'
+                'inst_ownership': quality['inst_ownership'],
                 'earnings_sweet_spot': earnings_data['earnings_sweet_spot'],
                 'days_to_earnings': earnings_data['days_to_earnings'],
+                'group': 'V4',
             }
             
             # Calculate both scores
-            pick['quality_score'] = calculate_quality_score(pick)  # V3 (legacy)
-            pick['v4_score'] = calculate_quality_score_v4(pick)    # V4 (active)
+            pick['quality_score'] = calculate_quality_score(pick)  # V3 (legacy tracking)
+            pick['v4_score'] = calculate_quality_score_v4(pick)    # V4 (active selection)
             
             picks.append(pick)
         
         except:
             continue
     
+    # Print debug info
+    print(f"\n📊 Filter Summary:")
+    print(f"   Total Fresh+Accel: {len(picks)}")
+    print(f"   Filtered by earnings: {earnings_filtered}")
+    
     # V4 SELECTION (Deployed Dec 30, 2025)
     picks.sort(key=lambda x: x['v4_score'], reverse=True)
+    
+    # Show V4 score distribution
+    if picks:
+        v4_scores = [p['v4_score'] for p in picks]
+        print(f"   V4 score range: {min(v4_scores):.0f} - {max(v4_scores):.0f}")
+        print(f"   V4 ≥100: {len([p for p in picks if p['v4_score'] >= 100])}")
+        print(f"   V4 90-100: {len([p for p in picks if 90 <= p['v4_score'] < 100])}")
+        print(f"   V4 <90: {len([p for p in picks if p['v4_score'] < 90])}")
     
     # Apply V4 ≥100 quality filter
     quality_picks = [p for p in picks if p['v4_score'] >= 100]
@@ -906,14 +897,12 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
         v4_min = min(p['v4_score'] for p in top_picks)
         v4_max = max(p['v4_score'] for p in top_picks)
         
-        print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
-        print(f"✅ Using {len(top_picks)} quality picks (V4 ≥100)")
+        print(f"\n✅ Using {len(top_picks)} quality picks (V4 ≥100)")
         print(f"   V4 Score range: {v4_min:.0f}-{v4_max:.0f}")
         print(f"   Filtered out {len(picks) - len(quality_picks)} low-quality stocks\n")
     else:
         top_picks = []
-        print(f"\n📊 Found {len(picks)} Fresh+Accel stocks")
-        print(f"⚠️  Only {len(quality_picks)} quality picks (V4 ≥100)")
+        print(f"\n⚠️  Only {len(quality_picks)} quality picks (V4 ≥100)")
         print(f"   Sitting out today - NO TRADES\n")
     
     # Save this week's picks
@@ -929,7 +918,7 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
         json.dump(week_data, f, indent=2)
     
     # Control group
-    if top_picks:  # Only generate control if we have picks
+    if top_picks:
         print(f"🎲 Selecting 5 random stocks as control group...\n")
         
         control_group = []
@@ -974,11 +963,11 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
         
         print(f"✅ Control group: {len(control_group)} random stocks\n")
     else:
-        # No picks = no control group
         control_group = []
         print(f"⏭️  No control group (no V4 picks today)\n")
     
     return top_picks, control_group
+
 
 def save_picks(all_picks: List[Dict]):
     """Save to CSV."""
@@ -999,7 +988,7 @@ def save_picks(all_picks: List[Dict]):
 def display_picks(picks: List[Dict], control: List[Dict]):
     """Display picks with V4 scores."""
     if not picks:
-        print("\n❌ No Fresh+Accel stocks found")
+        print("\n❌ No quality picks today (sitting out)")
         return
     
     print(f"\n{'='*80}")
@@ -1008,11 +997,13 @@ def display_picks(picks: List[Dict], control: List[Dict]):
     
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
+        earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
+        inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
         
         print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (V4 Score: {pick['v4_score']:.0f})")
         print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
-        print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}")
-        print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}%")
+        print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}{earnings_flag}{inst_flag}")
+        print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}% | Inst: {pick['inst_ownership']:.0f}%")
         print()
     
     print(f"{'='*80}\n")
@@ -1049,14 +1040,14 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
                 description="No quality picks today (V4 <100) - Sitting out",
                 color='808080'
             )
-            embed.set_footer(text=f"V3 + V4 Scoring | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+            embed.set_footer(text=f"V4 Selection | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
             webhook.add_embed(embed)
             webhook.execute()
             return
         
         embed = DiscordEmbed(
             title=f"🎯 Supabot V4: {len(picks)} Picks",
-            description=f"V4 Selection Active | Quality Filter ≥100 | Validated on 179 trades",
+            description=f"V4 Selection Active | Quality Filter ≥100 | Earnings + Inst Filters",
             color='00ff00'
         )
         
@@ -1064,12 +1055,16 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             signals = ["✨", "📈"]
             if pick.get('volume_spike'):
                 signals.append("📊")
+            if pick.get('earnings_sweet_spot'):
+                signals.append("📅")
+            if pick.get('inst_ownership', 100) < 30:
+                signals.append("🏢")
             
             signal_str = " ".join(signals)
             
             main_line = f"**${pick['price']:.2f}** | V4: {pick['v4_score']:.0f} | {pick['sector']} | {pick['cap_size']}"
             price_line = f"Fresh: {pick['change_7d']:+.1f}% | Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖) | SI: {pick['short_percent']:.1f}%"
-            tech_line = f"52w: {pick['dist_52w_high']:+.1f}% | BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f}"
+            tech_line = f"52w: {pick['dist_52w_high']:+.1f}% | BB: {pick['bb_position']:.2f} | ATR: {pick['atr_pct']:.1f}% | Vol: {pick['volume_trend']:.2f}x | RSI: {pick['rsi']:.0f} | Inst: {pick['inst_ownership']:.0f}%"
             
             value = f"{main_line}\n{price_line}\n{tech_line}"
             
@@ -1089,7 +1084,7 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
             inline=False
         )
         
-        embed.set_footer(text=f"V4 Selection (≥100) | Deployed Dec 30, 2025 | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
+        embed.set_footer(text=f"V4 Selection (≥100) + Earnings + Inst | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         webhook.add_embed(embed)
         
         if control:
@@ -1109,7 +1104,7 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
                 inline=False
             )
             
-            control_embed.set_footer(text="Compare performance vs V3 picks after 7 days")
+            control_embed.set_footer(text="Compare performance vs V4 picks after 7 days")
             webhook.add_embed(control_embed)
         
         webhook.execute()
@@ -1122,7 +1117,7 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
 if __name__ == "__main__":
     
     print("\n" + "="*80)
-    print("🤖 SUPABOT V3 - V4 SCORE TRACKING")
+    print("🤖 SUPABOT V3 - V4 SELECTION + EARNINGS + INST FILTERS")
     print("="*80)
     
     start_time = datetime.now()
@@ -1156,4 +1151,4 @@ if __name__ == "__main__":
     print(f"{'='*80}\n")
     
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
-    print(f"✅ Complete - {len(picks)} V4 picks + {len(control)} control | V4 Selection Active!\n")
+    print(f"✅ Complete - {len(picks)} V4 picks + {len(control)} control | All filters active!\n")
