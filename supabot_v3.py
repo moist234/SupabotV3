@@ -329,9 +329,9 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     elif sector == 'Communication Services':
         score += 20  # 76.0% WR (19-6 on 25 trades)
     elif sector == 'Technology':
-        score += 10  # 65.6% WR (21-11)
+        score += 5  # 65.6% WR (21-11)
     elif sector == 'Healthcare':
-        score += 10  # 65.0% WR (26-14)
+        score += 5  # 65.0% WR (26-14)
     # Other sectors get 0
     
     # 5. COMBINATION BONUSES (0-10 points)
