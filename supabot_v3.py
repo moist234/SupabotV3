@@ -39,7 +39,7 @@ MIN_VOLUME_USD = 2_000_000
 MAX_SHORT_PERCENT = 20.0
 MIN_TWITTER_BUZZ = 15
 MIN_REDDIT_BUZZ = 5
-SCAN_LIMIT = 100
+SCAN_LIMIT = 200
 
 BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities', 'Financial Services']
 
