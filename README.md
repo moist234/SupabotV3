@@ -1,6 +1,9 @@
 🤖 Supabot V4
 Algorithmic Trading System with Validated Statistical Edge
-Systematic trading algorithm that identifies stocks using social sentiment analysis combined with technical indicators. Fully automated via GitHub Actions with paper trading execution.
+Overview
+Supabot is a fully automated algorithmic trading system that identifies stocks by detecting accelerating social media buzz before significant price movements. The core hypothesis is that stocks experiencing rapid increases in Twitter and Reddit mentions, while still in early-stage price action ("Fresh"), tend to outperform the market over 7-day holding periods.
+The system combines social sentiment analysis with quantitative filters, including market cap weighting, sector performance, short interest zones, earnings proximity, and institutional ownership levels. All components have been validated through rigorous statistical testing on 258 real trades, demonstrating a 67.8% win rate with p<0.001 significance.
+Built entirely in Python with full automation via GitHub Actions, the system scans 100 stocks daily, executes trades through Alpaca's paper trading API, and tracks all performance metrics in Google Sheets. Every aspect—from stock selection to trade execution to performance tracking—runs automatically without manual intervention.
 
 📊 Performance Metrics
 
