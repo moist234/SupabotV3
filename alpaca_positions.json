@@ -9,11 +9,6 @@
     "shares": 11,
     "entry_price": 44.540000915527344
   },
-  "DOW": {
-    "entry_date": "2026-01-02",
-    "shares": 21,
-    "entry_price": 24.325000762939453
-  },
   "CAI": {
     "entry_date": "2025-12-30",
     "shares": 18,
@@ -33,11 +28,6 @@
     "entry_date": "2025-12-30",
     "shares": 19,
     "entry_price": 26.549999237060547
-  },
-  "MIDD": {
-    "entry_date": "2026-01-02",
-    "shares": 3,
-    "entry_price": 150.57000732421875
   },
   "TSN": {
     "entry_date": "2025-12-30",
@@ -79,26 +69,6 @@
     "shares": 5,
     "entry_price": 108.48999786376953
   },
-  "JAZZ": {
-    "entry_date": "2026-01-02",
-    "shares": 3,
-    "entry_price": 172.77999877929688
-  },
-  "AGNC": {
-    "entry_date": "2026-01-02",
-    "shares": 46,
-    "entry_price": 10.973199844360352
-  },
-  "GRFS": {
-    "entry_date": "2026-01-02",
-    "shares": 54,
-    "entry_price": 9.253899574279785
-  },
-  "TDS": {
-    "entry_date": "2026-01-02",
-    "shares": 12,
-    "entry_price": 40.91999816894531
-  },
   "AMH": {
     "entry_date": "2026-01-05",
     "shares": 16,
@@ -135,9 +105,9 @@
     "entry_price": 11.425000190734863
   },
   "PAAS": {
-    "entry_date": "2026-01-05",
+    "entry_date": "2026-01-09",
     "shares": 9,
-    "entry_price": 53.300899505615234
+    "entry_price": 54.060001373291016
   },
   "SA": {
     "entry_date": "2026-01-07",
@@ -188,5 +158,35 @@
     "entry_date": "2026-01-07",
     "shares": 12,
     "entry_price": 42.790000915527344
+  },
+  "STAG": {
+    "entry_date": "2026-01-09",
+    "shares": 13,
+    "entry_price": 37.93000030517578
+  },
+  "DOCU": {
+    "entry_date": "2026-01-09",
+    "shares": 7,
+    "entry_price": 69.5999984741211
+  },
+  "CRS": {
+    "entry_date": "2026-01-09",
+    "shares": 2,
+    "entry_price": 327.6099853515625
+  },
+  "MIDD": {
+    "entry_date": "2026-01-09",
+    "shares": 3,
+    "entry_price": 158.28500366210938
+  },
+  "CI": {
+    "entry_date": "2026-01-09",
+    "shares": 2,
+    "entry_price": 280.42999267578125
+  },
+  "CWAN": {
+    "entry_date": "2026-01-09",
+    "shares": 21,
+    "entry_price": 24.114999771118164
   }
 }
