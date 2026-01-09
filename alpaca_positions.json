@@ -90,9 +90,9 @@
     "entry_price": 29.584999084472656
   },
   "KIM": {
-    "entry_date": "2026-01-05",
-    "shares": 25,
-    "entry_price": 20.260099411010742
+    "entry_date": "2026-01-09",
+    "shares": 24,
+    "entry_price": 20.5049991607666
   },
   "MAS": {
     "entry_date": "2026-01-05",
@@ -208,5 +208,25 @@
     "entry_date": "2026-01-09",
     "shares": 54,
     "entry_price": 9.244999885559082
+  },
+  "PODD": {
+    "entry_date": "2026-01-09",
+    "shares": 2,
+    "entry_price": 289.19500732421875
+  },
+  "VOD": {
+    "entry_date": "2026-01-09",
+    "shares": 37,
+    "entry_price": 13.53499984741211
+  },
+  "SNY": {
+    "entry_date": "2026-01-09",
+    "shares": 10,
+    "entry_price": 49.19499969482422
+  },
+  "COMM": {
+    "entry_date": "2026-01-09",
+    "shares": 27,
+    "entry_price": 18.295000076293945
   }
 }
