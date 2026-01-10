@@ -817,6 +817,12 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             squeeze_data = check_squeeze(ticker)
             if squeeze_data['has_squeeze']:
                 continue
+
+            if 'SMALL' in quality['cap_size'].upper():
+                si = squeeze_data['short_percent']
+                if not (5.0 <= si <= 10.0):
+                    print(f"  ⏭️  {ticker}: Small-cap outside golden SI zone ({si:.1f}%)")
+                    continue
             
             # Check earnings proximity
             earnings_data = check_earnings_proximity(ticker, datetime.now())
