@@ -809,6 +809,19 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             if not fresh_data or not fresh_data['is_fresh']:
                 continue
             
+            try:
+                spy_hist = yf.Ticker('SPY').history(period="2mo")
+                if len(spy_hist) >= 8:
+                    spy_7d = ((spy_hist['Close'].iloc[-1] / spy_hist['Close'].iloc[-8]) - 1) * 100
+                    stock_fresh = fresh_data['change_7d']
+                    relative_fresh = stock_fresh - spy_7d
+                    
+                    if relative_fresh <= 1.0:
+                        print(f"  ⏭️  {ticker}: Relative Fresh {relative_fresh:+.1f}% (lagging SPY)")
+                        continue
+            except:
+                pass  # If SPY data fails, allow through
+            
             reddit_mentions = check_reddit_confirmation(ticker)
             accel_data = check_accelerating(ticker, reddit_mentions)
             if not accel_data['is_accelerating']:
