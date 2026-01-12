@@ -1,0 +1,13 @@
+ticker,entry_date,entry_time,entry_day,price,change_7d,change_90d,market_cap,cap_size,sector,twitter_mentions,reddit_mentions,buzz_level,volume_ratio,volume_spike,short_percent,is_fresh,is_accelerating,has_squeeze,bb_position,atr_pct,volume_trend,rsi,dist_52w_high,dist_52w_low,inst_ownership,earnings_sweet_spot,days_to_earnings,group,quality_score,v4_score
+RELX,2026-01-10,01:07 PM,Saturday,43.13999938964844,4.94,-5.06,78414905344,Mega (>$50B),Industrials,18.0,0.0,Moderate,1.57,True,0.1,True,True,False,1.0,1.7,1.58,68.9,-23.01,9.74,4.555,True,33.0,V4,50.0,125.0
+TU,2026-01-10,01:09 PM,Saturday,13.359999656677246,2.22,-18.24,20720773120,Large ($10-50B),Communication Services,28.0,0.0,Moderate,0.6,False,0.0,True,True,False,0.945,1.29,0.83,84.0,-20.19,6.54,54.867999999999995,False,-64.0,V4,55.0,125.0
+TEVA,2026-01-10,01:11 PM,Saturday,32.0099983215332,2.14,70.72,36724514816,Large ($10-50B),Healthcare,19.0,0.0,Moderate,0.83,False,3.94,True,True,False,0.761,2.24,1.69,68.5,-2.73,156.7,58.43899999999999,False,18.0,V4,45.0,125.0
+VIV,2026-01-10,01:08 PM,Saturday,12.430000305175781,3.84,2.14,19872802816,Large ($10-50B),Communication Services,20.0,0.0,Moderate,0.86,False,0.0,True,True,False,0.881,1.8,1.09,62.6,-6.61,71.07,4.077999999999999,True,45.0,V4,55.0,120.0
+MIDD,2026-01-10,01:09 PM,Saturday,157.69000244140625,4.49,14.79,7992105472,Mid ($2-10B),Industrials,19.0,0.0,Moderate,1.2,False,5.79,True,True,False,0.975,2.32,0.8,69.0,-13.7,42.29,108.70098999999999,False,-65.0,V4,53.0,118.0
+AOS,2026-01-10,01:10 PM,Saturday,70.5199966430664,4.1,0.74,9881937920,Mid ($2-10B),Industrials,23.0,0.0,Moderate,0.88,False,4.37,True,True,False,1.0,1.94,1.34,62.5,-7.85,21.72,99.265,False,19.0,V4,55.0,110.0
+VNO,2026-01-10,01:10 PM,Saturday,34.5099983215332,2.43,-6.98,7204419584,Mid ($2-10B),Real Estate,22.0,0.0,Moderate,0.58,False,6.3,True,True,False,0.901,2.27,0.89,60.0,-22.25,18.85,95.806,False,-68.0,V4,55.0,108.0
+CRML,2026-01-10,01:11 PM,Saturday,14.975000381469727,116.71,,1765619968,,Basic Materials,,,,,,,,,,,,,,-53.42,1117.48,,,,CONTROL,,
+LDOS,2026-01-10,01:11 PM,Saturday,198.33999633789062,8.18,,25446492160,,Technology,,,,,,,,,,,,,,-3.39,62.08,,,,CONTROL,,
+LEGN,2026-01-10,01:11 PM,Saturday,23.600000381469727,9.61,,4358673920,,Healthcare,,,,,,,,,,,,,,-47.9,16.77,,,,CONTROL,,
+TROX,2026-01-10,01:11 PM,Saturday,5.630000114440918,34.69,,892649600,,Basic Materials,,,,,,,,,,,,,,-43.02,99.77,,,,CONTROL,,
+PRVA,2026-01-10,01:11 PM,Saturday,23.040000915527344,-3.44,,2833955328,,Healthcare,,,,,,,,,,,,,,-13.09,22.75,,,,CONTROL,,

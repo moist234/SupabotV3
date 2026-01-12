@@ -184,19 +184,25 @@ def fill_sheet(sheet, csv_path):
     
     # Write headers
     sheet.update(values=[headers], range_name=f'A{next_row}:AB{next_row}')
-    
-    # Format headers as bold
     sheet.format(f'A{next_row}:AB{next_row}', {
-        "textFormat": {"bold": True}
+        "textFormat": {
+            "bold": True,
+            "fontFamily": "Cambria",
+            "fontSize": 12
+        }
     })
-    
-    print(f"✅ Headers added at row {next_row}")
-    
-    # Start data at next row
+
+    # Line 196
     data_start_row = next_row + 1
-    
-    # Determine how many rows to write
+
+    # ADD THIS NEW BLOCK HERE:
     max_rows = max(len(v3_picks), len(control_picks))
+    sheet.format(f'A{data_start_row}:AB{data_start_row + max_rows}', {
+        "textFormat": {
+            "fontFamily": "Cambria",
+            "fontSize": 12
+    }
+})
     
     for i in range(max_rows):
         row_data = []

@@ -1,8 +1,8 @@
 {
   "TU": {
-    "entry_date": "2025-12-30",
-    "shares": 38,
-    "entry_price": 13.080100059509277
+    "entry_date": "2026-01-10",
+    "shares": 37,
+    "entry_price": 13.359999656677246
   },
   "DOCS": {
     "entry_date": "2025-12-30",
@@ -35,9 +35,9 @@
     "entry_price": 59.15999984741211
   },
   "VIV": {
-    "entry_date": "2025-12-30",
-    "shares": 42,
-    "entry_price": 12.029999732971191
+    "entry_date": "2026-01-10",
+    "shares": 40,
+    "entry_price": 12.430000305175781
   },
   "PHYS": {
     "entry_date": "2025-12-30",
@@ -115,9 +115,9 @@
     "entry_price": 31.489999771118164
   },
   "TEVA": {
-    "entry_date": "2026-01-07",
-    "shares": 15,
-    "entry_price": 32.375
+    "entry_date": "2026-01-10",
+    "shares": 16,
+    "entry_price": 32.0099983215332
   },
   "ASND": {
     "entry_date": "2026-01-07",
@@ -175,9 +175,9 @@
     "entry_price": 327.6099853515625
   },
   "MIDD": {
-    "entry_date": "2026-01-09",
+    "entry_date": "2026-01-10",
     "shares": 3,
-    "entry_price": 158.28500366210938
+    "entry_price": 157.69000244140625
   },
   "CI": {
     "entry_date": "2026-01-09",
@@ -228,5 +228,20 @@
     "entry_date": "2026-01-09",
     "shares": 27,
     "entry_price": 18.295000076293945
+  },
+  "RELX": {
+    "entry_date": "2026-01-10",
+    "shares": 12,
+    "entry_price": 43.13999938964844
+  },
+  "AOS": {
+    "entry_date": "2026-01-10",
+    "shares": 7,
+    "entry_price": 70.5199966430664
+  },
+  "VNO": {
+    "entry_date": "2026-01-10",
+    "shares": 14,
+    "entry_price": 34.5099983215332
   }
 }
