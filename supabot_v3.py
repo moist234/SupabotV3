@@ -809,6 +809,11 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             if not fresh_data or not fresh_data['is_fresh']:
                 continue
             
+                        # Initialize tracking variables
+            calculated_relative_fresh = 0.0
+            calculated_regime = 'N/A'
+
+            # Relative Fresh filter
             try:
                 spy_hist = yf.Ticker('SPY').history(period="2mo")
                 if len(spy_hist) >= 8:
@@ -816,11 +821,21 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                     stock_fresh = fresh_data['change_7d']
                     relative_fresh = stock_fresh - spy_7d
                     
+                    # SAVE for pick dictionary
+                    calculated_relative_fresh = relative_fresh
+                    
+                    # Calculate regime while we have SPY data
+                    if len(spy_hist) >= 20:
+                        sma_20 = spy_hist['Close'].rolling(20).mean().iloc[-1]
+                        current_spy = spy_hist['Close'].iloc[-1]
+                        calculated_regime = 'Risk-On' if current_spy > sma_20 else 'Risk-Off'
+                    
+                    # Filter check
                     if relative_fresh <= 1.0:
                         print(f"  ⏭️  {ticker}: Relative Fresh {relative_fresh:+.1f}% (lagging SPY)")
                         continue
             except:
-                pass  # If SPY data fails, allow through
+                pass
             
             reddit_mentions = check_reddit_confirmation(ticker)
             accel_data = check_accelerating(ticker, reddit_mentions)
@@ -880,6 +895,8 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 'inst_ownership': quality['inst_ownership'],
                 'earnings_sweet_spot': earnings_data['earnings_sweet_spot'],
                 'days_to_earnings': earnings_data['days_to_earnings'],
+                'relative_fresh': calculated_relative_fresh,
+                'regime': calculated_regime,                   
                 'group': 'V4',
             }
             
@@ -936,56 +953,9 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     with open(this_week_file, 'w') as f:
         json.dump(week_data, f, indent=2)
     
-    # Control group
-    if top_picks:
-        print(f"🎲 Selecting 5 random stocks as control group...\n")
-        
-        control_group = []
-        random_candidates = [t for t in universe if t not in [p['ticker'] for p in top_picks]]
-        random.shuffle(random_candidates)
-        
-        for ticker in random_candidates[:30]:
-            try:
-                info = yf.Ticker(ticker).info
-                sector = info.get('sector', 'Unknown')
-                market_cap = info.get('marketCap', 0)
-                
-                if market_cap < MIN_MARKET_CAP:
-                    continue
-                
-                fresh_data = check_fresh(ticker)
-                if not fresh_data:
-                    continue
-                
-                positioning = calculate_52w_positioning(ticker)
-                
-                control = {
-                    'ticker': ticker,
-                    'entry_date': datetime.now().strftime('%Y-%m-%d'),
-                    'entry_time': datetime.now().strftime('%I:%M %p'),
-                    'entry_day': datetime.now().strftime('%A'),
-                    'price': fresh_data['price'],
-                    'change_7d': fresh_data['change_7d'],
-                    'sector': sector,
-                    'market_cap': market_cap,
-                    'dist_52w_high': positioning['dist_52w_high'],
-                    'dist_52w_low': positioning['dist_52w_low'],
-                    'group': 'CONTROL',
-                }
-                
-                control_group.append(control)
-                
-                if len(control_group) >= 5:
-                    break
-            except:
-                continue
-        
-        print(f"✅ Control group: {len(control_group)} random stocks\n")
-    else:
-        control_group = []
-        print(f"⏭️  No control group (no V4 picks today)\n")
+    control_group = []
     
-    return top_picks, control_group
+    return top_picks, []
 
 
 def save_picks(all_picks: List[Dict]):
@@ -1000,11 +970,11 @@ def save_picks(all_picks: List[Dict]):
     os.makedirs("outputs", exist_ok=True)
     df.to_csv(filename, index=False)
     
-    print(f"✅ Saved {len(all_picks)} picks (including control) to {filename}")
+    print(f"✅ Saved {len(all_picks)} picks to {filename}")
     return df
 
 
-def display_picks(picks: List[Dict], control: List[Dict]):
+def display_picks(picks: List[Dict]):
     """Display picks with V4 scores."""
     if not picks:
         print("\n❌ No quality picks today (sitting out)")
@@ -1027,20 +997,9 @@ def display_picks(picks: List[Dict], control: List[Dict]):
     
     print(f"{'='*80}\n")
     
-    if control:
-        print(f"\n{'='*80}")
-        print(f"🎲 CONTROL GROUP (5 Random Stocks)")
-        print(f"{'='*80}\n")
-        
-        for i, stock in enumerate(control, 1):
-            print(f"{i}. {stock['ticker']} - ${stock['price']:.2f}")
-            print(f"   {stock['sector']} | Fresh: {stock['change_7d']:+.1f}%")
-            print(f"   52w: {stock['dist_52w_high']:+.1f}% from high\n")
-        
-        print(f"{'='*80}\n")
 
 
-def send_discord_notification(picks: List[Dict], control: List[Dict]):
+def send_discord_notification(picks: List[Dict]):
     """Send to Discord with V4 scores."""
     
     DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_V3")
@@ -1106,26 +1065,6 @@ def send_discord_notification(picks: List[Dict], control: List[Dict]):
         embed.set_footer(text=f"V4 Selection (≥100) + Earnings + Inst | {datetime.now().strftime('%Y-%m-%d %I:%M %p')}")
         webhook.add_embed(embed)
         
-        if control:
-            control_embed = DiscordEmbed(
-                title=f"🎲 Control Group: {len(control)} Random Stocks",
-                description="No filters applied - testing if edge is real",
-                color='808080'
-            )
-            
-            control_lines = []
-            for c in control:
-                control_lines.append(f"**{c['ticker']}** (${c['price']:.2f}) | {c['sector']} | Fresh: {c['change_7d']:+.1f}%")
-            
-            control_embed.add_embed_field(
-                name="Random Picks",
-                value="\n".join(control_lines),
-                inline=False
-            )
-            
-            control_embed.set_footer(text="Compare performance vs V4 picks after 7 days")
-            webhook.add_embed(control_embed)
-        
         webhook.execute()
         print("✅ Discord notification sent with V4 scores!")
     
@@ -1151,16 +1090,15 @@ if __name__ == "__main__":
     
     elapsed = (datetime.now() - start_time).total_seconds()
     
-    display_picks(picks, control)
+    display_picks(picks)
     
-    if picks or control:
-        all_picks = picks + control
-        save_picks(all_picks)
+    if picks:
+            save_picks(picks)  # Only V4 picks, no control
     
     print(f"{'='*80}")
     print("📤 SENDING DISCORD NOTIFICATION...")
     print(f"{'='*80}")
-    send_discord_notification(picks, control)
+    send_discord_notification(picks)
     print(f"{'='*80}\n")
     
     print(f"{'='*80}")
@@ -1170,4 +1108,4 @@ if __name__ == "__main__":
     print(f"{'='*80}\n")
     
     print(f"\n⏱️  Scan completed in {elapsed:.1f} seconds")
-    print(f"✅ Complete - {len(picks)} V4 picks + {len(control)} control | All filters active!\n")
+    print(f"✅ Complete - {len(picks)} V4 picks | All filters active!\n")
