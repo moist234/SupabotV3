@@ -285,8 +285,6 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 45  # 87.5% WR (14-2 on 16 trades)
     elif 0 <= fresh < 1.0:
         score += 40  # 71.2% WR (47-19 on 66 trades)
-    elif 2.0 < fresh <= 3.0:
-        score += 35  # 71.4% WR (15-6 on 21 trades)
     elif -2.0 <= fresh < 0:
         score += 20  # 59.5% WR (25-17 on 42 trades)
     elif 3.0 < fresh < 4.0:
@@ -301,7 +299,7 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     if 3.0 <= si <= 7.0:
         score += 40  # 71.9-73.3% WR
     elif 0 <= si < 1.0:
-        score += 35  # 78.9% WR (30-8 on 38 trades)
+        score += 15  # 78.9% WR (30-8 on 38 trades)
     elif 7.0 < si < 10.0:
         score += 30  # 72.0% WR
     elif 2.0 <= si < 3.0:
@@ -328,8 +326,6 @@ def calculate_quality_score_v4(pick: Dict) -> float:
         score += 25  # 81.5% WR (22-5 on 27 trades)
     elif sector == 'Communication Services':
         score += 20  # 76.0% WR (19-6 on 25 trades)
-    elif sector == 'Technology':
-        score += 5  # 65.6% WR (21-11)
     elif sector == 'Healthcare':
         score += 5  # 65.0% WR (26-14)
     # Other sectors get 0
