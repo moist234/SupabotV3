@@ -762,26 +762,26 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     
     universe = get_universe()
     picks = []
+
+    # Track recent picks with 7-day cooldown (prevents same stock within 7 days)
+    COOLDOWN_DAYS = 7
+    recent_picks_file = "recent_picks.json"
     
-    # Track this week's picks to avoid repeats
-    this_week_file = "this_week_picks.json"
     try:
-        with open(this_week_file, 'r') as f:
-            week_data = json.load(f)
-            today = datetime.now()
-            last_week = week_data.get('week_number', 0)
-            current_week = today.isocalendar()[1]
+        with open(recent_picks_file, 'r') as f:
+            recent_picks_data = json.load(f)
+            # Convert to dict of {ticker: date_object}
+            recent_picks = {}
+            for ticker, date_str in recent_picks_data.items():
+                try:
+                    recent_picks[ticker] = datetime.strptime(date_str, '%Y-%m-%d').date()
+                except:
+                    pass  # Skip malformed dates
             
-            if current_week != last_week:
-                this_week_picks = set()
-                print(f"📅 New week detected (Week {current_week}) - Reset weekly tracker")
-            else:
-                this_week_picks = set(week_data.get('tickers', []))
-                print(f"📅 Same week (Week {current_week}) - Loaded {len(this_week_picks)} already-picked tickers")
+            print(f"📅 Loaded {len(recent_picks)} recent picks with 7-day cooldown tracking")
     except:
-        this_week_picks = set()
-        current_week = datetime.now().isocalendar()[1]
-        print(f"📅 First run of week {current_week}")
+        recent_picks = {}
+        print(f"📅 First run - No recent picks file found")
     
     print(f"\n🔍 Scanning {len(universe)} stocks...\n")
     
@@ -857,10 +857,12 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 print(f"  ⏭️  Skipping {ticker} (earnings passed <30d ago - weak period)")
                 continue
             
-            # Check weekly repeat
-            if ticker in this_week_picks:
-                print(f"  ⏭️  Skipping {ticker} (already picked this week)")
-                continue
+            # Check 7-day cooldown
+            if ticker in recent_picks:
+                days_since = (datetime.now().date() - recent_picks[ticker]).days
+                if days_since < COOLDOWN_DAYS:
+                    print(f"   ⏸️  {ticker} picked {days_since}d ago - COOLDOWN (need 7d)")
+                    continue
             
             pick = {
                 'ticker': ticker,
@@ -938,16 +940,17 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
         print(f"   Sitting out today - NO TRADES\n")
     
     # Save this week's picks
-    for pick in top_picks:
-        this_week_picks.add(pick['ticker'])
+        recent_picks[pick['ticker']] = datetime.now().strftime('%Y-%m-%d')
     
-    week_data = {
-        'week_number': current_week,
-        'tickers': list(this_week_picks),
-        'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M')
-    }
-    with open(this_week_file, 'w') as f:
-        json.dump(week_data, f, indent=2)
+    # Clean old picks (>30 days to avoid file bloat)
+    today = datetime.now().date()
+    recent_picks = {ticker: date_str for ticker, date_str in recent_picks.items()
+                   if isinstance(date_str, str) and 
+                   (today - datetime.strptime(date_str, '%Y-%m-%d').date()).days < 30}
+    
+    # Save recent picks with dates
+    with open(recent_picks_file, 'w') as f:
+        json.dump(recent_picks, f, indent=2)
     
     control_group = []
     
