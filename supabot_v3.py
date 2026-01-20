@@ -800,6 +800,10 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 continue
             if quality['price'] * quality['volume'] < MIN_VOLUME_USD:
                 continue
+
+            if quality['inst_ownership'] > 90:
+                print(f"  ⏭️  {ticker}: Inst {quality['inst_ownership']:.1f}% (>90% toxic)")
+                continue
             
             fresh_data = check_fresh(ticker)
             if not fresh_data or not fresh_data['is_fresh']:
