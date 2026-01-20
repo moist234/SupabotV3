@@ -939,7 +939,8 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
         print(f"\n⚠️  Only {len(quality_picks)} quality picks (V4 ≥100)")
         print(f"   Sitting out today - NO TRADES\n")
     
-    # Save this week's picks
+    # Update cooldown tracker with all selected picks
+    for pick in top_picks:
         recent_picks[pick['ticker']] = datetime.now().strftime('%Y-%m-%d')
     
     # Clean old picks (>30 days to avoid file bloat)
@@ -955,7 +956,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     control_group = []
     
     return top_picks, []
-
 
 def save_picks(all_picks: List[Dict]):
     """Save to CSV."""

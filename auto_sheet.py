@@ -461,6 +461,14 @@ if __name__ == "__main__":
     if not csv_path:
         exit(1)
     
+    # NEW: Check if scan is from today
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    if today_str not in csv_path:
+        print(f"⚠️  No scan for today ({today_str})")
+        print(f"   Most recent scan: {os.path.basename(csv_path)}")
+        print(f"   Scanner likely sat out. Not updating Google Sheets.")
+        exit(0)  # Exit cleanly - this is not an error
+    
     # Connect to sheet
     print("\n🔗 Connecting to Google Sheets...")
     try:
@@ -490,3 +498,5 @@ if __name__ == "__main__":
         import traceback
         traceback.print_exc()
         exit(1)
+    
+    print(f"\n✅ Sheet updated at {datetime.now().strftime('%c')}")
