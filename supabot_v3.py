@@ -346,15 +346,19 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     if pick.get('earnings_sweet_spot', False):
         score += 15  # 88.9% WR for 30-60d window
     
-    # 8. INSTITUTIONAL OWNERSHIP (0-10 points)
+    # 8. INSTITUTIONAL OWNERSHIP (regime-conditional)
     inst = pick.get('inst_ownership', 100)
-    
+    regime = pick.get('regime', 'Risk-On')
+
     if inst < 30:
         if 'LARGE' in cap_size.upper() or 'MID' in cap_size.upper():
             score += 10  # 84-89% WR
         elif 'SMALL' in cap_size.upper():
             score += 5
-    # Inst ≥30% gets 0 (neutral)
+    elif regime == 'Risk-On' and inst > 90:
+        score -= 20  # Penalty for high inst in Risk-On (if passed filter via RelFresh >2%)
+    # Risk-Off + High Inst: no penalty (76.9% WR!)
+    # Inst 30-90%: neutral (0 points)
     
     return score
 
@@ -790,28 +794,58 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     
     for ticker in universe:
         try:
+            # Get basic quality data
             quality = get_quality_data(ticker)
             if not quality or len(ticker) == 1:
                 continue
             
+            # CALCULATE REGIME EARLY (before any filters)
+            try:
+                spy_hist = yf.Ticker('SPY').history(period="2mo")
+                if len(spy_hist) >= 20:
+                    sma_20 = spy_hist['Close'].rolling(20).mean().iloc[-1]
+                    current_spy = spy_hist['Close'].iloc[-1]
+                    calculated_regime = 'Risk-On' if current_spy > sma_20 else 'Risk-Off'
+                else:
+                    calculated_regime = 'Risk-On'
+            except:
+                calculated_regime = 'Risk-On'  # Default to Risk-On if calc fails
+            
+            # Basic filters
             if quality['market_cap'] < MIN_MARKET_CAP:
                 continue
             if quality['price'] < MIN_PRICE:
                 continue
             if quality['price'] * quality['volume'] < MIN_VOLUME_USD:
                 continue
-
-            if quality['inst_ownership'] > 90:
-                print(f"  ⏭️  {ticker}: Inst {quality['inst_ownership']:.1f}% (>90% toxic)")
-                continue
             
+            # Now check Fresh (need this for RelFresh calculation)
             fresh_data = check_fresh(ticker)
             if not fresh_data or not fresh_data['is_fresh']:
                 continue
             
-                        # Initialize tracking variables
-            calculated_relative_fresh = 0.0
-            calculated_regime = 'N/A'
+            # Calculate Relative Fresh (reuse SPY data from above)
+            try:
+                if len(spy_hist) >= 8:
+                    spy_7d = ((spy_hist['Close'].iloc[-1] / spy_hist['Close'].iloc[-8]) - 1) * 100
+                    stock_fresh = fresh_data['change_7d']
+                    calculated_relative_fresh = stock_fresh - spy_7d
+                    
+                    # REGIME-CONDITIONAL INST FILTER
+                    if calculated_regime == 'Risk-On' and quality['inst_ownership'] > 90:
+                        if calculated_relative_fresh < 2.0:
+                            print(f"  ⏭️  {ticker}: Risk-On + High Inst + Weak Momentum (danger zone)")
+                            continue
+                        # else: Allow to proceed with penalty in scoring
+                    
+                    # Relative Fresh >1% filter
+                    if calculated_relative_fresh <= 1.0:
+                        print(f"  ⏭️  {ticker}: Relative Fresh {calculated_relative_fresh:+.1f}%")
+                        continue
+            except:
+                calculated_relative_fresh = 0.0
+            
+            # ... rest of filters ...
 
             # Relative Fresh filter
             try:
