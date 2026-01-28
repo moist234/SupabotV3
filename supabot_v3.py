@@ -17,6 +17,15 @@ import yfinance as yf
 import praw
 import requests
 from finvizfinance.screener.overview import Overview
+from live_confidence_layer import calculate_live_confidence, compute_regime, load_historical_trades
+
+# Load historical trades once for confidence layer
+try:
+    HISTORICAL_TRADES = load_historical_trades("historical_trades.csv")
+    print(f"✓ Loaded {len(HISTORICAL_TRADES)} historical trades for confidence layer")
+except Exception as e:
+    print(f"⚠️ Could not load historical trades: {e}")
+    HISTORICAL_TRADES = pd.DataFrame()  # Empty fallback
 
 load_dotenv()
 
@@ -42,7 +51,6 @@ MIN_REDDIT_BUZZ = 5
 SCAN_LIMIT = 200
 
 BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities', 'Financial Services']
-
 
 # ============ METRIC CALCULATORS ============
 
@@ -1020,9 +1028,32 @@ def display_picks(picks: List[Dict]):
     print(f"\n{'='*80}")
     print(f"🎯 TOP {len(picks)} PICKS (V4 SELECTION - Quality Filter ≥100)")
     print(f"{'='*80}\n")
-    
+    current_regime = compute_regime()
+    current_date = datetime.now()
+
+    print(f"\n🌡️ Current Market Regime: {current_regime}")
+    print(f"Applying confidence layer...\n")
+
     for i, pick in enumerate(picks, 1):
         volume_flag = " 📊" if pick['volume_spike'] else ""
+        conf_result = calculate_live_confidence(
+            pick, 
+            current_regime, 
+            HISTORICAL_TRADES, 
+            current_date
+        )
+        
+        pick['confidence'] = conf_result['final_confidence']
+        pick['action'] = conf_result['action']
+        pick['conf_reasons'] = conf_result['reasons']
+        
+        # Map to position size (conservative: skip SMALL)
+        if conf_result['action'] == 'FULL':
+            pick['position_size'] = 500
+        elif conf_result['action'] == 'HALF':
+            pick['position_size'] = 250
+        else:  # SMALL or SKIP
+            pick['position_size'] = 0
         earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
         inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
         
