@@ -363,8 +363,8 @@ def calculate_quality_score_v4(pick: Dict) -> float:
             score += 10  # 84-89% WR
         elif 'SMALL' in cap_size.upper():
             score += 5
-    elif regime == 'Risk-On' and inst > 90:
-        score -= 20  # Penalty for high inst in Risk-On (if passed filter via RelFresh >2%)
+        elif regime == 'Risk-On' and inst > 90:
+            score -= 20  # Penalty for high inst in Risk-On (if passed filter via RelFresh >2%)
     # Risk-Off + High Inst: no penalty (76.9% WR!)
     # Inst 30-90%: neutral (0 points)
     
@@ -840,14 +840,14 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                     calculated_relative_fresh = stock_fresh - spy_7d
                     
                     # REGIME-CONDITIONAL INST FILTER
-                    if calculated_regime == 'Risk-On' and quality['inst_ownership'] > 90:
-                        if calculated_relative_fresh < 2.0:
-                            print(f"  ⏭️  {ticker}: Risk-On + High Inst + Weak Momentum (danger zone)")
-                            continue
+                   # if calculated_regime == 'Risk-On' and quality['inst_ownership'] > 90:
+                      #  if calculated_relative_fresh < 2.0:
+                          #  print(f"  ⏭️  {ticker}: Risk-On + High Inst + Weak Momentum (danger zone)")
+                            # continue
                         # else: Allow to proceed with penalty in scoring
                     
                     # Relative Fresh >1% filter
-                    if calculated_relative_fresh <= 1.0:
+                    if calculated_relative_fresh <= 0.5:
                         print(f"  ⏭️  {ticker}: Relative Fresh {calculated_relative_fresh:+.1f}%")
                         continue
             except:
