@@ -243,5 +243,20 @@
     "entry_date": "2026-01-10",
     "shares": 14,
     "entry_price": 34.5099983215332
+  },
+  "BEKE": {
+    "entry_date": "2026-02-11",
+    "shares": 27,
+    "entry_price": 18.84000015258789
+  },
+  "ANET": {
+    "entry_date": "2026-02-11",
+    "shares": 4,
+    "entry_price": 140.66000366210938
+  },
+  "CTAS": {
+    "entry_date": "2026-02-11",
+    "shares": 2,
+    "entry_price": 200.36000061035156
   }
 }
