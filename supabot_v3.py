@@ -871,11 +871,7 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                         sma_20 = spy_hist['Close'].rolling(20).mean().iloc[-1]
                         current_spy = spy_hist['Close'].iloc[-1]
                         calculated_regime = 'Risk-On' if current_spy > sma_20 else 'Risk-Off'
-                    
-                    # Filter check
-                    if relative_fresh <= 1.0:
-                        print(f"  ⏭️  {ticker}: Relative Fresh {relative_fresh:+.1f}% (lagging SPY)")
-                        continue
+                
             except:
                 pass
             
