@@ -17,6 +17,8 @@ import yfinance as yf
 import praw
 import requests
 from finvizfinance.screener.overview import Overview
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
 
 load_dotenv()
 
@@ -39,7 +41,7 @@ MIN_VOLUME_USD = 2_000_000
 MAX_SHORT_PERCENT = 20.0
 MIN_TWITTER_BUZZ = 15
 MIN_REDDIT_BUZZ = 5
-SCAN_LIMIT = 200
+SCAN_LIMIT = 400
 
 BANNED_SECTORS = ['Energy', 'Consumer Cyclical', 'Utilities', 'Financial Services']
 
@@ -962,19 +964,28 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     
     # Apply V4 ≥100 quality filter
     quality_picks = [p for p in picks if p['v4_score'] >= 100]
-    
+
     if len(quality_picks) >= 3:
         top_picks = quality_picks[:10]
         v4_min = min(p['v4_score'] for p in top_picks)
         v4_max = max(p['v4_score'] for p in top_picks)
-        
         print(f"\n✅ Using {len(top_picks)} quality picks (V4 ≥100)")
-        print(f"   V4 Score range: {v4_min:.0f}-{v4_max:.0f}")
-        print(f"   Filtered out {len(picks) - len(quality_picks)} low-quality stocks\n")
+        print(f"   V4 Score range: {v4_min:.0f}-{v4_max:.0f}\n")
     else:
-        top_picks = []
-        print(f"\n⚠️  Only {len(quality_picks)} quality picks (V4 ≥100)")
-        print(f"   Sitting out today - NO TRADES\n")
+        # NEVER SIT OUT - take top 3 by score regardless
+        if len(picks) >= 3:
+            top_picks = sorted(picks, key=lambda x: x['v4_score'], reverse=True)[:3]
+            v4_min = min(p['v4_score'] for p in top_picks)
+            v4_max = max(p['v4_score'] for p in top_picks)
+            print(f"\n⚠️ Only {len(quality_picks)} V4≥100 picks - TAKING TOP 3 ANYWAY")
+            print(f"   V4 Score range: {v4_min:.0f}-{v4_max:.0f}")
+            print(f"   Edge lives in relative ranking - never sit out\n")
+        elif len(picks) > 0:
+            top_picks = picks  # Take whatever we have
+            print(f"\n⚠️ Taking all {len(picks)} available picks\n")
+        else:
+            top_picks = []
+            print(f"\n❌ Zero stocks passed filters - genuine sit out\n")
     
     # Update cooldown tracker with all selected picks
     for pick in top_picks:
