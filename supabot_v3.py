@@ -1026,17 +1026,17 @@ def display_picks(picks: List[Dict]):
     pick['confidence'] = 70
     pick['action'] = 'FULL'
     pick['position_size'] = 500
-earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
-inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
+    earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
+    inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
         
-print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (V4 Score: {pick['v4_score']:.0f})")
-print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
-print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}{earnings_flag}{inst_flag}")
-print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}% | Inst: {pick['inst_ownership']:.0f}%")
-print()
-    
-print(f"{'='*80}\n")
-    
+    print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (V4 Score: {pick['v4_score']:.0f})")
+    print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
+    print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}{earnings_flag}{inst_flag}")
+    print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}% | Inst: {pick['inst_ownership']:.0f}%")
+    print()
+        
+    print(f"{'='*80}\n")
+        
 
 
 def send_discord_notification(picks: List[Dict]):
