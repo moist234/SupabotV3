@@ -17,15 +17,6 @@ import yfinance as yf
 import praw
 import requests
 from finvizfinance.screener.overview import Overview
-from live_confidence_layer import calculate_live_confidence, compute_regime, load_historical_trades
-
-# Load historical trades once for confidence layer
-try:
-    HISTORICAL_TRADES = load_historical_trades("historical_trades.csv")
-    print(f"✓ Loaded {len(HISTORICAL_TRADES)} historical trades for confidence layer")
-except Exception as e:
-    print(f"⚠️ Could not load historical trades: {e}")
-    HISTORICAL_TRADES = pd.DataFrame()  # Empty fallback
 
 load_dotenv()
 
@@ -1024,42 +1015,23 @@ def display_picks(picks: List[Dict]):
     print(f"\n{'='*80}")
     print(f"🎯 TOP {len(picks)} PICKS (V4 SELECTION - Quality Filter ≥100)")
     print(f"{'='*80}\n")
-    current_regime = compute_regime()
-    current_date = datetime.now()
-
-    print(f"\n🌡️ Current Market Regime: {current_regime}")
-    print(f"Applying confidence layer...\n")
-
     for i, pick in enumerate(picks, 1):
-        volume_flag = " 📊" if pick['volume_spike'] else ""
-        conf_result = calculate_live_confidence(
-            pick, 
-            current_regime, 
-            HISTORICAL_TRADES, 
-            current_date
-        )
-        
-        pick['confidence'] = conf_result['final_confidence']
-        pick['action'] = conf_result['action']
-        pick['conf_reasons'] = conf_result['reasons']
-        
-        # Map to position size (conservative: skip SMALL)
-        if conf_result['action'] == 'FULL':
-            pick['position_size'] = 500
-        elif conf_result['action'] == 'HALF':
-            pick['position_size'] = 250
-        else:  # SMALL or SKIP
-            pick['position_size'] = 0
-        earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
-        inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
-        
-        print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (V4 Score: {pick['v4_score']:.0f})")
-        print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
-        print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}{earnings_flag}{inst_flag}")
-        print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}% | Inst: {pick['inst_ownership']:.0f}%")
-        print()
+        volume_flag = "🔊" if pick['volume_spike'] else ""
     
-    print(f"{'='*80}\n")
+    # Default: all picks at full size
+    pick['confidence'] = 70
+    pick['action'] = 'FULL'
+    pick['position_size'] = 500
+earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
+inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
+        
+print(f"{i}. {pick['ticker']} - ${pick['price']:.2f} (V4 Score: {pick['v4_score']:.0f})")
+print(f"   {pick['sector']} | Fresh: {pick['change_7d']:+.1f}% | {pick['cap_size']}")
+print(f"   Buzz: {pick['buzz_level']} ({pick['twitter_mentions']}🐦 {pick['reddit_mentions']}🤖){volume_flag}{earnings_flag}{inst_flag}")
+print(f"   📊 SI: {pick['short_percent']:.1f}% | 52w: {pick['dist_52w_high']:+.1f}% | Inst: {pick['inst_ownership']:.0f}%")
+print()
+    
+print(f"{'='*80}\n")
     
 
 
