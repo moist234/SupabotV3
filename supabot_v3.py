@@ -843,7 +843,9 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                         continue
             except:
                 calculated_relative_fresh = 0.0
-            
+            if calculated_regime == 'Risk-On' and quality['inst_ownership'] > 90:
+                print(f"  ⏭️  {ticker}: Risk-On + Inst>90% (57% WR)")
+                continue
             # ... rest of filters ...
 
             # Relative Fresh filter
@@ -875,11 +877,13 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
             if squeeze_data['has_squeeze']:
                 continue
 
+            # SMALL-CAP HARD SKIP (39% WR, loses money)
             if 'SMALL' in quality['cap_size'].upper():
-                si = squeeze_data['short_percent']
-                if not (5.0 <= si <= 10.0):
-                    print(f"  ⏭️  {ticker}: Small-cap outside golden SI zone ({si:.1f}%)")
-                    continue
+                print(f"  ⏭️  {ticker}: Small-cap (hard filter - 39% WR)")
+                continue
+            if quality['inst_ownership'] > 90 and calculated_relative_fresh >= 2.0:
+                print(f"  ⏭️  {ticker}: Inst>90% + HighRF≥2% (chasing - 51% WR)")
+                continue
             
             # Check earnings proximity
             earnings_data = check_earnings_proximity(ticker, datetime.now())
