@@ -1,8 +1,8 @@
 {
   "TU": {
-    "entry_date": "2026-01-10",
-    "shares": 37,
-    "entry_price": 13.359999656677246
+    "entry_date": "2026-02-12",
+    "shares": 36,
+    "entry_price": 13.970000267028809
   },
   "DOCS": {
     "entry_date": "2025-12-30",
@@ -219,11 +219,6 @@
     "shares": 37,
     "entry_price": 13.53499984741211
   },
-  "SNY": {
-    "entry_date": "2026-01-09",
-    "shares": 10,
-    "entry_price": 49.19499969482422
-  },
   "COMM": {
     "entry_date": "2026-01-09",
     "shares": 27,
@@ -258,5 +253,30 @@
     "entry_date": "2026-02-11",
     "shares": 2,
     "entry_price": 200.36000061035156
+  },
+  "PSO": {
+    "entry_date": "2026-02-12",
+    "shares": 40,
+    "entry_price": 12.369999885559082
+  },
+  "LASR": {
+    "entry_date": "2026-02-12",
+    "shares": 10,
+    "entry_price": 52.42499923706055
+  },
+  "FSM": {
+    "entry_date": "2026-02-12",
+    "shares": 47,
+    "entry_price": 10.699999809265137
+  },
+  "OS": {
+    "entry_date": "2026-02-12",
+    "shares": 21,
+    "entry_price": 23.575000762939453
+  },
+  "FROG": {
+    "entry_date": "2026-02-12",
+    "shares": 9,
+    "entry_price": 53.22999954223633
   }
 }
