@@ -70,9 +70,9 @@
     "entry_price": 108.48999786376953
   },
   "AMH": {
-    "entry_date": "2026-01-05",
+    "entry_date": "2026-02-13",
     "shares": 16,
-    "entry_price": 31.90999984741211
+    "entry_price": 31.584999084472656
   },
   "MAA": {
     "entry_date": "2026-01-05",
@@ -278,5 +278,30 @@
     "entry_date": "2026-02-12",
     "shares": 9,
     "entry_price": 53.22999954223633
+  },
+  "SKT": {
+    "entry_date": "2026-02-13",
+    "shares": 15,
+    "entry_price": 34.0
+  },
+  "ZM": {
+    "entry_date": "2026-02-13",
+    "shares": 5,
+    "entry_price": 92.16999816894531
+  },
+  "XENE": {
+    "entry_date": "2026-02-13",
+    "shares": 12,
+    "entry_price": 41.779998779296875
+  },
+  "FOLD": {
+    "entry_date": "2026-02-13",
+    "shares": 35,
+    "entry_price": 14.3149995803833
+  },
+  "BHP": {
+    "entry_date": "2026-02-13",
+    "shares": 7,
+    "entry_price": 73.29000091552734
   }
 }
