@@ -70,9 +70,9 @@
     "entry_price": 108.48999786376953
   },
   "AMH": {
-    "entry_date": "2026-02-13",
+    "entry_date": "2026-02-16",
     "shares": 16,
-    "entry_price": 31.584999084472656
+    "entry_price": 31.6200008392334
   },
   "MAA": {
     "entry_date": "2026-01-05",
@@ -303,5 +303,35 @@
     "entry_date": "2026-02-13",
     "shares": 7,
     "entry_price": 73.29000091552734
+  },
+  "CF": {
+    "entry_date": "2026-02-16",
+    "shares": 5,
+    "entry_price": 94.66000366210938
+  },
+  "TIGO": {
+    "entry_date": "2026-02-16",
+    "shares": 8,
+    "entry_price": 65.70999908447266
+  },
+  "ERIC": {
+    "entry_date": "2026-02-16",
+    "shares": 45,
+    "entry_price": 11.069999694824219
+  },
+  "LIVN": {
+    "entry_date": "2026-02-16",
+    "shares": 8,
+    "entry_price": 65.80000305175781
+  },
+  "LINE": {
+    "entry_date": "2026-02-16",
+    "shares": 13,
+    "entry_price": 37.83000183105469
+  },
+  "WPM": {
+    "entry_date": "2026-02-16",
+    "shares": 3,
+    "entry_price": 145.89999389648438
   }
 }
