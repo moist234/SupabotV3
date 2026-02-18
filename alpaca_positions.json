@@ -239,21 +239,6 @@
     "shares": 14,
     "entry_price": 34.5099983215332
   },
-  "BEKE": {
-    "entry_date": "2026-02-11",
-    "shares": 27,
-    "entry_price": 18.84000015258789
-  },
-  "ANET": {
-    "entry_date": "2026-02-11",
-    "shares": 4,
-    "entry_price": 140.66000366210938
-  },
-  "CTAS": {
-    "entry_date": "2026-02-11",
-    "shares": 2,
-    "entry_price": 200.36000061035156
-  },
   "PSO": {
     "entry_date": "2026-02-12",
     "shares": 40,
@@ -363,5 +348,20 @@
     "entry_date": "2026-02-17",
     "shares": 8,
     "entry_price": 66.50990295410156
+  },
+  "ALM": {
+    "entry_date": "2026-02-18",
+    "shares": 35,
+    "entry_price": 14.359999656677246
+  },
+  "JNJ": {
+    "entry_date": "2026-02-18",
+    "shares": 2,
+    "entry_price": 244.3800048828125
+  },
+  "TTAN": {
+    "entry_date": "2026-02-18",
+    "shares": 8,
+    "entry_price": 64.0199966430664
   }
 }
