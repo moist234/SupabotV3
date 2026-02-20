@@ -234,35 +234,10 @@
     "shares": 14,
     "entry_price": 34.5099983215332
   },
-  "SKT": {
-    "entry_date": "2026-02-13",
-    "shares": 15,
-    "entry_price": 34.0
-  },
-  "ZM": {
-    "entry_date": "2026-02-13",
-    "shares": 5,
-    "entry_price": 92.16999816894531
-  },
-  "XENE": {
-    "entry_date": "2026-02-13",
-    "shares": 12,
-    "entry_price": 41.779998779296875
-  },
-  "FOLD": {
-    "entry_date": "2026-02-13",
-    "shares": 35,
-    "entry_price": 14.3149995803833
-  },
-  "BHP": {
-    "entry_date": "2026-02-13",
-    "shares": 7,
-    "entry_price": 73.29000091552734
-  },
   "CF": {
-    "entry_date": "2026-02-16",
+    "entry_date": "2026-02-20",
     "shares": 5,
-    "entry_price": 94.66000366210938
+    "entry_price": 97.06999969482422
   },
   "TIGO": {
     "entry_date": "2026-02-16",
@@ -335,9 +310,9 @@
     "entry_price": 64.0199966430664
   },
   "STM": {
-    "entry_date": "2026-02-19",
+    "entry_date": "2026-02-20",
     "shares": 15,
-    "entry_price": 33.1150016784668
+    "entry_price": 33.584999084472656
   },
   "SQM": {
     "entry_date": "2026-02-19",
@@ -373,5 +348,20 @@
     "entry_date": "2026-02-19",
     "shares": 10,
     "entry_price": 51.3650016784668
+  },
+  "GSAT": {
+    "entry_date": "2026-02-20",
+    "shares": 8,
+    "entry_price": 59.2599983215332
+  },
+  "FMS": {
+    "entry_date": "2026-02-20",
+    "shares": 21,
+    "entry_price": 24.389999389648438
+  },
+  "AU": {
+    "entry_date": "2026-02-20",
+    "shares": 4,
+    "entry_price": 113.56999969482422
   }
 }
