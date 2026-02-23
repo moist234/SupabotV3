@@ -239,31 +239,6 @@
     "shares": 5,
     "entry_price": 97.06999969482422
   },
-  "TIGO": {
-    "entry_date": "2026-02-16",
-    "shares": 8,
-    "entry_price": 65.70999908447266
-  },
-  "ERIC": {
-    "entry_date": "2026-02-16",
-    "shares": 45,
-    "entry_price": 11.069999694824219
-  },
-  "LIVN": {
-    "entry_date": "2026-02-16",
-    "shares": 8,
-    "entry_price": 65.80000305175781
-  },
-  "LINE": {
-    "entry_date": "2026-02-16",
-    "shares": 13,
-    "entry_price": 37.83000183105469
-  },
-  "WPM": {
-    "entry_date": "2026-02-16",
-    "shares": 3,
-    "entry_price": 145.89999389648438
-  },
   "DOW": {
     "entry_date": "2026-02-17",
     "shares": 16,
@@ -335,9 +310,9 @@
     "entry_price": 18.825000762939453
   },
   "RNA": {
-    "entry_date": "2026-02-19",
+    "entry_date": "2026-02-23",
     "shares": 7,
-    "entry_price": 72.87999725341797
+    "entry_price": 72.8949966430664
   },
   "NICE": {
     "entry_date": "2026-02-19",
@@ -363,5 +338,40 @@
     "entry_date": "2026-02-20",
     "shares": 4,
     "entry_price": 113.56999969482422
+  },
+  "ZTO": {
+    "entry_date": "2026-02-23",
+    "shares": 20,
+    "entry_price": 25.18000030517578
+  },
+  "HMY": {
+    "entry_date": "2026-02-23",
+    "shares": 23,
+    "entry_price": 21.828899383544922
+  },
+  "TIGO": {
+    "entry_date": "2026-02-23",
+    "shares": 7,
+    "entry_price": 67.1500015258789
+  },
+  "MTZ": {
+    "entry_date": "2026-02-23",
+    "shares": 2,
+    "entry_price": 276.0799865722656
+  },
+  "SHC": {
+    "entry_date": "2026-02-23",
+    "shares": 29,
+    "entry_price": 17.3799991607666
+  },
+  "MU": {
+    "entry_date": "2026-02-23",
+    "shares": 1,
+    "entry_price": 418.3949890136719
+  },
+  "ALC": {
+    "entry_date": "2026-02-23",
+    "shares": 6,
+    "entry_price": 82.57499694824219
   }
 }
