@@ -64,11 +64,6 @@
     "shares": 5,
     "entry_price": 108.48999786376953
   },
-  "AMH": {
-    "entry_date": "2026-02-17",
-    "shares": 16,
-    "entry_price": 31.545000076293945
-  },
   "MAA": {
     "entry_date": "2026-01-05",
     "shares": 4,
@@ -235,39 +230,9 @@
     "entry_price": 34.5099983215332
   },
   "CF": {
-    "entry_date": "2026-02-20",
+    "entry_date": "2026-02-24",
     "shares": 5,
-    "entry_price": 97.06999969482422
-  },
-  "DOW": {
-    "entry_date": "2026-02-17",
-    "shares": 16,
-    "entry_price": 31.319900512695312
-  },
-  "SNN": {
-    "entry_date": "2026-02-17",
-    "shares": 14,
-    "entry_price": 35.724998474121094
-  },
-  "TGB": {
-    "entry_date": "2026-02-17",
-    "shares": 63,
-    "entry_price": 7.949999809265137
-  },
-  "JBS": {
-    "entry_date": "2026-02-17",
-    "shares": 31,
-    "entry_price": 16.079999923706055
-  },
-  "IMAX": {
-    "entry_date": "2026-02-17",
-    "shares": 13,
-    "entry_price": 38.060001373291016
-  },
-  "MO": {
-    "entry_date": "2026-02-17",
-    "shares": 8,
-    "entry_price": 66.50990295410156
+    "entry_price": 95.87000274658203
   },
   "ALM": {
     "entry_date": "2026-02-18",
@@ -373,5 +338,15 @@
     "entry_date": "2026-02-23",
     "shares": 6,
     "entry_price": 82.57499694824219
+  },
+  "AA": {
+    "entry_date": "2026-02-24",
+    "shares": 8,
+    "entry_price": 61.82500076293945
+  },
+  "TECK": {
+    "entry_date": "2026-02-24",
+    "shares": 8,
+    "entry_price": 59.75
   }
 }
