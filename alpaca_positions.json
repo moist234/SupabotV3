@@ -205,9 +205,9 @@
     "entry_price": 289.19500732421875
   },
   "VOD": {
-    "entry_date": "2026-01-09",
-    "shares": 37,
-    "entry_price": 13.53499984741211
+    "entry_date": "2026-02-25",
+    "shares": 31,
+    "entry_price": 15.90999984741211
   },
   "COMM": {
     "entry_date": "2026-01-09",
@@ -233,21 +233,6 @@
     "entry_date": "2026-02-24",
     "shares": 5,
     "entry_price": 95.87000274658203
-  },
-  "ALM": {
-    "entry_date": "2026-02-18",
-    "shares": 35,
-    "entry_price": 14.359999656677246
-  },
-  "JNJ": {
-    "entry_date": "2026-02-18",
-    "shares": 2,
-    "entry_price": 244.3800048828125
-  },
-  "TTAN": {
-    "entry_date": "2026-02-18",
-    "shares": 8,
-    "entry_price": 64.0199966430664
   },
   "STM": {
     "entry_date": "2026-02-20",
@@ -330,9 +315,9 @@
     "entry_price": 17.3799991607666
   },
   "MU": {
-    "entry_date": "2026-02-23",
+    "entry_date": "2026-02-25",
     "shares": 1,
-    "entry_price": 418.3949890136719
+    "entry_price": 429.8099060058594
   },
   "ALC": {
     "entry_date": "2026-02-23",
@@ -348,5 +333,10 @@
     "entry_date": "2026-02-24",
     "shares": 8,
     "entry_price": 59.75
+  },
+  "XYZ": {
+    "entry_date": "2026-02-25",
+    "shares": 10,
+    "entry_price": 52.029998779296875
   }
 }
