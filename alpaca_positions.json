@@ -239,40 +239,10 @@
     "shares": 15,
     "entry_price": 33.584999084472656
   },
-  "SQM": {
-    "entry_date": "2026-02-19",
-    "shares": 7,
-    "entry_price": 72.16000366210938
-  },
-  "KC": {
-    "entry_date": "2026-02-19",
-    "shares": 37,
-    "entry_price": 13.670000076293945
-  },
-  "PSO": {
-    "entry_date": "2026-02-19",
-    "shares": 40,
-    "entry_price": 12.441300392150879
-  },
-  "WPP": {
-    "entry_date": "2026-02-19",
-    "shares": 27,
-    "entry_price": 18.825000762939453
-  },
   "RNA": {
     "entry_date": "2026-02-23",
     "shares": 7,
     "entry_price": 72.8949966430664
-  },
-  "NICE": {
-    "entry_date": "2026-02-19",
-    "shares": 4,
-    "entry_price": 111.26000213623047
-  },
-  "SUPN": {
-    "entry_date": "2026-02-19",
-    "shares": 10,
-    "entry_price": 51.3650016784668
   },
   "GSAT": {
     "entry_date": "2026-02-20",
@@ -338,5 +308,20 @@
     "entry_date": "2026-02-25",
     "shares": 10,
     "entry_price": 52.029998779296875
+  },
+  "NOK": {
+    "entry_date": "2026-02-26",
+    "shares": 67,
+    "entry_price": 7.445000171661377
+  },
+  "MP": {
+    "entry_date": "2026-02-26",
+    "shares": 8,
+    "entry_price": 59.56999969482422
+  },
+  "JBS": {
+    "entry_date": "2026-02-26",
+    "shares": 30,
+    "entry_price": 16.55500030517578
   }
 }
