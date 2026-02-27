@@ -234,11 +234,6 @@
     "shares": 5,
     "entry_price": 95.87000274658203
   },
-  "STM": {
-    "entry_date": "2026-02-20",
-    "shares": 15,
-    "entry_price": 33.584999084472656
-  },
   "RNA": {
     "entry_date": "2026-02-23",
     "shares": 7,
@@ -323,5 +318,30 @@
     "entry_date": "2026-02-26",
     "shares": 30,
     "entry_price": 16.55500030517578
+  },
+  "TLK": {
+    "entry_date": "2026-02-27",
+    "shares": 23,
+    "entry_price": 21.28499984741211
+  },
+  "JBL": {
+    "entry_date": "2026-02-27",
+    "shares": 2,
+    "entry_price": 263.1499938964844
+  },
+  "DX": {
+    "entry_date": "2026-02-27",
+    "shares": 36,
+    "entry_price": 14.024999618530273
+  },
+  "VEEV": {
+    "entry_date": "2026-02-27",
+    "shares": 3,
+    "entry_price": 182.49000549316406
+  },
+  "AZN": {
+    "entry_date": "2026-02-27",
+    "shares": 2,
+    "entry_price": 208.61500549316406
   }
 }
