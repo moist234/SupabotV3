@@ -254,30 +254,15 @@
     "shares": 4,
     "entry_price": 113.56999969482422
   },
-  "ZTO": {
-    "entry_date": "2026-02-23",
-    "shares": 20,
-    "entry_price": 25.18000030517578
-  },
   "HMY": {
     "entry_date": "2026-02-23",
     "shares": 23,
     "entry_price": 21.828899383544922
   },
-  "TIGO": {
-    "entry_date": "2026-02-23",
-    "shares": 7,
-    "entry_price": 67.1500015258789
-  },
   "MTZ": {
     "entry_date": "2026-02-23",
     "shares": 2,
     "entry_price": 276.0799865722656
-  },
-  "SHC": {
-    "entry_date": "2026-02-23",
-    "shares": 29,
-    "entry_price": 17.3799991607666
   },
   "MU": {
     "entry_date": "2026-02-25",
@@ -343,5 +328,20 @@
     "entry_date": "2026-02-27",
     "shares": 2,
     "entry_price": 208.61500549316406
+  },
+  "LYB": {
+    "entry_date": "2026-03-02",
+    "shares": 9,
+    "entry_price": 57.5099983215332
+  },
+  "NLY": {
+    "entry_date": "2026-03-02",
+    "shares": 21,
+    "entry_price": 23.299999237060547
+  },
+  "JNJ": {
+    "entry_date": "2026-03-02",
+    "shares": 2,
+    "entry_price": 248.6199951171875
   }
 }
