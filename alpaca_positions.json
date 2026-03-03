@@ -279,11 +279,6 @@
     "shares": 8,
     "entry_price": 61.82500076293945
   },
-  "TECK": {
-    "entry_date": "2026-02-24",
-    "shares": 8,
-    "entry_price": 59.75
-  },
   "XYZ": {
     "entry_date": "2026-02-25",
     "shares": 10,
@@ -300,9 +295,9 @@
     "entry_price": 59.56999969482422
   },
   "JBS": {
-    "entry_date": "2026-02-26",
-    "shares": 30,
-    "entry_price": 16.55500030517578
+    "entry_date": "2026-03-03",
+    "shares": 31,
+    "entry_price": 16.229999542236328
   },
   "TLK": {
     "entry_date": "2026-02-27",
@@ -343,5 +338,30 @@
     "entry_date": "2026-03-02",
     "shares": 2,
     "entry_price": 248.6199951171875
+  },
+  "FCX": {
+    "entry_date": "2026-03-03",
+    "shares": 8,
+    "entry_price": 65.08499908447266
+  },
+  "KNX": {
+    "entry_date": "2026-03-03",
+    "shares": 8,
+    "entry_price": 61.91999816894531
+  },
+  "RMD": {
+    "entry_date": "2026-03-03",
+    "shares": 2,
+    "entry_price": 259.44500732421875
+  },
+  "NVS": {
+    "entry_date": "2026-03-03",
+    "shares": 3,
+    "entry_price": 164.32000732421875
+  },
+  "TTEK": {
+    "entry_date": "2026-03-03",
+    "shares": 14,
+    "entry_price": 36.46500015258789
   }
 }
