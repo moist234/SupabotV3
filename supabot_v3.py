@@ -1,6 +1,5 @@
 import os
 import sys
-import re
 import random
 import json
 try:
@@ -832,13 +831,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                     stock_fresh = fresh_data['change_7d']
                     calculated_relative_fresh = stock_fresh - spy_7d
                     
-                    # REGIME-CONDITIONAL INST FILTER
-                   # if calculated_regime == 'Risk-On' and quality['inst_ownership'] > 90:
-                      #  if calculated_relative_fresh < 2.0:
-                          #  print(f"  ⏭️  {ticker}: Risk-On + High Inst + Weak Momentum (danger zone)")
-                            # continue
-                        # else: Allow to proceed with penalty in scoring
-                    
                     # Relative Fresh >1% filter
                     if calculated_relative_fresh <= 0.5:
                         print(f"  ⏭️  {ticker}: Relative Fresh {calculated_relative_fresh:+.1f}%")
@@ -850,26 +842,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
                 continue
             # ... rest of filters ...
 
-            # Relative Fresh filter
-            try:
-                spy_hist = yf.Ticker('SPY').history(period="2mo")
-                if len(spy_hist) >= 8:
-                    spy_7d = ((spy_hist['Close'].iloc[-1] / spy_hist['Close'].iloc[-8]) - 1) * 100
-                    stock_fresh = fresh_data['change_7d']
-                    relative_fresh = stock_fresh - spy_7d
-                    
-                    # SAVE for pick dictionary
-                    calculated_relative_fresh = relative_fresh
-                    
-                    # Calculate regime while we have SPY data
-                    if len(spy_hist) >= 20:
-                        sma_20 = spy_hist['Close'].rolling(20).mean().iloc[-1]
-                        current_spy = spy_hist['Close'].iloc[-1]
-                        calculated_regime = 'Risk-On' if current_spy > sma_20 else 'Risk-Off'
-                
-            except:
-                pass
-            
             reddit_mentions = check_reddit_confirmation(ticker)
             accel_data = check_accelerating(ticker, reddit_mentions)
             if not accel_data['is_accelerating']:
@@ -1001,8 +973,6 @@ def scan() -> Tuple[List[Dict], List[Dict]]:
     with open(recent_picks_file, 'w') as f:
         json.dump(recent_picks, f, indent=2)
     
-    control_group = []
-    
     return top_picks, []
 
 def save_picks(all_picks: List[Dict]):
@@ -1033,10 +1003,6 @@ def display_picks(picks: List[Dict]):
     for i, pick in enumerate(picks, 1):
         volume_flag = "🔊" if pick['volume_spike'] else ""
     
-    # Default: all picks at full size
-    pick['confidence'] = 70
-    pick['action'] = 'FULL'
-    pick['position_size'] = 500
     earnings_flag = " 📅" if pick.get('earnings_sweet_spot') else ""
     inst_flag = " 🏢" if pick.get('inst_ownership', 100) < 30 else ""
         
