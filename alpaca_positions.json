@@ -204,11 +204,6 @@
     "shares": 2,
     "entry_price": 289.19500732421875
   },
-  "VOD": {
-    "entry_date": "2026-02-25",
-    "shares": 31,
-    "entry_price": 15.90999984741211
-  },
   "COMM": {
     "entry_date": "2026-01-09",
     "shares": 27,
@@ -275,14 +270,9 @@
     "entry_price": 82.57499694824219
   },
   "AA": {
-    "entry_date": "2026-02-24",
+    "entry_date": "2026-03-04",
     "shares": 8,
-    "entry_price": 61.82500076293945
-  },
-  "XYZ": {
-    "entry_date": "2026-02-25",
-    "shares": 10,
-    "entry_price": 52.029998779296875
+    "entry_price": 61.90999984741211
   },
   "NOK": {
     "entry_date": "2026-02-26",
@@ -340,9 +330,9 @@
     "entry_price": 248.6199951171875
   },
   "FCX": {
-    "entry_date": "2026-03-03",
+    "entry_date": "2026-03-04",
     "shares": 8,
-    "entry_price": 65.08499908447266
+    "entry_price": 66.55500030517578
   },
   "KNX": {
     "entry_date": "2026-03-03",
@@ -363,5 +353,15 @@
     "entry_date": "2026-03-03",
     "shares": 14,
     "entry_price": 36.46500015258789
+  },
+  "FAST": {
+    "entry_date": "2026-03-04",
+    "shares": 11,
+    "entry_price": 47.03499984741211
+  },
+  "GEV": {
+    "entry_date": "2026-03-04",
+    "shares": 1,
+    "entry_price": 846.9000244140625
   }
 }
