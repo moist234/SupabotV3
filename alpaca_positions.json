@@ -240,9 +240,9 @@
     "entry_price": 59.2599983215332
   },
   "FMS": {
-    "entry_date": "2026-02-20",
-    "shares": 21,
-    "entry_price": 24.389999389648438
+    "entry_date": "2026-03-06",
+    "shares": 22,
+    "entry_price": 23.020000457763672
   },
   "AU": {
     "entry_date": "2026-02-20",
@@ -288,31 +288,6 @@
     "entry_date": "2026-03-03",
     "shares": 31,
     "entry_price": 16.229999542236328
-  },
-  "TLK": {
-    "entry_date": "2026-02-27",
-    "shares": 23,
-    "entry_price": 21.28499984741211
-  },
-  "JBL": {
-    "entry_date": "2026-02-27",
-    "shares": 2,
-    "entry_price": 263.1499938964844
-  },
-  "DX": {
-    "entry_date": "2026-02-27",
-    "shares": 36,
-    "entry_price": 14.024999618530273
-  },
-  "VEEV": {
-    "entry_date": "2026-02-27",
-    "shares": 3,
-    "entry_price": 182.49000549316406
-  },
-  "AZN": {
-    "entry_date": "2026-02-27",
-    "shares": 2,
-    "entry_price": 208.61500549316406
   },
   "LYB": {
     "entry_date": "2026-03-02",
@@ -378,5 +353,25 @@
     "entry_date": "2026-03-05",
     "shares": 3,
     "entry_price": 198.6999969482422
+  },
+  "EA": {
+    "entry_date": "2026-03-06",
+    "shares": 3,
+    "entry_price": 198.36500549316406
+  },
+  "RCI": {
+    "entry_date": "2026-03-06",
+    "shares": 12,
+    "entry_price": 40.404998779296875
+  },
+  "ADM": {
+    "entry_date": "2026-03-06",
+    "shares": 7,
+    "entry_price": 67.69000244140625
+  },
+  "CAG": {
+    "entry_date": "2026-03-06",
+    "shares": 26,
+    "entry_price": 18.915599822998047
   }
 }
