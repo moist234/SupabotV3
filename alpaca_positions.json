@@ -289,21 +289,6 @@
     "shares": 31,
     "entry_price": 16.229999542236328
   },
-  "LYB": {
-    "entry_date": "2026-03-02",
-    "shares": 9,
-    "entry_price": 57.5099983215332
-  },
-  "NLY": {
-    "entry_date": "2026-03-02",
-    "shares": 21,
-    "entry_price": 23.299999237060547
-  },
-  "JNJ": {
-    "entry_date": "2026-03-02",
-    "shares": 2,
-    "entry_price": 248.6199951171875
-  },
   "FCX": {
     "entry_date": "2026-03-04",
     "shares": 8,
@@ -355,9 +340,9 @@
     "entry_price": 198.6999969482422
   },
   "EA": {
-    "entry_date": "2026-03-06",
+    "entry_date": "2026-03-09",
     "shares": 3,
-    "entry_price": 198.36500549316406
+    "entry_price": 199.8699951171875
   },
   "RCI": {
     "entry_date": "2026-03-06",
@@ -365,7 +350,7 @@
     "entry_price": 40.404998779296875
   },
   "ADM": {
-    "entry_date": "2026-03-06",
+    "entry_date": "2026-03-09",
     "shares": 7,
     "entry_price": 67.69000244140625
   },
@@ -373,5 +358,10 @@
     "entry_date": "2026-03-06",
     "shares": 26,
     "entry_price": 18.915599822998047
+  },
+  "TIGO": {
+    "entry_date": "2026-03-09",
+    "shares": 7,
+    "entry_price": 70.06999969482422
   }
 }
