@@ -275,9 +275,9 @@
     "entry_price": 61.90999984741211
   },
   "NOK": {
-    "entry_date": "2026-03-05",
-    "shares": 64,
-    "entry_price": 7.795000076293945
+    "entry_date": "2026-03-12",
+    "shares": 62,
+    "entry_price": 8.104999542236328
   },
   "MP": {
     "entry_date": "2026-02-26",
@@ -335,9 +335,9 @@
     "entry_price": 18.915599822998047
   },
   "TIGO": {
-    "entry_date": "2026-03-09",
+    "entry_date": "2026-03-12",
     "shares": 7,
-    "entry_price": 70.06999969482422
+    "entry_price": 71.0
   },
   "COHR": {
     "entry_date": "2026-03-10",
@@ -373,5 +373,15 @@
     "entry_date": "2026-03-11",
     "shares": 44,
     "entry_price": 11.460000038146973
+  },
+  "ERAS": {
+    "entry_date": "2026-03-12",
+    "shares": 34,
+    "entry_price": 14.689900398254395
+  },
+  "BEKE": {
+    "entry_date": "2026-03-12",
+    "shares": 30,
+    "entry_price": 16.405000686645508
   }
 }
