@@ -155,9 +155,9 @@
     "entry_price": 37.93000030517578
   },
   "DOCU": {
-    "entry_date": "2026-01-09",
-    "shares": 7,
-    "entry_price": 69.5999984741211
+    "entry_date": "2026-03-13",
+    "shares": 11,
+    "entry_price": 46.88999938964844
   },
   "CRS": {
     "entry_date": "2026-01-09",
@@ -275,9 +275,9 @@
     "entry_price": 61.90999984741211
   },
   "NOK": {
-    "entry_date": "2026-03-12",
-    "shares": 62,
-    "entry_price": 8.104999542236328
+    "entry_date": "2026-03-13",
+    "shares": 61,
+    "entry_price": 8.21500015258789
   },
   "MP": {
     "entry_date": "2026-02-26",
@@ -335,9 +335,9 @@
     "entry_price": 18.915599822998047
   },
   "TIGO": {
-    "entry_date": "2026-03-12",
+    "entry_date": "2026-03-13",
     "shares": 7,
-    "entry_price": 71.0
+    "entry_price": 71.86000061035156
   },
   "COHR": {
     "entry_date": "2026-03-10",
@@ -383,5 +383,20 @@
     "entry_date": "2026-03-12",
     "shares": 30,
     "entry_price": 16.405000686645508
+  },
+  "RDY": {
+    "entry_date": "2026-03-13",
+    "shares": 35,
+    "entry_price": 14.114999771118164
+  },
+  "TME": {
+    "entry_date": "2026-03-13",
+    "shares": 35,
+    "entry_price": 14.130000114440918
+  },
+  "ALAB": {
+    "entry_date": "2026-03-13",
+    "shares": 4,
+    "entry_price": 119.25499725341797
   }
 }
