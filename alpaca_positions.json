@@ -335,9 +335,9 @@
     "entry_price": 18.915599822998047
   },
   "TIGO": {
-    "entry_date": "2026-03-13",
+    "entry_date": "2026-03-16",
     "shares": 7,
-    "entry_price": 71.86000061035156
+    "entry_price": 72.88999938964844
   },
   "COHR": {
     "entry_date": "2026-03-10",
@@ -360,9 +360,9 @@
     "entry_price": 34.025001525878906
   },
   "AL": {
-    "entry_date": "2026-03-11",
+    "entry_date": "2026-03-16",
     "shares": 8,
-    "entry_price": 64.73999786376953
+    "entry_price": 64.61499786376953
   },
   "SIRI": {
     "entry_date": "2026-03-11",
@@ -398,5 +398,45 @@
     "entry_date": "2026-03-13",
     "shares": 4,
     "entry_price": 119.25499725341797
+  },
+  "OHI": {
+    "entry_date": "2026-03-16",
+    "shares": 10,
+    "entry_price": 47.810001373291016
+  },
+  "WRD": {
+    "entry_date": "2026-03-16",
+    "shares": 76,
+    "entry_price": 6.579999923706055
+  },
+  "VOD": {
+    "entry_date": "2026-03-16",
+    "shares": 34,
+    "entry_price": 14.600000381469727
+  },
+  "AMKR": {
+    "entry_date": "2026-03-16",
+    "shares": 11,
+    "entry_price": 44.630001068115234
+  },
+  "FROG": {
+    "entry_date": "2026-03-16",
+    "shares": 12,
+    "entry_price": 43.125
+  },
+  "ALM": {
+    "entry_date": "2026-03-16",
+    "shares": 26,
+    "entry_price": 19.290000915527344
+  },
+  "GOOG": {
+    "entry_date": "2026-03-16",
+    "shares": 2,
+    "entry_price": 304.4200134277344
+  },
+  "SAIC": {
+    "entry_date": "2026-03-16",
+    "shares": 5,
+    "entry_price": 93.05000305175781
   }
 }
