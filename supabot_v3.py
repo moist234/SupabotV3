@@ -353,8 +353,6 @@ def calculate_quality_score_v4(pick: Dict) -> float:
     if inst < 30:
         if 'LARGE' in cap_size.upper() or 'MID' in cap_size.upper():
             score += 10  # 84-89% WR
-        elif 'SMALL' in cap_size.upper():
-            score += 5
         elif regime == 'Risk-On' and inst > 90:
             score -= 20  # Penalty for high inst in Risk-On (if passed filter via RelFresh >2%)
     # Risk-Off + High Inst: no penalty (76.9% WR!)
@@ -692,7 +690,7 @@ def place_paper_trades(picks: List[Dict]):
         account = api.get_account()
         print(f"\n💰 Alpaca: ${float(account.cash):,.2f} cash, ${float(account.portfolio_value):,.2f} portfolio")
         
-        position_value = 500.0
+        position_value = 2500.0
         orders_placed = []
         
         for pick in picks:
