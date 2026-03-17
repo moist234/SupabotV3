@@ -240,9 +240,9 @@
     "entry_price": 59.2599983215332
   },
   "FMS": {
-    "entry_date": "2026-03-06",
-    "shares": 22,
-    "entry_price": 23.020000457763672
+    "entry_date": "2026-03-17",
+    "shares": 108,
+    "entry_price": 23.170000076293945
   },
   "AU": {
     "entry_date": "2026-02-20",
@@ -360,9 +360,9 @@
     "entry_price": 34.025001525878906
   },
   "AL": {
-    "entry_date": "2026-03-16",
-    "shares": 8,
-    "entry_price": 64.61499786376953
+    "entry_date": "2026-03-17",
+    "shares": 39,
+    "entry_price": 64.70500183105469
   },
   "SIRI": {
     "entry_date": "2026-03-11",
@@ -405,9 +405,9 @@
     "entry_price": 47.810001373291016
   },
   "WRD": {
-    "entry_date": "2026-03-16",
-    "shares": 76,
-    "entry_price": 6.579999923706055
+    "entry_date": "2026-03-17",
+    "shares": 388,
+    "entry_price": 6.440000057220459
   },
   "VOD": {
     "entry_date": "2026-03-16",
@@ -438,5 +438,30 @@
     "entry_date": "2026-03-16",
     "shares": 5,
     "entry_price": 93.05000305175781
+  },
+  "UAL": {
+    "entry_date": "2026-03-17",
+    "shares": 27,
+    "entry_price": 93.19000244140625
+  },
+  "ITT": {
+    "entry_date": "2026-03-17",
+    "shares": 13,
+    "entry_price": 187.6300048828125
+  },
+  "ZTO": {
+    "entry_date": "2026-03-17",
+    "shares": 105,
+    "entry_price": 23.739999771118164
+  },
+  "LOGI": {
+    "entry_date": "2026-03-17",
+    "shares": 27,
+    "entry_price": 92.58999633789062
+  },
+  "TU": {
+    "entry_date": "2026-03-17",
+    "shares": 186,
+    "entry_price": 13.4399995803833
   }
 }
