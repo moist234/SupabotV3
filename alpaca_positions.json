@@ -90,9 +90,9 @@
     "entry_price": 64.66000366210938
   },
   "TAL": {
-    "entry_date": "2026-01-05",
-    "shares": 44,
-    "entry_price": 11.425000190734863
+    "entry_date": "2026-03-18",
+    "shares": 223,
+    "entry_price": 11.220000267028809
   },
   "PAAS": {
     "entry_date": "2026-01-09",
@@ -300,9 +300,9 @@
     "entry_price": 846.9000244140625
   },
   "NTR": {
-    "entry_date": "2026-03-05",
-    "shares": 7,
-    "entry_price": 74.04499816894531
+    "entry_date": "2026-03-18",
+    "shares": 32,
+    "entry_price": 78.05500030517578
   },
   "RTO": {
     "entry_date": "2026-03-05",
@@ -395,9 +395,9 @@
     "entry_price": 14.130000114440918
   },
   "ALAB": {
-    "entry_date": "2026-03-13",
-    "shares": 4,
-    "entry_price": 119.25499725341797
+    "entry_date": "2026-03-18",
+    "shares": 20,
+    "entry_price": 127.27999877929688
   },
   "OHI": {
     "entry_date": "2026-03-16",
@@ -463,5 +463,25 @@
     "entry_date": "2026-03-17",
     "shares": 186,
     "entry_price": 13.4399995803833
+  },
+  "SOLS": {
+    "entry_date": "2026-03-18",
+    "shares": 34,
+    "entry_price": 74.57499694824219
+  },
+  "NWSA": {
+    "entry_date": "2026-03-18",
+    "shares": 104,
+    "entry_price": 24.104999542236328
+  },
+  "LIN": {
+    "entry_date": "2026-03-18",
+    "shares": 5,
+    "entry_price": 488.489990234375
+  },
+  "MTCH": {
+    "entry_date": "2026-03-18",
+    "shares": 81,
+    "entry_price": 30.770000457763672
   }
 }
