@@ -25,9 +25,9 @@
     "entry_price": 26.549999237060547
   },
   "TSN": {
-    "entry_date": "2025-12-30",
-    "shares": 8,
-    "entry_price": 59.15999984741211
+    "entry_date": "2026-03-19",
+    "shares": 42,
+    "entry_price": 59.095001220703125
   },
   "VIV": {
     "entry_date": "2026-01-10",
@@ -300,9 +300,9 @@
     "entry_price": 846.9000244140625
   },
   "NTR": {
-    "entry_date": "2026-03-18",
-    "shares": 32,
-    "entry_price": 78.05500030517578
+    "entry_date": "2026-03-19",
+    "shares": 33,
+    "entry_price": 75.95099639892578
   },
   "RTO": {
     "entry_date": "2026-03-05",
@@ -350,9 +350,9 @@
     "entry_price": 19.398000717163086
   },
   "BG": {
-    "entry_date": "2026-03-11",
-    "shares": 4,
-    "entry_price": 122.91999816894531
+    "entry_date": "2026-03-19",
+    "shares": 21,
+    "entry_price": 121.6449966430664
   },
   "STM": {
     "entry_date": "2026-03-11",
@@ -483,5 +483,20 @@
     "entry_date": "2026-03-18",
     "shares": 81,
     "entry_price": 30.770000457763672
+  },
+  "EXAS": {
+    "entry_date": "2026-03-19",
+    "shares": 24,
+    "entry_price": 103.87000274658203
+  },
+  "PFE": {
+    "entry_date": "2026-03-19",
+    "shares": 91,
+    "entry_price": 27.534000396728516
+  },
+  "AMD": {
+    "entry_date": "2026-03-19",
+    "shares": 12,
+    "entry_price": 205.27000427246094
   }
 }
