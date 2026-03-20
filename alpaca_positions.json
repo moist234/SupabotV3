@@ -340,9 +340,9 @@
     "entry_price": 72.88999938964844
   },
   "COHR": {
-    "entry_date": "2026-03-10",
-    "shares": 2,
-    "entry_price": 259.19000244140625
+    "entry_date": "2026-03-20",
+    "shares": 10,
+    "entry_price": 246.54769897460938
   },
   "FLY": {
     "entry_date": "2026-03-10",
@@ -475,9 +475,9 @@
     "entry_price": 24.104999542236328
   },
   "LIN": {
-    "entry_date": "2026-03-18",
+    "entry_date": "2026-03-20",
     "shares": 5,
-    "entry_price": 488.489990234375
+    "entry_price": 487.9599914550781
   },
   "MTCH": {
     "entry_date": "2026-03-18",
@@ -498,5 +498,15 @@
     "entry_date": "2026-03-19",
     "shares": 12,
     "entry_price": 205.27000427246094
+  },
+  "FOX": {
+    "entry_date": "2026-03-20",
+    "shares": 48,
+    "entry_price": 52.29999923706055
+  },
+  "IFF": {
+    "entry_date": "2026-03-20",
+    "shares": 38,
+    "entry_price": 66.63500213623047
   }
 }
