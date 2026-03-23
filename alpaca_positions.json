@@ -508,5 +508,45 @@
     "entry_date": "2026-03-20",
     "shares": 38,
     "entry_price": 66.63500213623047
+  },
+  "VMC": {
+    "entry_date": "2026-03-23",
+    "shares": 9,
+    "entry_price": 264.0
+  },
+  "IEX": {
+    "entry_date": "2026-03-23",
+    "shares": 13,
+    "entry_price": 188.7050018310547
+  },
+  "KC": {
+    "entry_date": "2026-03-23",
+    "shares": 182,
+    "entry_price": 13.710000038146973
+  },
+  "BXMT": {
+    "entry_date": "2026-03-23",
+    "shares": 133,
+    "entry_price": 18.75
+  },
+  "RELY": {
+    "entry_date": "2026-03-23",
+    "shares": 154,
+    "entry_price": 16.219999313354492
+  },
+  "RYN": {
+    "entry_date": "2026-03-23",
+    "shares": 125,
+    "entry_price": 20.079999923706055
+  },
+  "UE": {
+    "entry_date": "2026-03-23",
+    "shares": 123,
+    "entry_price": 20.299999237060547
+  },
+  "ADP": {
+    "entry_date": "2026-03-23",
+    "shares": 12,
+    "entry_price": 209.67999267578125
   }
 }
