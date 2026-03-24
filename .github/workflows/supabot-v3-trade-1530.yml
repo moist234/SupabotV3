@@ -3,8 +3,8 @@ name: Supabot V3 — Live Execution 15:30 ET
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 20 * * 1-5'   # 3:30 PM EST  (UTC-5, winter)
-    - cron: '30 21 * * 1-5'   # 4:30 PM EST fallback — executor self-checks entry window
+    - cron: '30 19 * * 1-5'   # 3:30 PM EDT  (UTC-4, summer Mar–Nov)
+    - cron: '30 20 * * 1-5'   # 3:30 PM EST  (UTC-5, winter Nov–Mar)
 
 jobs:
   live-execution:
