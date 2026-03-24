@@ -1,0 +1,54 @@
+name: Supabot V3 — Live Execution 15:30 ET
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 20 * * 1-5'   # 3:30 PM EST  (UTC-5, winter)
+    - cron: '30 21 * * 1-5'   # 4:30 PM EST fallback — executor self-checks entry window
+
+jobs:
+  live-execution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install alpaca-py
+
+      - name: Run scan + live execution
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
+          APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
+          APCA_PAPER: "false"
+        run: |
+          echo "Starting live execution run at $(date -u)"
+          python3 run_execution_v1.py
+          echo "Live execution complete at $(date -u)"
+        continue-on-error: false
+
+      - name: Commit execution state
+        if: always()
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add supabot_positions_state.json 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update live execution state [skip ci]"
+          git push || true
