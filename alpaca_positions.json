@@ -105,9 +105,9 @@
     "entry_price": 31.489999771118164
   },
   "TEVA": {
-    "entry_date": "2026-01-10",
-    "shares": 16,
-    "entry_price": 32.0099983215332
+    "entry_date": "2026-03-25",
+    "shares": 85,
+    "entry_price": 29.40999984741211
   },
   "ASND": {
     "entry_date": "2026-01-07",
@@ -548,5 +548,50 @@
     "entry_date": "2026-03-23",
     "shares": 12,
     "entry_price": 209.67999267578125
+  },
+  "SKM": {
+    "entry_date": "2026-03-25",
+    "shares": 82,
+    "entry_price": 30.315000534057617
+  },
+  "STLD": {
+    "entry_date": "2026-03-25",
+    "shares": 14,
+    "entry_price": 173.1699981689453
+  },
+  "TECK": {
+    "entry_date": "2026-03-25",
+    "shares": 50,
+    "entry_price": 50.48500061035156
+  },
+  "MT": {
+    "entry_date": "2026-03-25",
+    "shares": 47,
+    "entry_price": 52.900001525878906
+  },
+  "CNTA": {
+    "entry_date": "2026-03-25",
+    "shares": 89,
+    "entry_price": 28.131500244140625
+  },
+  "GEHC": {
+    "entry_date": "2026-03-25",
+    "shares": 35,
+    "entry_price": 72.19999694824219
+  },
+  "PLTR": {
+    "entry_date": "2026-03-25",
+    "shares": 16,
+    "entry_price": 155.0
+  },
+  "APLE": {
+    "entry_date": "2026-03-25",
+    "shares": 209,
+    "entry_price": 11.979999542236328
+  },
+  "GSK": {
+    "entry_date": "2026-03-25",
+    "shares": 46,
+    "entry_price": 54.709999084472656
   }
 }
