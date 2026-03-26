@@ -335,9 +335,9 @@
     "entry_price": 18.915599822998047
   },
   "TIGO": {
-    "entry_date": "2026-03-16",
-    "shares": 7,
-    "entry_price": 72.88999938964844
+    "entry_date": "2026-03-26",
+    "shares": 34,
+    "entry_price": 73.3499984741211
   },
   "COHR": {
     "entry_date": "2026-03-20",
@@ -410,9 +410,9 @@
     "entry_price": 6.440000057220459
   },
   "VOD": {
-    "entry_date": "2026-03-16",
-    "shares": 34,
-    "entry_price": 14.600000381469727
+    "entry_date": "2026-03-26",
+    "shares": 171,
+    "entry_price": 14.630000114440918
   },
   "AMKR": {
     "entry_date": "2026-03-16",
@@ -475,9 +475,9 @@
     "entry_price": 24.104999542236328
   },
   "LIN": {
-    "entry_date": "2026-03-20",
+    "entry_date": "2026-03-26",
     "shares": 5,
-    "entry_price": 487.9599914550781
+    "entry_price": 495.489990234375
   },
   "MTCH": {
     "entry_date": "2026-03-18",
@@ -525,9 +525,9 @@
     "entry_price": 13.710000038146973
   },
   "BXMT": {
-    "entry_date": "2026-03-23",
-    "shares": 133,
-    "entry_price": 18.75
+    "entry_date": "2026-03-26",
+    "shares": 130,
+    "entry_price": 19.190000534057617
   },
   "RELY": {
     "entry_date": "2026-03-23",
@@ -590,8 +590,33 @@
     "entry_price": 11.979999542236328
   },
   "GSK": {
-    "entry_date": "2026-03-25",
+    "entry_date": "2026-03-26",
     "shares": 46,
-    "entry_price": 54.709999084472656
+    "entry_price": 53.9900016784668
+  },
+  "NUE": {
+    "entry_date": "2026-03-26",
+    "shares": 15,
+    "entry_price": 165.99000549316406
+  },
+  "SMG": {
+    "entry_date": "2026-03-26",
+    "shares": 40,
+    "entry_price": 62.224998474121094
+  },
+  "GRMN": {
+    "entry_date": "2026-03-26",
+    "shares": 11,
+    "entry_price": 236.16000366210938
+  },
+  "VZ": {
+    "entry_date": "2026-03-26",
+    "shares": 49,
+    "entry_price": 50.73500061035156
+  },
+  "GMAB": {
+    "entry_date": "2026-03-26",
+    "shares": 96,
+    "entry_price": 26.030000686645508
   }
 }
