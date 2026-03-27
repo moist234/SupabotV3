@@ -325,9 +325,9 @@
     "entry_price": 40.404998779296875
   },
   "ADM": {
-    "entry_date": "2026-03-11",
-    "shares": 7,
-    "entry_price": 70.82499694824219
+    "entry_date": "2026-03-27",
+    "shares": 35,
+    "entry_price": 71.94999694824219
   },
   "CAG": {
     "entry_date": "2026-03-06",
@@ -500,9 +500,9 @@
     "entry_price": 205.27000427246094
   },
   "FOX": {
-    "entry_date": "2026-03-20",
-    "shares": 48,
-    "entry_price": 52.29999923706055
+    "entry_date": "2026-03-27",
+    "shares": 47,
+    "entry_price": 53.380001068115234
   },
   "IFF": {
     "entry_date": "2026-03-20",
@@ -610,13 +610,23 @@
     "entry_price": 236.16000366210938
   },
   "VZ": {
-    "entry_date": "2026-03-26",
-    "shares": 49,
-    "entry_price": 50.73500061035156
+    "entry_date": "2026-03-27",
+    "shares": 50,
+    "entry_price": 50.28499984741211
   },
   "GMAB": {
     "entry_date": "2026-03-26",
     "shares": 96,
     "entry_price": 26.030000686645508
+  },
+  "TLK": {
+    "entry_date": "2026-03-27",
+    "shares": 138,
+    "entry_price": 18.065000534057617
+  },
+  "BHP": {
+    "entry_date": "2026-03-27",
+    "shares": 36,
+    "entry_price": 69.28500366210938
   }
 }
