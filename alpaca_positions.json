@@ -325,9 +325,9 @@
     "entry_price": 40.404998779296875
   },
   "ADM": {
-    "entry_date": "2026-03-27",
+    "entry_date": "2026-03-30",
     "shares": 35,
-    "entry_price": 71.94999694824219
+    "entry_price": 71.75
   },
   "CAG": {
     "entry_date": "2026-03-06",
@@ -475,9 +475,9 @@
     "entry_price": 24.104999542236328
   },
   "LIN": {
-    "entry_date": "2026-03-26",
+    "entry_date": "2026-03-30",
     "shares": 5,
-    "entry_price": 495.489990234375
+    "entry_price": 499.260009765625
   },
   "MTCH": {
     "entry_date": "2026-03-18",
@@ -620,13 +620,33 @@
     "entry_price": 26.030000686645508
   },
   "TLK": {
-    "entry_date": "2026-03-27",
+    "entry_date": "2026-03-30",
     "shares": 138,
-    "entry_price": 18.065000534057617
+    "entry_price": 18.15999984741211
   },
   "BHP": {
     "entry_date": "2026-03-27",
     "shares": 36,
     "entry_price": 69.28500366210938
+  },
+  "NG": {
+    "entry_date": "2026-03-30",
+    "shares": 311,
+    "entry_price": 8.029999732971191
+  },
+  "PPC": {
+    "entry_date": "2026-03-30",
+    "shares": 67,
+    "entry_price": 37.439998626708984
+  },
+  "KGC": {
+    "entry_date": "2026-03-30",
+    "shares": 87,
+    "entry_price": 28.610000610351562
+  },
+  "SWK": {
+    "entry_date": "2026-03-30",
+    "shares": 37,
+    "entry_price": 67.41999816894531
   }
 }
