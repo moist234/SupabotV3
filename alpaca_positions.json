@@ -315,9 +315,9 @@
     "entry_price": 198.6999969482422
   },
   "EA": {
-    "entry_date": "2026-03-09",
-    "shares": 3,
-    "entry_price": 199.8699951171875
+    "entry_date": "2026-03-31",
+    "shares": 12,
+    "entry_price": 203.8699951171875
   },
   "RCI": {
     "entry_date": "2026-03-06",
@@ -648,5 +648,50 @@
     "entry_date": "2026-03-30",
     "shares": 37,
     "entry_price": 67.41999816894531
+  },
+  "BIIB": {
+    "entry_date": "2026-03-31",
+    "shares": 14,
+    "entry_price": 183.3300018310547
+  },
+  "LAMR": {
+    "entry_date": "2026-03-31",
+    "shares": 20,
+    "entry_price": 126.66000366210938
+  },
+  "DAL": {
+    "entry_date": "2026-03-31",
+    "shares": 38,
+    "entry_price": 66.51499938964844
+  },
+  "RBA": {
+    "entry_date": "2026-03-31",
+    "shares": 26,
+    "entry_price": 95.8499984741211
+  },
+  "ESS": {
+    "entry_date": "2026-03-31",
+    "shares": 10,
+    "entry_price": 242.16000366210938
+  },
+  "CURB": {
+    "entry_date": "2026-03-31",
+    "shares": 97,
+    "entry_price": 25.790000915527344
+  },
+  "BLDR": {
+    "entry_date": "2026-03-31",
+    "shares": 30,
+    "entry_price": 82.36000061035156
+  },
+  "ASX": {
+    "entry_date": "2026-03-31",
+    "shares": 115,
+    "entry_price": 21.690000534057617
+  },
+  "MO": {
+    "entry_date": "2026-03-31",
+    "shares": 38,
+    "entry_price": 65.9800033569336
   }
 }
