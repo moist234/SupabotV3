@@ -425,9 +425,9 @@
     "entry_price": 43.125
   },
   "ALM": {
-    "entry_date": "2026-03-16",
-    "shares": 26,
-    "entry_price": 19.290000915527344
+    "entry_date": "2026-04-02",
+    "shares": 163,
+    "entry_price": 15.359999656677246
   },
   "GOOG": {
     "entry_date": "2026-03-16",
@@ -723,5 +723,50 @@
     "entry_date": "2026-04-01",
     "shares": 250,
     "entry_price": 10.020000457763672
+  },
+  "LYB": {
+    "entry_date": "2026-04-02",
+    "shares": 31,
+    "entry_price": 79.5999984741211
+  },
+  "RPM": {
+    "entry_date": "2026-04-02",
+    "shares": 26,
+    "entry_price": 98.0199966430664
+  },
+  "SUZ": {
+    "entry_date": "2026-04-02",
+    "shares": 253,
+    "entry_price": 9.869999885559082
+  },
+  "PHG": {
+    "entry_date": "2026-04-02",
+    "shares": 92,
+    "entry_price": 27.104999542236328
+  },
+  "GMED": {
+    "entry_date": "2026-04-02",
+    "shares": 29,
+    "entry_price": 87.71499633789062
+  },
+  "NSC": {
+    "entry_date": "2026-04-02",
+    "shares": 9,
+    "entry_price": 288.3399963378906
+  },
+  "SNN": {
+    "entry_date": "2026-04-02",
+    "shares": 78,
+    "entry_price": 32.150001525878906
+  },
+  "PSO": {
+    "entry_date": "2026-04-02",
+    "shares": 188,
+    "entry_price": 13.3100004196167
+  },
+  "CDE": {
+    "entry_date": "2026-04-02",
+    "shares": 131,
+    "entry_price": 19.100000381469727
   }
 }
