@@ -130,9 +130,9 @@
     "entry_price": 5.155399799346924
   },
   "WCC": {
-    "entry_date": "2026-01-07",
-    "shares": 2,
-    "entry_price": 265.4800109863281
+    "entry_date": "2026-04-03",
+    "shares": 9,
+    "entry_price": 277.45001220703125
   },
   "ECG": {
     "entry_date": "2026-01-07",
@@ -150,9 +150,9 @@
     "entry_price": 42.790000915527344
   },
   "STAG": {
-    "entry_date": "2026-01-09",
-    "shares": 13,
-    "entry_price": 37.93000030517578
+    "entry_date": "2026-04-03",
+    "shares": 68,
+    "entry_price": 36.54999923706055
   },
   "DOCU": {
     "entry_date": "2026-03-13",
@@ -225,9 +225,9 @@
     "entry_price": 34.5099983215332
   },
   "CF": {
-    "entry_date": "2026-02-24",
-    "shares": 5,
-    "entry_price": 95.87000274658203
+    "entry_date": "2026-04-03",
+    "shares": 19,
+    "entry_price": 129.97000122070312
   },
   "RNA": {
     "entry_date": "2026-02-23",
@@ -665,9 +665,9 @@
     "entry_price": 66.51499938964844
   },
   "RBA": {
-    "entry_date": "2026-03-31",
-    "shares": 26,
-    "entry_price": 95.8499984741211
+    "entry_date": "2026-04-03",
+    "shares": 25,
+    "entry_price": 98.33999633789062
   },
   "ESS": {
     "entry_date": "2026-03-31",
@@ -730,9 +730,9 @@
     "entry_price": 79.5999984741211
   },
   "RPM": {
-    "entry_date": "2026-04-02",
+    "entry_date": "2026-04-03",
     "shares": 26,
-    "entry_price": 98.0199966430664
+    "entry_price": 97.97000122070312
   },
   "SUZ": {
     "entry_date": "2026-04-02",
@@ -745,9 +745,9 @@
     "entry_price": 27.104999542236328
   },
   "GMED": {
-    "entry_date": "2026-04-02",
-    "shares": 29,
-    "entry_price": 87.71499633789062
+    "entry_date": "2026-04-03",
+    "shares": 28,
+    "entry_price": 87.91999816894531
   },
   "NSC": {
     "entry_date": "2026-04-02",
@@ -768,5 +768,25 @@
     "entry_date": "2026-04-02",
     "shares": 131,
     "entry_price": 19.100000381469727
+  },
+  "KBR": {
+    "entry_date": "2026-04-03",
+    "shares": 66,
+    "entry_price": 38.04999923706055
+  },
+  "IVT": {
+    "entry_date": "2026-04-03",
+    "shares": 81,
+    "entry_price": 30.729999542236328
+  },
+  "SKT": {
+    "entry_date": "2026-04-03",
+    "shares": 72,
+    "entry_price": 34.56999969482422
+  },
+  "PSA": {
+    "entry_date": "2026-04-03",
+    "shares": 9,
+    "entry_price": 280.3500061035156
   }
 }
