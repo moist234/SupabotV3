@@ -70,9 +70,9 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-          git add alpaca_positions.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update Alpaca positions [skip ci]"
-          git push
+          git add alpaca_positions.json recent_picks.json
+          git diff --staged --quiet || git commit -m "Update position tracking [skip ci]"
+          git push || echo "Nothing to push"
       
       - name: 📊 Upload V3 results
         if: always()
