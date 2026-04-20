@@ -818,5 +818,10 @@
     "entry_date": "2026-04-06",
     "shares": 235,
     "entry_price": 10.640000343322754
+  },
+  "AAPL": {
+    "entry_date": "2026-04-20",
+    "shares": 9,
+    "entry_price": 273.04998779296875
   }
 }
