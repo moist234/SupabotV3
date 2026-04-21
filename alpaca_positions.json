@@ -435,9 +435,9 @@
     "entry_price": 304.4200134277344
   },
   "SAIC": {
-    "entry_date": "2026-03-16",
-    "shares": 5,
-    "entry_price": 93.05000305175781
+    "entry_date": "2026-04-21",
+    "shares": 26,
+    "entry_price": 96.13999938964844
   },
   "UAL": {
     "entry_date": "2026-03-17",
@@ -823,5 +823,15 @@
     "entry_date": "2026-04-20",
     "shares": 9,
     "entry_price": 273.04998779296875
+  },
+  "HAFN": {
+    "entry_date": "2026-04-21",
+    "shares": 296,
+    "entry_price": 8.449999809265137
+  },
+  "WB": {
+    "entry_date": "2026-04-21",
+    "shares": 290,
+    "entry_price": 8.630000114440918
   }
 }
