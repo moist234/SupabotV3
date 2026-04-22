@@ -833,5 +833,10 @@
     "entry_date": "2026-04-21",
     "shares": 290,
     "entry_price": 8.630000114440918
+  },
+  "UBER": {
+    "entry_date": "2026-04-22",
+    "shares": 33,
+    "entry_price": 75.58999633789062
   }
 }
