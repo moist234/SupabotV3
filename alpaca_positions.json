@@ -825,9 +825,9 @@
     "entry_price": 273.04998779296875
   },
   "HAFN": {
-    "entry_date": "2026-04-21",
+    "entry_date": "2026-04-24",
     "shares": 296,
-    "entry_price": 8.449999809265137
+    "entry_price": 8.4399995803833
   },
   "WB": {
     "entry_date": "2026-04-21",
@@ -843,5 +843,15 @@
     "entry_date": "2026-04-23",
     "shares": 6,
     "entry_price": 454.1700134277344
+  },
+  "SFD": {
+    "entry_date": "2026-04-24",
+    "shares": 85,
+    "entry_price": 29.375
+  },
+  "TOST": {
+    "entry_date": "2026-04-24",
+    "shares": 86,
+    "entry_price": 29.05500030517578
   }
 }
