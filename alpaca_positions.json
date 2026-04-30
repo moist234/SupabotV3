@@ -883,5 +883,20 @@
     "entry_date": "2026-04-29",
     "shares": 16,
     "entry_price": 151.99000549316406
+  },
+  "DLO": {
+    "entry_date": "2026-04-30",
+    "shares": 180,
+    "entry_price": 13.880000114440918
+  },
+  "PRM": {
+    "entry_date": "2026-04-30",
+    "shares": 83,
+    "entry_price": 30.299999237060547
+  },
+  "TT": {
+    "entry_date": "2026-04-30",
+    "shares": 5,
+    "entry_price": 492.5400085449219
   }
 }
