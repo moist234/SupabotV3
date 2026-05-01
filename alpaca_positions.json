@@ -760,9 +760,9 @@
     "entry_price": 32.150001525878906
   },
   "PSO": {
-    "entry_date": "2026-04-02",
-    "shares": 188,
-    "entry_price": 13.3100004196167
+    "entry_date": "2026-05-01",
+    "shares": 166,
+    "entry_price": 15.079999923706055
   },
   "CDE": {
     "entry_date": "2026-04-02",
@@ -898,5 +898,15 @@
     "entry_date": "2026-04-30",
     "shares": 5,
     "entry_price": 492.5400085449219
+  },
+  "NEXA": {
+    "entry_date": "2026-05-01",
+    "shares": 161,
+    "entry_price": 15.5600004196167
+  },
+  "VTRS": {
+    "entry_date": "2026-05-01",
+    "shares": 166,
+    "entry_price": 15.039999961853027
   }
 }
