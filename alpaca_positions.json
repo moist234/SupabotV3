@@ -840,9 +840,9 @@
     "entry_price": 75.58999633789062
   },
   "APP": {
-    "entry_date": "2026-04-23",
-    "shares": 6,
-    "entry_price": 454.1700134277344
+    "entry_date": "2026-05-04",
+    "shares": 5,
+    "entry_price": 475.0
   },
   "SFD": {
     "entry_date": "2026-04-24",
@@ -908,5 +908,10 @@
     "entry_date": "2026-05-01",
     "shares": 166,
     "entry_price": 15.039999961853027
+  },
+  "DSGX": {
+    "entry_date": "2026-05-04",
+    "shares": 34,
+    "entry_price": 73.72000122070312
   }
 }
