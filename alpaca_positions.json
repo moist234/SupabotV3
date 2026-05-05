@@ -790,9 +790,9 @@
     "entry_price": 280.3500061035156
   },
   "SQM": {
-    "entry_date": "2026-04-06",
-    "shares": 31,
-    "entry_price": 80.48999786376953
+    "entry_date": "2026-05-05",
+    "shares": 27,
+    "entry_price": 92.63999938964844
   },
   "DX": {
     "entry_date": "2026-04-06",
@@ -913,5 +913,15 @@
     "entry_date": "2026-05-04",
     "shares": 34,
     "entry_price": 73.72000122070312
+  },
+  "CL": {
+    "entry_date": "2026-05-05",
+    "shares": 29,
+    "entry_price": 86.33000183105469
+  },
+  "PL": {
+    "entry_date": "2026-05-05",
+    "shares": 67,
+    "entry_price": 37.130001068115234
   }
 }
