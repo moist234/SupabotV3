@@ -953,5 +953,15 @@
     "entry_date": "2026-05-07",
     "shares": 75,
     "entry_price": 33.380001068115234
+  },
+  "WPP": {
+    "entry_date": "2026-05-08",
+    "shares": 132,
+    "entry_price": 18.969999313354492
+  },
+  "FER": {
+    "entry_date": "2026-05-08",
+    "shares": 36,
+    "entry_price": 70.41999816894531
   }
 }
