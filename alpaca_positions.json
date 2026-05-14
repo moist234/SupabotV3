@@ -973,5 +973,10 @@
     "entry_date": "2026-05-11",
     "shares": 13,
     "entry_price": 196.83999633789062
+  },
+  "ROIV": {
+    "entry_date": "2026-05-14",
+    "shares": 85,
+    "entry_price": 29.5
   }
 }
