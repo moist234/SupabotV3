@@ -978,5 +978,20 @@
     "entry_date": "2026-05-14",
     "shares": 85,
     "entry_price": 29.5
+  },
+  "SVM": {
+    "entry_date": "2026-05-15",
+    "shares": 184,
+    "entry_price": 13.569999694824219
+  },
+  "WMT": {
+    "entry_date": "2026-05-15",
+    "shares": 19,
+    "entry_price": 131.4499969482422
+  },
+  "BB": {
+    "entry_date": "2026-05-15",
+    "shares": 404,
+    "entry_price": 6.190000057220459
   }
 }
